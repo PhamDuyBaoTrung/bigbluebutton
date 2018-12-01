@@ -1,6 +1,6 @@
 import Storage from '/imports/ui/services/storage/session';
 import Auth from '/imports/ui/services/auth';
-import { sendAnnotation, addAnnotationToDiscardedList } from '/imports/ui/components/whiteboard/service';
+import { sendAnnotation, addAnnotationToDiscardedList, Annotations } from '/imports/ui/components/whiteboard/service';
 
 const DRAW_SETTINGS = 'drawSettings';
 
@@ -49,6 +49,25 @@ const getCurrentUserId = () => Auth.userID;
 
 const contextMenuHandler = event => event.preventDefault();
 
+const getCurrentAnnotationsInfo = (whiteboardId) => {
+  if (!whiteboardId) {
+    return null;
+  }
+
+  return Annotations.find(
+    {
+      whiteboardId,
+      // annotationType: { $ne: 'pencil_base' },
+    },
+    {
+      sort: { position: 1 },
+      fields: {
+        status: 1, _id: 1, annotationType: 1, annotationInfo: 1,
+      },
+    },
+  ).fetch();
+};
+
 export default {
   addAnnotationToDiscardedList,
   sendAnnotation,
@@ -57,4 +76,5 @@ export default {
   resetTextShapeSession,
   getCurrentUserId,
   contextMenuHandler,
+  getCurrentAnnotationsInfo,
 };

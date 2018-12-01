@@ -14,16 +14,21 @@ const WhiteboardOverlayContainer = (props) => {
   return null;
 };
 
-export default withTracker(() => ({
-  undoAnnotation: WhiteboardToolbarService.undoAnnotation,
-  contextMenuHandler: WhiteboardOverlayService.contextMenuHandler,
-  sendAnnotation: WhiteboardOverlayService.sendAnnotation,
-  addAnnotationToDiscardedList: WhiteboardOverlayService.addAnnotationToDiscardedList,
-  setTextShapeActiveId: WhiteboardOverlayService.setTextShapeActiveId,
-  resetTextShapeSession: WhiteboardOverlayService.resetTextShapeSession,
-  drawSettings: WhiteboardOverlayService.getWhiteboardToolbarValues(),
-  userId: WhiteboardOverlayService.getCurrentUserId(),
-}))(WhiteboardOverlayContainer);
+export default withTracker((params) => {
+  const { whiteboardId } = params;
+  const annotationsInfo = WhiteboardOverlayService.getCurrentAnnotationsInfo(whiteboardId);
+  return {
+    undoAnnotation: WhiteboardToolbarService.undoAnnotation,
+    contextMenuHandler: WhiteboardOverlayService.contextMenuHandler,
+    sendAnnotation: WhiteboardOverlayService.sendAnnotation,
+    addAnnotationToDiscardedList: WhiteboardOverlayService.addAnnotationToDiscardedList,
+    setTextShapeActiveId: WhiteboardOverlayService.setTextShapeActiveId,
+    resetTextShapeSession: WhiteboardOverlayService.resetTextShapeSession,
+    drawSettings: WhiteboardOverlayService.getWhiteboardToolbarValues(),
+    userId: WhiteboardOverlayService.getCurrentUserId(),
+    annotationsInfo,
+  };
+})(WhiteboardOverlayContainer);
 
 
 WhiteboardOverlayContainer.propTypes = {

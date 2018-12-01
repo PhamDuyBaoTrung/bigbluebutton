@@ -4,6 +4,10 @@ const getAnnotationById = _id => Annotations.findOne({
   _id,
 });
 
+const getAnnotationAll = _id => Annotations.findOne({
+  _id,
+});
+
 export default {
   getAnnotationById,
 };
