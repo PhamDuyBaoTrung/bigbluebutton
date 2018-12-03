@@ -181,7 +181,7 @@ export default class WhiteboardOverlay extends Component {
       );
     } else if (tool === 'pointer') {
       return (
-        <PanZoomDrawListener {...this.props} />
+        <PanZoomDrawListener {...this.props} actions={actions} />
       );
     }
     return (

@@ -160,6 +160,8 @@ export function sendAnnotation(annotation) {
   // skip optimistic for draw end since the smoothing is done in akka
   if (annotation.status === DRAW_END) return;
 
+  console.log(`Update Annotation ${annotation.id} - status ${annotation.status}`);
+
   const { position, ...relevantAnotation } = annotation;
   const queryFake = addAnnotationQuery(
     Auth.meetingID, annotation.wbId, Auth.userID,

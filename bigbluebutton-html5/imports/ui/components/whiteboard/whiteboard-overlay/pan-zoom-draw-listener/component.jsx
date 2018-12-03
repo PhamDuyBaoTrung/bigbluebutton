@@ -3,6 +3,7 @@ import React from 'react';
 
 const ANNOTATION_CONFIG = Meteor.settings.public.whiteboard.annotations;
 const DRAW_UPDATE = ANNOTATION_CONFIG.status.update;
+const DRAW_END = ANNOTATION_CONFIG.status.end;
 
 export default class PanZoomDrawListener extends React.Component {
   constructor() {
@@ -15,6 +16,8 @@ export default class PanZoomDrawListener extends React.Component {
       pointerWidth: 10,
       pointerHeight: 10,
     };
+
+    this.activeAnnotation = undefined;
 
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
@@ -31,29 +34,79 @@ export default class PanZoomDrawListener extends React.Component {
       window.addEventListener('mousemove', this.handleMouseMove, true);
 
       const { clientX, clientY } = event;
-      this.commonUpdateShapeHandler(clientX, clientY);
+      const { annotationsInfo } = this.props;
+      this.commonUpdateShapeHandler(clientX, clientY, annotationsInfo);
     }
   }
 
   commonUpdateShapeHandler(clientX, clientY, annotations) {
-    console.log(`LIST ANNOTATION ${annotations}`);
-    if (Array.isArray(annotations)) {
-      const activeAnnotation = annotations.find((annotation) => {
-        const startPointX = annotation.annotationInfo.points[0];
-        const startPointY = annotation.annotationInfo.points[1];
-        const endPointX = annotation.annotationInfo.points[2];
-        const endPointY = annotation.annotationInfo.points[3];
-        return clientX >= startPointX && clientX <= endPointX
-          && clientY >= startPointY && clientY <= endPointY;
-      });
-      console.log(`ACTIVE ANNOTATION ${activeAnnotation}`);
-      if (activeAnnotation) {
-        const { sendAnnotation, setTextShapeActiveId } = this.props.actions;
-        activeAnnotation.status = DRAW_UPDATE;
-        sendAnnotation(activeAnnotation);
-        setTextShapeActiveId(activeAnnotation.id);
-      }
+    const activeAnnotation = this.findActiveAnnotation(annotations, clientX, clientY);
+    console.log(`ACTIVE ANNOTATION ${activeAnnotation}`);
+    if (activeAnnotation) {
+      this.activeAnnotation = activeAnnotation;
+      const { sendAnnotation, setTextShapeActiveId } = this.props.actions;
+      activeAnnotation.status = DRAW_UPDATE;
+      activeAnnotation.annotationInfo.status = DRAW_UPDATE;
+      activeAnnotation.id = this.getActiveShapeId();
+      sendAnnotation(activeAnnotation);
+      setTextShapeActiveId(activeAnnotation.id);
     }
+  }
+
+  findActiveAnnotation(annotations, clientX, clientY) {
+    if (!Array.isArray(annotations) || annotations.length === 0) {
+      return null;
+    }
+
+    const { getTransformedSvgPoint } = this.props.actions;
+    const transformedSvgPoint = getTransformedSvgPoint(clientX, clientY);
+    const activeAnnotation = annotations.find(annotation => (
+      this.isActiveAnnotation(annotation, transformedSvgPoint.x, transformedSvgPoint.y)));
+    return activeAnnotation;
+  }
+
+  isActiveAnnotation(annotation, x, y) {
+    const { slideWidth, slideHeight } = this.props;
+    const annotationCoordinate =
+      this.getCoordinates(annotation.annotationInfo, slideWidth, slideHeight);
+    const startPointX = annotationCoordinate.x;
+    const startPointY = annotationCoordinate.y;
+    const endPointX = startPointX + annotationCoordinate.width;
+    const endPointY = startPointY + annotationCoordinate.height;
+    return x >= startPointX && x <= endPointX
+      && y >= startPointY && y <= endPointY;
+  }
+
+  getCoordinates(annotation, slideWidth, slideHeight) {
+    const {
+      x, y,
+      textBoxWidth,
+      textBoxHeight,
+      fontColor,
+      fontSize,
+      calcedFontSize,
+      text,
+    } = annotation;
+
+    const _x = (x / 100) * slideWidth;
+    const _y = (y / 100) * slideHeight;
+    const _width = (textBoxWidth / 100) * slideWidth;
+    const _height = (textBoxHeight / 100) * slideHeight;
+    const _fontColor = fontColor;
+    const _fontSize = fontSize;
+    const _calcedFontSize = (calcedFontSize / 100) * slideHeight;
+    const _text = text;
+
+    return {
+      x: _x,
+      y: _y,
+      text: _text,
+      width: _width,
+      height: _height,
+      fontSize: _fontSize,
+      fontColor: _fontColor,
+      calcedFontSize: _calcedFontSize,
+    };
   }
 
   // main mouse move handler
@@ -68,6 +121,54 @@ export default class PanZoomDrawListener extends React.Component {
     window.removeEventListener('mousemove', this.handleMouseMove, true);
     const { clientX, clientY } = evt;
     console.log(`End of Mouse Moving at x = ${clientX} y=${clientY}`);
+    this.commonEndUpdateShape(clientX, clientY);
+  }
+
+  commonEndUpdateShape(clientX, clientY) {
+    if (!this.activeAnnotation) {
+      return;
+    }
+    const { getTransformedSvgPoint } = this.props.actions;
+    const transformedSvgPoint = getTransformedSvgPoint(clientX, clientY);
+    const isActive =
+      this.isActiveAnnotation(this.activeAnnotation, transformedSvgPoint.x, transformedSvgPoint.y);
+    if (!isActive) {
+      const { sendAnnotation } = this.props.actions;
+      this.activeAnnotation.annotationInfo.text = this.props.drawSettings.textShapeValue;
+      this.activeAnnotation.id = this.getActiveShapeId();
+      sendAnnotation(this.activeAnnotation);
+      console.log(`End Shape updated ${this.activeAnnotation.id}`);
+      this.sendLastUpdate();
+      this.resetState();
+    }
+  }
+
+  getActiveShapeId() {
+    if (!this.activeAnnotation) {
+      return null;
+    }
+    return this.activeAnnotation.id.split('-fake')[0];
+  }
+
+  sendLastUpdate() {
+    if (!this.activeAnnotation) {
+      return;
+    }
+    const { sendAnnotation, setTextShapeActiveId } = this.props.actions;
+    this.activeAnnotation.annotationInfo.status = DRAW_END;
+    sendAnnotation(this.activeAnnotation);
+    setTextShapeActiveId('');
+  }
+
+  resetState() {
+    this.state = {
+      // text shape state properties
+      pointerX: undefined,
+      pointerY: undefined,
+      pointerWidth: 10,
+      pointerHeight: 10,
+    };
+    this.activeAnnotation = undefined;
   }
 
   render() {

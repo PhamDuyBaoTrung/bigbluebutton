@@ -93,6 +93,7 @@ export default class TextDrawComponent extends Component {
 
   getCoordinates() {
     const { annotation, slideWidth, slideHeight } = this.props;
+
     const {
       x,
       y,
@@ -112,6 +113,10 @@ export default class TextDrawComponent extends Component {
     const _fontSize = fontSize;
     const _calcedFontSize = (calcedFontSize / 100) * slideHeight;
     const _text = text;
+
+    console.log(`slideWidth: ${slideWidth}, slideHeight: ${slideHeight},
+    _width: ${_width}, _height: ${_height},
+    x: ${x}, y: ${y}, _x: ${_x}, _y: ${_y}`);
 
     return {
       x: _x,
@@ -186,6 +191,7 @@ export default class TextDrawComponent extends Component {
             onChange={this.onChangeHandler}
             onBlur={this.handleOnBlur}
             style={styles}
+            defaultValue={results.text}
             spellCheck="false"
           />
         </foreignObject>

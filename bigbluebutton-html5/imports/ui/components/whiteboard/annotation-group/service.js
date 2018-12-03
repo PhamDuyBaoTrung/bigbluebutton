@@ -12,7 +12,7 @@ const getCurrentAnnotationsInfo = (whiteboardId) => {
     },
     {
       sort: { position: 1 },
-      fields: { status: 1, _id: 1, annotationType: 1 },
+
     },
   ).fetch();
 };

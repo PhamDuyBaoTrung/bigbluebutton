@@ -1,6 +1,7 @@
 import Storage from '/imports/ui/services/storage/session';
 import Auth from '/imports/ui/services/auth';
-import { sendAnnotation, addAnnotationToDiscardedList, Annotations } from '/imports/ui/components/whiteboard/service';
+import { sendAnnotation, addAnnotationToDiscardedList } from '/imports/ui/components/whiteboard/service';
+import Annotations from '/imports/ui/components/whiteboard/service';
 
 const DRAW_SETTINGS = 'drawSettings';
 
@@ -54,6 +55,10 @@ const getCurrentAnnotationsInfo = (whiteboardId) => {
     return null;
   }
 
+  if (!Annotations) {
+    return [];
+  }
+
   return Annotations.find(
     {
       whiteboardId,
@@ -61,9 +66,6 @@ const getCurrentAnnotationsInfo = (whiteboardId) => {
     },
     {
       sort: { position: 1 },
-      fields: {
-        status: 1, _id: 1, annotationType: 1, annotationInfo: 1,
-      },
     },
   ).fetch();
 };
