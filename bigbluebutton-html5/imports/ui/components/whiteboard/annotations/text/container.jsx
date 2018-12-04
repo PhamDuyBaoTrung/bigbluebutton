@@ -16,6 +16,8 @@ export default withTracker((params) => {
   if ((isPresenter || isMultiUser) && activeTextShapeId === params.annotation.id) {
     isActive = true;
   }
+  const currentShape = params.annotation.id;
+  console.log(`active Shape: ${activeTextShapeId} - current shape ${currentShape} - isActive ${isActive}`);
   return {
     isActive,
     setTextShapeValue: TextShapeService.setTextShapeValue,

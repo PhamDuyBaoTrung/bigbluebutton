@@ -19,7 +19,7 @@ export default function addAnnotation(meetingId, whiteboardId, userId, annotatio
     if (insertedId) {
       return Logger.info(`Added annotation id=${annotation.id} whiteboard=${whiteboardId}`);
     }
-
+    console.log(`Upserted annotation id=${annotation.id} - text text ${annotation.annotationInfo.text} - whiteboard=${whiteboardId}`);
     return Logger.info(`Upserted annotation id=${annotation.id} whiteboard=${whiteboardId}`);
   };
 

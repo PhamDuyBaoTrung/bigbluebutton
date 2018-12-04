@@ -157,7 +157,7 @@ export default class TextDrawListener extends Component {
     const { clientX, clientY } = event.changedTouches[0];
     this.commonDrawMoveHandler(clientX, clientY);
   }
-
+h
   handleTouchEnd() {
     window.removeEventListener('touchend', this.handleTouchEnd, { passive: false });
     window.removeEventListener('touchmove', this.handleTouchMove, { passive: false });

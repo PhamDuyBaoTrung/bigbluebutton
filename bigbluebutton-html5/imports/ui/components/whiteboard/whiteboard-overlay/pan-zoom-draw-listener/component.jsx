@@ -41,7 +41,6 @@ export default class PanZoomDrawListener extends React.Component {
 
   commonUpdateShapeHandler(clientX, clientY, annotations) {
     const activeAnnotation = this.findActiveAnnotation(annotations, clientX, clientY);
-    console.log(`ACTIVE ANNOTATION ${activeAnnotation}`);
     if (activeAnnotation) {
       this.activeAnnotation = activeAnnotation;
       const { sendAnnotation, setTextShapeActiveId } = this.props.actions;
@@ -112,7 +111,6 @@ export default class PanZoomDrawListener extends React.Component {
   // main mouse move handler
   handleMouseMove(event) {
     const { clientX, clientY } = event;
-    console.log(`Moving at x = ${clientX} y=${clientY}`);
   }
 
   // main mouse up handler
@@ -154,10 +152,46 @@ export default class PanZoomDrawListener extends React.Component {
     if (!this.activeAnnotation) {
       return;
     }
-    const { sendAnnotation, setTextShapeActiveId } = this.props.actions;
-    this.activeAnnotation.annotationInfo.status = DRAW_END;
-    sendAnnotation(this.activeAnnotation);
+    const { setTextShapeActiveId } = this.props.actions;
+    this.handleDrawText(
+      { x: this.activeAnnotation.annotationInfo.x, y: this.activeAnnotation.annotationInfo.y },
+      this.activeAnnotation.annotationInfo.textBoxWidth,
+      this.activeAnnotation.annotationInfo.textBoxHeight,
+      DRAW_END,
+      this.getActiveShapeId(),
+      this.props.drawSettings.textShapeValue,
+    );
     setTextShapeActiveId('');
+  }
+
+  handleDrawText(startPoint, width, height, status, id, text) {
+    const { normalizeFont, sendAnnotation } = this.props.actions;
+
+    const annotation = {
+      id,
+      status,
+      annotationType: 'text',
+      annotationInfo: {
+        x: startPoint.x, // left corner
+        y: startPoint.y, // left corner
+        fontColor: this.props.drawSettings.color,
+        calcedFontSize: normalizeFont(this.props.drawSettings.textFontSize), // fontsize
+        textBoxWidth: width, // width
+        text,
+        textBoxHeight: height, // height
+        id,
+        whiteboardId: this.props.whiteboardId,
+        status,
+        fontSize: this.props.drawSettings.textFontSize,
+        dataPoints: `${startPoint.x},${startPoint.y}`,
+        type: 'text',
+      },
+      wbId: this.props.whiteboardId,
+      userId: this.props.userId,
+      position: 0,
+    };
+
+    sendAnnotation(annotation);
   }
 
   resetState() {
