@@ -43,11 +43,10 @@ export default class PanZoomDrawListener extends React.Component {
     const activeAnnotation = this.findActiveAnnotation(annotations, clientX, clientY);
     if (activeAnnotation) {
       this.activeAnnotation = activeAnnotation;
-      const { sendAnnotation, setTextShapeActiveId } = this.props.actions;
+      const { updateAnnotation, setTextShapeActiveId } = this.props.actions;
       activeAnnotation.status = DRAW_UPDATE;
       activeAnnotation.annotationInfo.status = DRAW_UPDATE;
-      activeAnnotation.id = this.getActiveShapeId();
-      sendAnnotation(activeAnnotation);
+      updateAnnotation(activeAnnotation, activeAnnotation.annotationInfo.text);
       setTextShapeActiveId(activeAnnotation.id);
     }
   }
@@ -118,7 +117,6 @@ export default class PanZoomDrawListener extends React.Component {
     window.removeEventListener('mouseup', this.handleMouseUp);
     window.removeEventListener('mousemove', this.handleMouseMove, true);
     const { clientX, clientY } = evt;
-    console.log(`End of Mouse Moving at x = ${clientX} y=${clientY}`);
     this.commonEndUpdateShape(clientX, clientY);
   }
 
@@ -131,11 +129,9 @@ export default class PanZoomDrawListener extends React.Component {
     const isActive =
       this.isActiveAnnotation(this.activeAnnotation, transformedSvgPoint.x, transformedSvgPoint.y);
     if (!isActive) {
-      const { sendAnnotation } = this.props.actions;
+      const { updateAnnotation } = this.props.actions;
       this.activeAnnotation.annotationInfo.text = this.props.drawSettings.textShapeValue;
-      this.activeAnnotation.id = this.getActiveShapeId();
-      sendAnnotation(this.activeAnnotation);
-      console.log(`End Shape updated ${this.activeAnnotation.id}`);
+      updateAnnotation(this.activeAnnotation);
       this.sendLastUpdate();
       this.resetState();
     }
@@ -159,12 +155,13 @@ export default class PanZoomDrawListener extends React.Component {
       this.activeAnnotation.annotationInfo.textBoxHeight,
       DRAW_END,
       this.getActiveShapeId(),
+      this.activeAnnotation._id,
       this.props.drawSettings.textShapeValue,
     );
     setTextShapeActiveId('');
   }
 
-  handleDrawText(startPoint, width, height, status, id, text) {
+  handleDrawText(startPoint, width, height, status, id, _id, text) {
     const { normalizeFont, sendAnnotation } = this.props.actions;
 
     const annotation = {

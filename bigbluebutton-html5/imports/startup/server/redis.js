@@ -28,7 +28,7 @@ const makeEnvelope = (channel, eventName, header, body) => {
 
 const makeDebugger = enabled => (message) => {
   if (!enabled) return;
-  Logger.info(`REDIS: ${message}`);
+  // Logger.info(`REDIS: ${message}`);
 };
 
 class MettingMessageQueue {

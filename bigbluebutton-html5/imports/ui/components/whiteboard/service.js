@@ -181,6 +181,42 @@ export function sendAnnotation(annotation) {
   Annotations.upsert(queryFake.selector, queryFake.modifier);
 }
 
+export function updateAnnotation(annotation, text) {
+  // Prevent sending annotations while disconnected
+  if (!Meteor.status().connected) return;
+
+  // skip optimistic for draw end since the smoothing is done in akka
+  if (annotation.status === DRAW_END) return;
+
+  const {position, ...relevantAnotation} = annotation;
+  const updateQuery = addAnnotationQuery(
+    Auth.meetingID, annotation.wbId, Auth.userID,
+    {
+      ...relevantAnotation,
+      id: annotation.id,
+      position: position,
+      annotationInfo: {
+        ...annotation.annotationInfo,
+        color: increaseBrightness(annotation.annotationInfo.color, 40),
+      },
+    },
+  );
+
+  const cb = (err, numChanged) => {
+    if (err) {
+      return console.error(`Error happend when upsert ${annotation.id}`);
+    }
+
+    const { insertedId } = numChanged;
+    if (insertedId) {
+      return console.info(`[ADDED] annotation id=${annotation.id}`);
+    }
+    return console.info(`[UPDATED] annotation id=${annotation.id}`);
+  };
+
+  Annotations.upsert(updateQuery.selector, updateQuery.modifier, cb);
+}
+
 WhiteboardMultiUser.find({ meetingId: Auth.meetingID }).observeChanges({
   changed: clearFakeAnnotations,
 });

@@ -125,6 +125,7 @@ export default class WhiteboardOverlay extends Component {
       userId,
       whiteboardId,
       sendAnnotation,
+      updateAnnotation,
       resetTextShapeSession,
       setTextShapeActiveId,
       contextMenuHandler,
@@ -141,6 +142,7 @@ export default class WhiteboardOverlay extends Component {
       normalizeThickness: this.normalizeThickness,
       normalizeFont: this.normalizeFont,
       sendAnnotation,
+      updateAnnotation,
       resetTextShapeSession,
       setTextShapeActiveId,
       contextMenuHandler,
@@ -213,6 +215,8 @@ WhiteboardOverlay.propTypes = {
   viewBoxHeight: PropTypes.number.isRequired,
   // Defines a handler to publish an annotation to the server
   sendAnnotation: PropTypes.func.isRequired,
+  // Defines a handler to publish an annotation to the server
+  updateAnnotation: PropTypes.func.isRequired,
   // Defines a current whiteboard id
   whiteboardId: PropTypes.string.isRequired,
   // Defines an object containing current settings for drawing

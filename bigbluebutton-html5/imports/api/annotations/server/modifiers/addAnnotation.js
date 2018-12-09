@@ -17,10 +17,9 @@ export default function addAnnotation(meetingId, whiteboardId, userId, annotatio
 
     const { insertedId } = numChanged;
     if (insertedId) {
-      return Logger.info(`Added annotation id=${annotation.id} whiteboard=${whiteboardId}`);
+      return Logger.info(`ADDED annotation id=${annotation.id} whiteboard=${whiteboardId}`);
     }
-    console.log(`Upserted annotation id=${annotation.id} - text text ${annotation.annotationInfo.text} - whiteboard=${whiteboardId}`);
-    return Logger.info(`Upserted annotation id=${annotation.id} whiteboard=${whiteboardId}`);
+    return Logger.info(`UPDATED annotation id=${annotation.id} whiteboard=${whiteboardId}`);
   };
 
   return Annotations.upsert(query.selector, query.modifier, cb);

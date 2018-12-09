@@ -24,25 +24,20 @@ const proccess = () => {
 export default function handleWhiteboardSend({ header, body }, meetingId) {
   const userId = header.userId;
   const annotation = body.annotation;
-  console.log('Checking before adding...');
   check(userId, String);
   check(annotation, Object);
 
   const whiteboardId = annotation.wbId;
   check(whiteboardId, String);
 
-  console.log('Pass checking...');
-
   if(!annotationsQueue.hasOwnProperty(meetingId)) {
-    console.log('Fail becuase annotationsQueue.hasOwnProperty(meetingId) = false');
     annotationsQueue[meetingId] = [];
   }
 
   annotationsQueue[meetingId].push({ meetingId, whiteboardId, userId, annotation });
-  console.log(`Status of Receiver ${annotationsRecieverIsRunning}`);
   if (!annotationsRecieverIsRunning) proccess();
 
-  console.log(`ADD Annotation ${annotation.id} - text ${annotation.annotationInfo.text} to Redis`);
+  console.log(`Start ADDING Annotation ${annotation.id} - text ${annotation.annotationInfo.text} to Redis`);
 
   return addAnnotation(meetingId, whiteboardId, userId, annotation);
 }
