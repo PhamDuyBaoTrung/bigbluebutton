@@ -1,16 +1,39 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import AnnotationHelper from '../../annotations/helpers';
 
 const ReactiveAnnotation = (props) => {
   const Component = props.drawObject;
+  const { annotation, slideWidth, slideHeight } = props;
+  console.log(`Reactive Annotation x: ${annotation.annotationInfo.x}, y: ${annotation.annotationInfo.y}, 
+  width: ${annotation.annotationInfo.textBoxWidth}, height: ${annotation.annotationInfo.textBoxHeight}`);
+  const cornerPoints = AnnotationHelper.getCornerPoints(annotation.annotationInfo.x, annotation.annotationInfo.y,
+    annotation.annotationInfo.textBoxWidth, annotation.annotationInfo.textBoxHeight, slideWidth, slideHeight);
 
   return (
-    <Component
-      version={props.annotation.version}
-      annotation={props.annotation.annotationInfo}
-      slideWidth={props.slideWidth}
-      slideHeight={props.slideHeight}
-    />
+    <g>
+      <Component
+        version={props.annotation.version}
+        annotation={props.annotation.annotationInfo}
+        slideWidth={props.slideWidth}
+        slideHeight={props.slideHeight}
+      />
+      {
+        cornerPoints.map(p => (
+          <rect
+            fill="white"
+            fillOpacity="0.8"
+            x={p.x}
+            y={p.y}
+            width={20}
+            height={20}
+            strokeWidth={20}
+            stroke={'red'}
+            strokeOpacity="0.8"
+          />
+        ))
+      }
+    </g>
   );
 };
 

@@ -25,7 +25,7 @@ export default class PanZoomDrawListener extends React.Component {
 
     this.activeAnnotation = undefined;
     this.isPressed = false;
-    this.cornerPointR = 10,
+    this.cornerPointR = 10;
 
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
@@ -128,11 +128,13 @@ export default class PanZoomDrawListener extends React.Component {
     const { annotationsInfo, slideWidth, slideHeight } = this.props;
     const { getTransformedSvgPoint } = this.props.actions;
     const transformedSvgPoint = getTransformedSvgPoint(clientX, clientY);
-    annotationsInfo.forEach(annotation => {
+    annotationsInfo.forEach((annotation) => {
       const ac = this.getCoordinates(annotation.annotationInfo, slideWidth, slideHeight);
       const isActive = this.checkPointInsideBox(transformedSvgPoint.x, transformedSvgPoint.y, ac.x, ac.y, ac.x + ac.width, ac.y + ac.height);
-
-    })
+      if (isActive && this.activeAnnotation) {
+        this.canActivateHSplit(transformedSvgPoint.x, transformedSvgPoint.y, ac.width, ac.height, ac.x, ac.y);
+      }
+    });
   }
 
   canActivateHSplit(x, y, width, height, sx, sy) {
@@ -257,14 +259,18 @@ export default class PanZoomDrawListener extends React.Component {
 
   render() {
     const baseName = Meteor.settings.public.app.basename;
+    let cursor = `url('${baseName}/resources/images/whiteboard-cursor/hand.png') 4 8,  default`;
+    if (this.state.canHSplitOnLeft || this.state.canHSplitOnRight) {
+      cursor = `url('${baseName}/resources/images/whiteboard-cursor/H_split.png') 4 8 ,  default`;
+    } else if (this.state.canVSplitOnBottom || this.state.canVSplitOnTop) {
+      cursor = `url('${baseName}/resources/images/whiteboard-cursor/V_split.png') 4 8,  default`;
+    }
     const textDrawStyle = {
       width: '100%',
       height: '100%',
       touchAction: 'none',
       zIndex: 2 ** 31 - 1,
-      cursor: this.state.canHSplitOnLeft || this.state.canHSplitOnRight ? `url('${baseName}/resources/images/whiteboard-cursor/H_split.png') 4 8 ,  default`
-        ? this.state.canVSplitOnBottom || this.state.canVSplitOnTop ? `url('${baseName}/resources/images/whiteboard-cursor/V_split.png') 4 8,  default`
-        : `url('${baseName}/resources/images/whiteboard-cursor/hand.png') 4 8,  default`,
+      cursor,
     };
     const { contextMenuHandler } = this.props.actions;
     return (
