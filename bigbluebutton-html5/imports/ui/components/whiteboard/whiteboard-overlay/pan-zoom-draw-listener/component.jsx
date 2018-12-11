@@ -15,9 +15,17 @@ export default class PanZoomDrawListener extends React.Component {
       pointerY: undefined,
       pointerWidth: 10,
       pointerHeight: 10,
+      // cursors
+      canHSplitOnRight: false,
+      canHSplitOnLeft: false,
+      canVSplitOnTop: false,
+      canVSplitOnBottom: false,
+
     };
 
     this.activeAnnotation = undefined;
+    this.isPressed = false;
+    this.cornerPointR = 10,
 
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
@@ -30,6 +38,7 @@ export default class PanZoomDrawListener extends React.Component {
 
     // if our current drawing state is not drawing the box and not writing the text
     if (isLeftClick) {
+      this.isPressed = true;
       window.addEventListener('mouseup', this.handleMouseUp);
       window.addEventListener('mousemove', this.handleMouseMove, true);
 
@@ -75,6 +84,11 @@ export default class PanZoomDrawListener extends React.Component {
       && y >= startPointY && y <= endPointY;
   }
 
+  checkPointInsideBox(px, py, startPointX, startPointY, endPointX, endPointY) {
+    return px >= startPointX && px <= endPointX
+      && py >= startPointY && py <= endPointY;
+  }
+
   getCoordinates(annotation, slideWidth, slideHeight) {
     const {
       x, y,
@@ -110,12 +124,51 @@ export default class PanZoomDrawListener extends React.Component {
   // main mouse move handler
   handleMouseMove(event) {
     const { clientX, clientY } = event;
+    // transform client coordination to svg coordination
+    const { annotationsInfo, slideWidth, slideHeight } = this.props;
+    const { getTransformedSvgPoint } = this.props.actions;
+    const transformedSvgPoint = getTransformedSvgPoint(clientX, clientY);
+    annotationsInfo.forEach(annotation => {
+      const ac = this.getCoordinates(annotation.annotationInfo, slideWidth, slideHeight);
+      const isActive = this.checkPointInsideBox(transformedSvgPoint.x, transformedSvgPoint.y, ac.x, ac.y, ac.x + ac.width, ac.y + ac.height);
+
+    })
+  }
+
+  canActivateHSplit(x, y, width, height, sx, sy) {
+    // top left corner coordinates
+    const midLeft = {
+      x: sx,
+      y: sy - (height / 2),
+    };
+    // top right corner coordinates
+    const midRight = {
+      x: sx + width,
+      y: sy - (height / 2),
+    };
+    // bottom right corner coordinates
+    const midTop = {
+      x: sx + (width / 2),
+      y: sy,
+    };
+    // bottom left corner coordinates
+    const midBottom = {
+      x: sx + (width / 2),
+      y: sy - height,
+    };
+    this.setState({
+      canHSplitOnRight: this.checkPointInsideBox(x, y, midRight.x - this.cornerPointR, midRight.y - this.cornerPointR, midRight.x + this.cornerPointR, midRight.y + this.cornerPointR),
+      canHSplitOnLeft: this.checkPointInsideBox(x, y, midLeft.x - this.cornerPointR, midLeft.y - this.cornerPointR, midLeft.x + this.cornerPointR, midLeft.y + this.cornerPointR),
+      canVSplitOnTop: this.checkPointInsideBox(x, y, midTop.x - this.cornerPointR, midTop.y - this.cornerPointR, midTop.x + this.cornerPointR, midTop.y + this.cornerPointR),
+      canVSplitOnBottom: this.checkPointInsideBox(x, y, midBottom.x - this.cornerPointR, midBottom.y - this.cornerPointR, midBottom.x + this.cornerPointR, midBottom.y + this.cornerPointR),
+    });
   }
 
   // main mouse up handler
   handleMouseUp(evt) {
     window.removeEventListener('mouseup', this.handleMouseUp);
     window.removeEventListener('mousemove', this.handleMouseMove, true);
+    this.isPressed = false;
     const { clientX, clientY } = evt;
     this.commonEndUpdateShape(clientX, clientY);
   }
@@ -203,11 +256,15 @@ export default class PanZoomDrawListener extends React.Component {
   }
 
   render() {
+    const baseName = Meteor.settings.public.app.basename;
     const textDrawStyle = {
       width: '100%',
       height: '100%',
       touchAction: 'none',
       zIndex: 2 ** 31 - 1,
+      cursor: this.state.canHSplitOnLeft || this.state.canHSplitOnRight ? `url('${baseName}/resources/images/whiteboard-cursor/H_split.png') 4 8 ,  default`
+        ? this.state.canVSplitOnBottom || this.state.canVSplitOnTop ? `url('${baseName}/resources/images/whiteboard-cursor/V_split.png') 4 8,  default`
+        : `url('${baseName}/resources/images/whiteboard-cursor/hand.png') 4 8,  default`,
     };
     const { contextMenuHandler } = this.props.actions;
     return (
