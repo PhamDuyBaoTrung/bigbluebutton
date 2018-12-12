@@ -40,7 +40,7 @@ export default class PanZoomDrawListener extends React.Component {
     if (isLeftClick) {
       this.isPressed = true;
       window.addEventListener('mouseup', this.handleMouseUp);
-      window.addEventListener('mousemove', this.handleMouseMove, true);
+      window.addEventListener('mousemove', this.handleMouseMove);
 
       const { clientX, clientY } = event;
       const { annotationsInfo } = this.props;
@@ -132,6 +132,7 @@ export default class PanZoomDrawListener extends React.Component {
       const ac = this.getCoordinates(annotation.annotationInfo, slideWidth, slideHeight);
       const isActive = this.checkPointInsideBox(transformedSvgPoint.x, transformedSvgPoint.y, ac.x, ac.y, ac.x + ac.width, ac.y + ac.height);
       if (isActive && this.activeAnnotation) {
+        console.log('Checking splitting...');
         this.canActivateHSplit(transformedSvgPoint.x, transformedSvgPoint.y, ac.width, ac.height, ac.x, ac.y);
       }
     });
@@ -141,12 +142,12 @@ export default class PanZoomDrawListener extends React.Component {
     // top left corner coordinates
     const midLeft = {
       x: sx,
-      y: sy - (height / 2),
+      y: sy + (height / 2),
     };
     // top right corner coordinates
     const midRight = {
       x: sx + width,
-      y: sy - (height / 2),
+      y: sy + (height / 2),
     };
     // bottom right corner coordinates
     const midTop = {
@@ -156,20 +157,25 @@ export default class PanZoomDrawListener extends React.Component {
     // bottom left corner coordinates
     const midBottom = {
       x: sx + (width / 2),
-      y: sy - height,
+      y: sy + height,
     };
+    console.log(`X: ${x}, Y: ${y}, midRightX: ${midRight.x}, midRightY: ${midRight.y}, cornerPointR: ${this.cornerPointR}, 
+      Rect(${midRight.x - this.cornerPointR}, ${midRight.y - this.cornerPointR}, ${midRight.x + this.cornerPointR}, ${midRight.y + this.cornerPointR})`);
+    const canHSplitOnRight = this.checkPointInsideBox(x, y, midRight.x - this.cornerPointR, midRight.y - this.cornerPointR, midRight.x + this.cornerPointR, midRight.y + this.cornerPointR);
+    const canHSplitOnLeft = this.checkPointInsideBox(x, y, midLeft.x - this.cornerPointR, midLeft.y - this.cornerPointR, midLeft.x + this.cornerPointR, midLeft.y + this.cornerPointR);
+    const canVSplitOnTop = this.checkPointInsideBox(x, y, midTop.x - this.cornerPointR, midTop.y - this.cornerPointR, midTop.x + this.cornerPointR, midTop.y + this.cornerPointR);
+    const canVSplitOnBottom = this.checkPointInsideBox(x, y, midBottom.x - this.cornerPointR, midBottom.y - this.cornerPointR, midBottom.x + this.cornerPointR, midBottom.y + this.cornerPointR);
     this.setState({
-      canHSplitOnRight: this.checkPointInsideBox(x, y, midRight.x - this.cornerPointR, midRight.y - this.cornerPointR, midRight.x + this.cornerPointR, midRight.y + this.cornerPointR),
-      canHSplitOnLeft: this.checkPointInsideBox(x, y, midLeft.x - this.cornerPointR, midLeft.y - this.cornerPointR, midLeft.x + this.cornerPointR, midLeft.y + this.cornerPointR),
-      canVSplitOnTop: this.checkPointInsideBox(x, y, midTop.x - this.cornerPointR, midTop.y - this.cornerPointR, midTop.x + this.cornerPointR, midTop.y + this.cornerPointR),
-      canVSplitOnBottom: this.checkPointInsideBox(x, y, midBottom.x - this.cornerPointR, midBottom.y - this.cornerPointR, midBottom.x + this.cornerPointR, midBottom.y + this.cornerPointR),
+      canHSplitOnRight,
+      canHSplitOnLeft,
+      canVSplitOnTop,
+      canVSplitOnBottom,
     });
   }
 
   // main mouse up handler
   handleMouseUp(evt) {
     window.removeEventListener('mouseup', this.handleMouseUp);
-    window.removeEventListener('mousemove', this.handleMouseMove, true);
     this.isPressed = false;
     const { clientX, clientY } = evt;
     this.commonEndUpdateShape(clientX, clientY);
@@ -259,11 +265,11 @@ export default class PanZoomDrawListener extends React.Component {
 
   render() {
     const baseName = Meteor.settings.public.app.basename;
-    let cursor = `url('${baseName}/resources/images/whiteboard-cursor/hand.png') 4 8,  default`;
+    let cursor = 'pointer';
     if (this.state.canHSplitOnLeft || this.state.canHSplitOnRight) {
-      cursor = `url('${baseName}/resources/images/whiteboard-cursor/H_split.png') 4 8 ,  default`;
+      cursor = 'ew-resize';
     } else if (this.state.canVSplitOnBottom || this.state.canVSplitOnTop) {
-      cursor = `url('${baseName}/resources/images/whiteboard-cursor/V_split.png') 4 8,  default`;
+      cursor = 'ns-resize';
     }
     const textDrawStyle = {
       width: '100%',
@@ -278,6 +284,7 @@ export default class PanZoomDrawListener extends React.Component {
         role="presentation"
         style={textDrawStyle}
         onMouseDown={this.handleMouseDown}
+        onMouseMove={this.handleMouseMove}
         onTouchStart={this.handleTouchStart}
         onContextMenu={contextMenuHandler}
       >

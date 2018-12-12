@@ -5,10 +5,10 @@ import AnnotationHelper from '../../annotations/helpers';
 const ReactiveAnnotation = (props) => {
   const Component = props.drawObject;
   const { annotation, slideWidth, slideHeight } = props;
-  console.log(`Reactive Annotation x: ${annotation.annotationInfo.x}, y: ${annotation.annotationInfo.y}, 
-  width: ${annotation.annotationInfo.textBoxWidth}, height: ${annotation.annotationInfo.textBoxHeight}`);
   const cornerPoints = AnnotationHelper.getCornerPoints(annotation.annotationInfo.x, annotation.annotationInfo.y,
     annotation.annotationInfo.textBoxWidth, annotation.annotationInfo.textBoxHeight, slideWidth, slideHeight);
+  const cornerWidth = (20 / 100) * slideWidth;
+  const cornerHeight = (20 / 100) * slideHeight;
 
   return (
     <g>
@@ -23,8 +23,8 @@ const ReactiveAnnotation = (props) => {
           <rect
             fill="white"
             fillOpacity="0.8"
-            x={p.x}
-            y={p.y}
+            x={p.x - 10}
+            y={p.y - 10}
             width={20}
             height={20}
             strokeWidth={20}

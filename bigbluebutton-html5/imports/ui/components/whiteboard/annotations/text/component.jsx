@@ -58,7 +58,6 @@ export default class TextDrawComponent extends Component {
   }
 
   componentDidMount() {
-    console.log('Did Mount');
     // iOS doesn't show the keyboard if the input field was focused by event NOT invoked by a user
     // by it still technically moves the focus there
     // that's why we have a separate case for iOS - we don't focus here automatically
@@ -73,9 +72,7 @@ export default class TextDrawComponent extends Component {
 
     if (iOS || (Android && unsupportedFirefox)) { return; }
 
-    console.log(`before focusing textarea STATUS${this.props.annotation.status} - isActive: ${this.props.isActive}`);
     if (this.props.isActive && this.props.annotation.status !== DRAW_END) {
-      console.log('Set focus textarea');
       this.handleFocus();
     }
   }
@@ -95,7 +92,6 @@ export default class TextDrawComponent extends Component {
 
   componentDidUpdate() {
     if (this.shouldEnableTextArea) {
-      console.log('Set focus textarea again');
       this.handleFocus();
       this.shouldEnableTextArea = false;
     }
