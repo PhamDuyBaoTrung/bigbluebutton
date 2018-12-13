@@ -159,7 +159,7 @@ export default class PanZoomDrawListener extends React.Component {
     const { getTransformedSvgPoint } = this.props.actions;
     const transformedSvgPoint = getTransformedSvgPoint(clientX, clientY);
     // no need to change cursor behavior when dragging or resizing
-    if (this.state.isDragging || this.state.isResizing) {
+    if ((this.state.isDragging || this.state.isResizing) && this.activeAnnotation) {
       // transformed active shape coordination
       const ac = this.getCoordinates(this.activeAnnotation.annotationInfo, slideWidth, slideHeight);
       // when user is dragging or resizing, only need to update shape position
@@ -177,6 +177,8 @@ export default class PanZoomDrawListener extends React.Component {
           canHSplitOnLeft: false,
           canVSplitOnTop: false,
           canVSplitOnBottom: false,
+          isResizing: false,
+          isDragging: false
         });
         return;
       }
