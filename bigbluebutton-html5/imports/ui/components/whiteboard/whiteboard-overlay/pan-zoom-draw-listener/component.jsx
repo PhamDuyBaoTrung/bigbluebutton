@@ -280,7 +280,7 @@ export default class PanZoomDrawListener extends React.Component {
     const newTransX = (newStartX / this.props.slideWidth) * 100;
     const newTransY = (newStartY / this.props.slideHeight) * 100;
     const newTransWidth = (newWidth / this.props.slideWidth) * 100;
-    const newTransHeight = (newHeight / this.props.slideWidth) * 100;
+    const newTransHeight = (newHeight / this.props.slideHeight) * 100;
     this.activeAnnotation.annotationInfo.x = newTransX;
     this.activeAnnotation.annotationInfo.y = newTransY;
     this.activeAnnotation.annotationInfo.textBoxWidth = newTransWidth;
