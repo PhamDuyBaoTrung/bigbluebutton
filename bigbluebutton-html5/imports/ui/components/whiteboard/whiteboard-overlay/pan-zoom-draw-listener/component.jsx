@@ -158,35 +158,42 @@ export default class PanZoomDrawListener extends React.Component {
     const {slideWidth, slideHeight } = this.props;
     const { getTransformedSvgPoint } = this.props.actions;
     const transformedSvgPoint = getTransformedSvgPoint(clientX, clientY);
-    // find the selectable shape
-    const activeAnnotation = this.findActiveAnnotation(annotations, transformedSvgPoint.x, transformedSvgPoint.y);
-    // stop processing if moving to empty shapes space
-    if (!activeAnnotation) {
+    // no need to change cursor behavior when dragging or resizing
+    if (this.state.isDragging || this.state.isResizing) {
+      // when user is dragging or resizing, only need to update shape position
+      this.updateShapePosition(ac.x, ac.y, ac.width, ac.height,
+        transformedSvgPoint.x, transformedSvgPoint.y);
+    } else {
+      // find the selectable shape
+      const activeAnnotation = this.findActiveAnnotation(annotations, transformedSvgPoint.x, transformedSvgPoint.y);
+      // stop processing if moving to empty shapes space
+      if (!activeAnnotation) {
+        this.setState({
+          moveInsideSelectedShape: false,
+          moveInsideOtherShape: false,
+          canHSplitOnRight: false,
+          canHSplitOnLeft: false,
+          canVSplitOnTop: false,
+          canVSplitOnBottom: false,
+        });
+        return;
+      }
+      // change cursor behavior
       this.setState({
-        moveInsideSelectedShape: false,
-        moveInsideOtherShape: false,
-        canHSplitOnRight: false,
-        canHSplitOnLeft: false,
-        canVSplitOnTop: false,
-        canVSplitOnBottom: false,
+        moveInsideSelectedShape: this.activeAnnotation && activeAnnotation._id === this.activeAnnotation._id,
+        moveInsideOtherShape: !this.activeAnnotation || activeAnnotation._id !== this.activeAnnotation._id,
       });
-      return;
+      // transformed active coordinations
+      const ac = this.getCoordinates(activeAnnotation.annotationInfo, slideWidth, slideHeight);
+      // check cursor position for resizing
+      if (this.state.moveInsideSelectedShape) {
+        this.canActivateHSplit(transformedSvgPoint.x, transformedSvgPoint.y,
+          ac.width, ac.height, ac.x, ac.y);
+      }
+      // update position of shape
+      this.updateShapePosition(ac.x, ac.y, ac.width, ac.height,
+        transformedSvgPoint.x, transformedSvgPoint.y);
     }
-    // change cursor behavior
-    this.setState({
-      moveInsideSelectedShape: this.activeAnnotation && activeAnnotation._id === this.activeAnnotation._id,
-      moveInsideOtherShape: !this.activeAnnotation || activeAnnotation._id !== this.activeAnnotation._id,
-    });
-    // transformed active coordinations
-    const ac = this.getCoordinates(activeAnnotation.annotationInfo, slideWidth, slideHeight);
-    // check cursor position for resizing
-    if (this.state.moveInsideSelectedShape) {
-      this.canActivateHSplit(transformedSvgPoint.x, transformedSvgPoint.y,
-        ac.width, ac.height, ac.x, ac.y);
-    }
-    // update position
-    this.updateShapePosition(ac.x, ac.y, ac.width, ac.height,
-      transformedSvgPoint.x, transformedSvgPoint.y);
   }
 
   canActivateHSplit(x, y, width, height, sx, sy) {
@@ -236,8 +243,8 @@ export default class PanZoomDrawListener extends React.Component {
       newStartX = px;
       newStartY = ay;
       const deltaX = px - ax;
-      newWidth = this.activeAnnotation.annotationInfo.textBoxWidth - deltaX;
-      newHeight = this.activeAnnotation.annotationInfo.textBoxHeight;
+      newWidth = aw - deltaX;
+      newHeight = ah;
     } else if (this.state.isResizing && this.state.canHSplitOnRight) {
       newStartX = ax;
       newStartY = ay;
@@ -254,8 +261,8 @@ export default class PanZoomDrawListener extends React.Component {
       newStartX = ax;
       newStartY = py;
       const deltaY = py - ay;
-      newWidth = this.activeAnnotation.annotationInfo.textBoxWidth;
-      newHeight = this.activeAnnotation.annotationInfo.textBoxHeight - deltaY;
+      newWidth = aw;
+      newHeight = ah - deltaY;
     } else if (this.state.isResizing && this.state.canVSplitOnBottom) {
       newStartX = ax;
       newStartY = ay;
@@ -264,13 +271,13 @@ export default class PanZoomDrawListener extends React.Component {
         y: ay + ah,
       };
       const deltaY = py - midBottom.y;
-      newWidth = this.activeAnnotation.annotationInfo.textBoxWidth;
-      newHeight = this.activeAnnotation.annotationInfo.textBoxHeight - deltaY;
+      newWidth = aw;
+      newHeight = ah - deltaY;
     } else if (this.state.isDragging) {
       newStartX = ax + (px - this.initialX);
       newStartY = ay + (py - this.initialY);
-      newWidth = this.activeAnnotation.annotationInfo.textBoxWidth;
-      newHeight = this.activeAnnotation.annotationInfo.textBoxHeight;
+      newWidth = aw;
+      newHeight = ah;
     }
 
     console.log(`isResizing: ${this.state.isResizing}, newX: ${newStartX}, oldX: ${ax}, 
@@ -312,8 +319,9 @@ export default class PanZoomDrawListener extends React.Component {
       this.activeAnnotation.annotationInfo.text = this.props.drawSettings.textShapeValue;
       updateAnnotation(this.activeAnnotation);
       this.sendLastUpdate();
-      this.resetState();
+      this.activeAnnotation = undefined;
     }
+    this.resetState();
   }
 
   getActiveShapeId() {
@@ -388,7 +396,6 @@ export default class PanZoomDrawListener extends React.Component {
       isDragging: false,
       isResizing: false,
     };
-    this.activeAnnotation = undefined;
     this.initialX = undefined;
     this.initialY = undefined;
   }
