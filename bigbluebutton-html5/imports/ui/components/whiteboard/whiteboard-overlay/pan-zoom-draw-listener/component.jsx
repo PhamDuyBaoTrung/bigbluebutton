@@ -246,7 +246,7 @@ export default class PanZoomDrawListener extends React.Component {
         y: ay + (ah / 2),
       };
       const deltaX = px - midRight.x;
-      console.log(`px: ${px}, midRightX: ${midRight.x}, textWidth: ${this.activeAnnotation.annotationInfo.textBoxWidth},
+      console.log(`px: ${px}, midRightX: ${midRight.x}, aWidth: ${aw}, textWidth: ${this.activeAnnotation.annotationInfo.textBoxWidth},
       deltaX=${deltaX}`);
       newWidth = this.activeAnnotation.annotationInfo.textBoxWidth - deltaX;
       newHeight = this.activeAnnotation.annotationInfo.textBoxHeight;
