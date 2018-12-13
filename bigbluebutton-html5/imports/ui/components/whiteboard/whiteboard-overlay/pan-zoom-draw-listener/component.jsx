@@ -162,6 +162,14 @@ export default class PanZoomDrawListener extends React.Component {
     const activeAnnotation = this.findActiveAnnotation(annotations, transformedSvgPoint.x, transformedSvgPoint.y);
     // stop processing if moving to empty shapes space
     if (!activeAnnotation) {
+      this.setState({
+        moveInsideSelectedShape: false,
+        moveInsideOtherShape: false,
+        canHSplitOnRight: false,
+        canHSplitOnLeft: false,
+        canVSplitOnTop: false,
+        canVSplitOnBottom: false,
+      });
       return;
     }
     // change cursor behavior
@@ -202,8 +210,6 @@ export default class PanZoomDrawListener extends React.Component {
       x: sx + (width / 2),
       y: sy + height,
     };
-    console.log(`X: ${x}, Y: ${y}, midRightX: ${midRight.x}, midRightY: ${midRight.y}, cornerPointR: ${this.cornerPointR}, 
-      Rect(${midRight.x - this.cornerPointR}, ${midRight.y - this.cornerPointR}, ${midRight.x + this.cornerPointR}, ${midRight.y + this.cornerPointR})`);
     const canHSplitOnRight = this.checkPointInsideBox(x, y, midRight.x - this.cornerPointR, midRight.y - this.cornerPointR, midRight.x + this.cornerPointR, midRight.y + this.cornerPointR);
     const canHSplitOnLeft = this.checkPointInsideBox(x, y, midLeft.x - this.cornerPointR,
       midLeft.y - this.cornerPointR, midLeft.x + this.cornerPointR, midLeft.y + this.cornerPointR);
@@ -264,6 +270,9 @@ export default class PanZoomDrawListener extends React.Component {
       newWidth = this.activeAnnotation.annotationInfo.textBoxWidth;
       newHeight = this.activeAnnotation.annotationInfo.textBoxHeight;
     }
+
+    console.log(`isResizing: ${this.state.isResizing}, newX: ${newStartX}, oldX: ${ax}, 
+    newY: ${newStartY}, oldY: ${ay}, px: ${px}, py: ${py}`);
 
     // update active annotation
     const newTransX = (newStartX / this.props.slideWidth) * 100;

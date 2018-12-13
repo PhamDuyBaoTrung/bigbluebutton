@@ -90,8 +90,6 @@ export default class TextDrawListener extends Component {
       const { getCurrentShapeId } = this.props.actions;
       this.currentStatus = DRAW_UPDATE;
 
-      console.log('Change Text...');
-
       this.handleDrawText(
         { x: this.currentX, y: this.currentY },
         this.currentWidth,

@@ -37,7 +37,5 @@ export default function handleWhiteboardSend({ header, body }, meetingId) {
   annotationsQueue[meetingId].push({ meetingId, whiteboardId, userId, annotation });
   if (!annotationsRecieverIsRunning) proccess();
 
-  console.log(`Start ADDING Annotation ${annotation.id} - text ${annotation.annotationInfo.text} to Redis`);
-
   return addAnnotation(meetingId, whiteboardId, userId, annotation);
 }

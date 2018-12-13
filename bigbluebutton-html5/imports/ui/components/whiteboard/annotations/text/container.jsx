@@ -17,7 +17,6 @@ export default withTracker((params) => {
     isActive = true;
   }
   const currentShape = params.annotation.id;
-  console.log(`active Shape: ${activeTextShapeId} - current shape ${currentShape} - isActive ${isActive}`);
   return {
     isActive,
     setTextShapeValue: TextShapeService.setTextShapeValue,
