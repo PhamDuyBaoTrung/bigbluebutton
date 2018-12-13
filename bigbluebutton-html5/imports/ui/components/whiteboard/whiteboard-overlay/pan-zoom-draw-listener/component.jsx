@@ -283,6 +283,8 @@ export default class PanZoomDrawListener extends React.Component {
     this.activeAnnotation.annotationInfo.y = newTransY;
     this.activeAnnotation.annotationInfo.textBoxWidth = newTransWidth;
     this.activeAnnotation.annotationInfo.textBoxHeight = newTransHeight;
+    console.log(`newTransX: ${newTransX}, newTransY: ${newTransY}, newTransWidth: ${newTransWidth}, 
+    newTransHeight: ${newTransHeight}`);
     const { updateAnnotation } = this.props.actions;
     updateAnnotation(this.activeAnnotation);
   }
