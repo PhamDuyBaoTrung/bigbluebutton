@@ -383,7 +383,7 @@ export default class PanZoomDrawListener extends React.Component {
   }
 
   resetState() {
-    this.state = {
+    this.setState({
       // text shape state properties
       pointerX: undefined,
       pointerY: undefined,
@@ -399,7 +399,7 @@ export default class PanZoomDrawListener extends React.Component {
       // action
       isDragging: false,
       isResizing: false,
-    };
+    });
     this.initialX = undefined;
     this.initialY = undefined;
   }
