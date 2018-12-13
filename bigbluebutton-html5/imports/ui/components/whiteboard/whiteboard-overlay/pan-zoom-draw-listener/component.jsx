@@ -257,7 +257,12 @@ export default class PanZoomDrawListener extends React.Component {
         y: ay + (ah / 2),
       };
       const deltaX = px - midRight.x;
-      console.log(`ax: ${ax}, px: ${px}, midRightX: ${midRight.x}, aWidth: ${aw}, textWidth: ${this.activeAnnotation.annotationInfo.textBoxWidth},
+      console.log(`ax: ${ax}, aWidth: ${aw}, 
+      _activeWidth: ${this.activeAnnotation.annotationInfo.textBoxWidth},
+      _activeHeight: ${this.activeAnnotation.annotationInfo.textBoxHeight},
+      _activeX: ${this.activeAnnotation.annotationInfo.x},
+      _activeY: ${this.activeAnnotation.annotationInfo.y},
+      px: ${px}, midRightX: ${midRight.x},
       deltaX=${deltaX}`);
       newWidth = aw - deltaX;
       newHeight = ah;
@@ -278,10 +283,8 @@ export default class PanZoomDrawListener extends React.Component {
       newWidth = aw;
       newHeight = ah - deltaY;
     } else if (this.state.isDragging) {
-      const _initalX = (this.initialX / 100) * this.props.slideWidth;
-      const _initalY = (this.initialY / 100) * this.props.slideHeight;
-      newStartX = ax + (px - _initalX);
-      newStartY = ay + (py - _initalY);
+      newStartX = ax + (px - this.initialX);
+      newStartY = ay + (py - this.initialY);
       newWidth = aw;
       newHeight = ah;
     }
