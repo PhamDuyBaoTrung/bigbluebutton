@@ -305,6 +305,11 @@ export default class PanZoomDrawListener extends React.Component {
     newTransHeight: ${newTransHeight}`);
     const { updateAnnotation } = this.props.actions;
     updateAnnotation(this.activeAnnotation);
+
+    if (this.state.isDragging) {
+      this.initialX = newStartX;
+      this.initialY = newStartY;
+    }
   }
 
   // main mouse up handler
