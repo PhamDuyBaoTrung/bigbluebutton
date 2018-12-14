@@ -283,8 +283,8 @@ export default class PanZoomDrawListener extends React.Component {
       newWidth = aw;
       newHeight = ah + deltaY;
     } else if (this.state.isDragging) {
-      newStartX = ax + (px - this.initialX);
-      newStartY = ay + (py - this.initialY);
+      newStartX = px + ax - this.initialX;
+      newStartY = py + ay - this.initialY;
       newWidth = aw;
       newHeight = ah;
     }
