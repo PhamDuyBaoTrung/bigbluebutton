@@ -307,8 +307,8 @@ export default class PanZoomDrawListener extends React.Component {
     updateAnnotation(this.activeAnnotation);
 
     if (this.state.isDragging) {
-      this.initialX = newStartX;
-      this.initialY = newStartY;
+      this.initialX = px;
+      this.initialY = py;
     }
   }
 
