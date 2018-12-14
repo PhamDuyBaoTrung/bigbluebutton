@@ -264,7 +264,7 @@ export default class PanZoomDrawListener extends React.Component {
       _activeY: ${this.activeAnnotation.annotationInfo.y},
       px: ${px}, midRightX: ${midRight.x},
       deltaX=${deltaX}`);
-      newWidth = aw - deltaX;
+      newWidth = aw + deltaX;
       newHeight = ah;
     } else if (this.state.isResizing && this.state.canVSplitOnTop) {
       newStartX = ax;
@@ -281,7 +281,7 @@ export default class PanZoomDrawListener extends React.Component {
       };
       const deltaY = py - midBottom.y;
       newWidth = aw;
-      newHeight = ah - deltaY;
+      newHeight = ah + deltaY;
     } else if (this.state.isDragging) {
       newStartX = ax + (px - this.initialX);
       newStartY = ay + (py - this.initialY);
