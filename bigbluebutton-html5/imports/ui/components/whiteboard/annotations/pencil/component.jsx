@@ -22,6 +22,10 @@ export default class PencilDrawComponent extends Component {
 
   static getFinalCoordinates(annotation, slideWidth, slideHeight) {
     const { points, commands } = annotation;
+    console.log('FINAL pencil points: ');
+    points.forEach(p => {
+      console.log(`${p},`);
+    });
 
     let path = '';
     let i;

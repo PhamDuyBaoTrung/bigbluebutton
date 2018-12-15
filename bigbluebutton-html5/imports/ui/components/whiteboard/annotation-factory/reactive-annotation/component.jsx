@@ -7,8 +7,6 @@ const ReactiveAnnotation = (props) => {
   const { annotation, slideWidth, slideHeight } = props;
   const cornerPoints = AnnotationHelper.getCornerPoints(annotation.annotationInfo.x, annotation.annotationInfo.y,
     annotation.annotationInfo.textBoxWidth, annotation.annotationInfo.textBoxHeight, slideWidth, slideHeight);
-  const cornerWidth = (20 / 100) * slideWidth;
-  const cornerHeight = (20 / 100) * slideHeight;
 
   return (
     <g>

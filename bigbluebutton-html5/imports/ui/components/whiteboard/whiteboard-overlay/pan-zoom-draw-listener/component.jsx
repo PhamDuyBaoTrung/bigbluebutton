@@ -356,13 +356,12 @@ export default class PanZoomDrawListener extends React.Component {
       this.activeAnnotation.annotationInfo.textBoxHeight,
       DRAW_END,
       this.getActiveShapeId(),
-      this.activeAnnotation._id,
       this.props.drawSettings.textShapeValue,
     );
     setTextShapeActiveId('');
   }
 
-  handleDrawText(startPoint, width, height, status, id, _id, text) {
+  handleDrawText(startPoint, width, height, status, id, text) {
     const { normalizeFont, sendAnnotation } = this.props.actions;
 
     const annotation = {
