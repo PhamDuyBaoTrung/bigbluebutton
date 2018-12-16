@@ -1,4 +1,5 @@
 import Annotations from '/imports/ui/components/whiteboard/service';
+import Storage from '/imports/ui/services/storage/session';
 
 const DRAW_SETTINGS = 'drawSettings';
 
