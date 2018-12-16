@@ -1,12 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import AnnotationHelper from '../../annotations/helpers';
+import BoundaryDrawComponent from "../../annotations/boundary/component";
 
 const ReactiveAnnotation = (props) => {
   const Component = props.drawObject;
-  const { annotation, slideWidth, slideHeight } = props;
+  const { annotation, activeShapeId, slideWidth, slideHeight } = props;
   const cornerPoints = AnnotationHelper.getCornerPoints(annotation.annotationInfo.x, annotation.annotationInfo.y,
     annotation.annotationInfo.textBoxWidth, annotation.annotationInfo.textBoxHeight, slideWidth, slideHeight);
+
 
   return (
     <g>
@@ -17,19 +19,8 @@ const ReactiveAnnotation = (props) => {
         slideHeight={props.slideHeight}
       />
       {
-        cornerPoints.map(p => (
-          <rect
-            fill="white"
-            fillOpacity="0.8"
-            x={p.x - 10}
-            y={p.y - 10}
-            width={20}
-            height={20}
-            strokeWidth={20}
-            stroke={'red'}
-            strokeOpacity="0.8"
-          />
-        ))
+        activeShapeId === annotation.id ?
+          <BoundaryDrawComponent annotation={annotation} slideWidth={slideWidth} slideHeight={slideHeight}/> : null
       }
     </g>
   );
@@ -41,6 +32,7 @@ ReactiveAnnotation.propTypes = {
     PropTypes.number,
     PropTypes.object,
   ])).isRequired,
+  activeShapeId: PropTypes.string,
   drawObject: PropTypes.func.isRequired,
   slideWidth: PropTypes.number.isRequired,
   slideHeight: PropTypes.number.isRequired,

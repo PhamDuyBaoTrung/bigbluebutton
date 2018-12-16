@@ -1,4 +1,11 @@
 import React from 'react';
+import TextDrawComponent from "../../annotations/text/component";
+import LineDrawComponent from "../../annotations/line/component";
+import EllipseDrawComponent from "../../annotations/ellipse/component";
+import TriangleDrawComponent from "../../annotations/triangle/component";
+import RectangleDrawComponent from "../../annotations/rectangle/component";
+import PencilDrawComponent from "../../annotations/pencil/component";
+import BoundaryDrawComponent from "../../annotations/boundary/component";
 // import PropTypes from 'prop-types';
 
 const ANNOTATION_CONFIG = Meteor.settings.public.whiteboard.annotations;
@@ -70,11 +77,14 @@ export default class PanZoomDrawListener extends React.Component {
 
     if (!this.activeAnnotation) {
       this.activeAnnotation = activeAnnotation;
-      const { updateAnnotation, setTextShapeActiveId } = this.props.actions;
+      const { updateAnnotation, setTextShapeActiveId, setActivatedShapeId } = this.props.actions;
       activeAnnotation.status = DRAW_UPDATE;
       activeAnnotation.annotationInfo.status = DRAW_UPDATE;
-      updateAnnotation(activeAnnotation, activeAnnotation.annotationInfo.text);
-      setTextShapeActiveId(activeAnnotation.id);
+      updateAnnotation(activeAnnotation);
+      if (activeAnnotation.annotationInfo.type === 'text') {
+        setTextShapeActiveId(activeAnnotation.id);
+      }
+      setActivatedShapeId(activeAnnotation.id);
     } else {
       const { slideWidth, slideHeight } = this.props;
       const ac = this.getCoordinates(this.activeAnnotation.annotationInfo, slideWidth, slideHeight);
@@ -93,7 +103,7 @@ export default class PanZoomDrawListener extends React.Component {
       return null;
     }
     const activeAnnotation = annotations.find(annotation => (
-      this.isActiveAnnotation(annotation, x, y)));
+      this.checkCursorInsideShape(annotation, x, y)));
     return activeAnnotation;
   }
 
@@ -109,6 +119,42 @@ export default class PanZoomDrawListener extends React.Component {
       && y >= startPointY && y <= endPointY;
   }
 
+  /**
+   * (x1, y1) is top left coordinate of shape
+   * (x2, y2) is bottom right coordinate of shape
+   * (px, py) is cursor coordinate
+   * @param type
+   * @param x1
+   * @param y1
+   * @param x2
+   * @param y2
+   * @param px
+   * @param py
+   */
+  checkCursorInsideShape(annotation, px, py) {
+    const { type } = annotation;
+    switch (type) {
+      case 'text': {
+        return TextDrawComponent.checkPointInsidePencil(annotation, px, py);
+      }
+      case 'line': {
+        return LineDrawComponent.checkPointInsideLine(annotation, px, py);
+      }
+      case 'ellipse': {
+        return EllipseDrawComponent.checkPointInsideEllipse(annotation, px, py);
+      }
+      case 'triangle': {
+        return TriangleDrawComponent.checkPointInsideTriangle(annotation, px, py);
+      }
+      case 'rectangle': {
+        return RectangleDrawComponent.checkPointInsideRectangle(annotation, px, py);
+      }
+      case 'pencil': {
+        return PencilDrawComponent.checkPointInsidePencil(annotation, px, py);
+      }
+    }
+  }
+
   checkPointInsideBox(px, py, startPointX, startPointY, endPointX, endPointY) {
     return px >= startPointX && px <= endPointX
       && py >= startPointY && py <= endPointY;
@@ -116,19 +162,18 @@ export default class PanZoomDrawListener extends React.Component {
 
   getCoordinates(annotation, slideWidth, slideHeight) {
     const {
-      x, y,
-      textBoxWidth,
-      textBoxHeight,
       fontColor,
       fontSize,
       calcedFontSize,
       text,
     } = annotation;
 
-    const _x = (x / 100) * slideWidth;
-    const _y = (y / 100) * slideHeight;
-    const _width = (textBoxWidth / 100) * slideWidth;
-    const _height = (textBoxHeight / 100) * slideHeight;
+    const boundary = BoundaryDrawComponent.getShapeBoundaryData(annotation);
+
+    const _x = (boundary.startX / 100) * slideWidth;
+    const _y = (boundary.startY / 100) * slideHeight;
+    const _width = (boundary.width / 100) * slideWidth;
+    const _height = (boundary.height / 100) * slideHeight;
     const _fontColor = fontColor;
     const _fontSize = fontSize;
     const _calcedFontSize = (calcedFontSize / 100) * slideHeight;
@@ -163,7 +208,7 @@ export default class PanZoomDrawListener extends React.Component {
       // transformed active shape coordination
       const ac = this.getCoordinates(this.activeAnnotation.annotationInfo, slideWidth, slideHeight);
       // when user is dragging or resizing, only need to update shape position
-      this.updateShapePosition(ac.x, ac.y, ac.width, ac.height,
+      this.updateNewPositionOfAnnotation(ac.x, ac.y, ac.width, ac.height,
         transformedSvgPoint.x, transformedSvgPoint.y);
     } else {
       // find the selectable shape
@@ -195,7 +240,7 @@ export default class PanZoomDrawListener extends React.Component {
           ac.width, ac.height, ac.x, ac.y);
       }
       // update position of shape
-      this.updateShapePosition(ac.x, ac.y, ac.width, ac.height,
+      this.updateNewPositionOfAnnotation(ac.x, ac.y, ac.width, ac.height,
         transformedSvgPoint.x, transformedSvgPoint.y);
     }
   }
@@ -233,6 +278,74 @@ export default class PanZoomDrawListener extends React.Component {
       canVSplitOnTop,
       canVSplitOnBottom,
     });
+  }
+
+  updateShapePositionByTypeAndAction(action, ax, ay, aw, ah, px, py) {
+    const { annotationInfo } = this.activeAnnotation;
+    const { type } = annotationInfo;
+    let newAnnotation;
+    switch (type) {
+      case 'text': {
+        newAnnotation = TextDrawComponent.transformPointsByAction(annotationInfo, action, px, py, ax, ay, aw, ah);
+        break;
+      }
+      case 'line': {
+        newAnnotation = LineDrawComponent.transformPointsByAction(annotationInfo, action, px, py, ax, ay, aw, ah);
+        break;
+      }
+      case 'ellipse': {
+        newAnnotation = EllipseDrawComponent.transformPointsByAction(annotationInfo, action, px, py, ax, ay, aw, ah);
+        break;
+      }
+      case 'triangle': {
+        newAnnotation = TriangleDrawComponent.transformPointsByAction(annotationInfo, action, px, py, ax, ay, aw, ah);
+        break;
+      }
+      case 'rectangle': {
+        newAnnotation = RectangleDrawComponent.transformPointsByAction(annotationInfo, action, px, py, ax, ay, aw, ah);
+        break;
+      }
+      case 'pencil': {
+        newAnnotation = PencilDrawComponent.transformPointsByAction(annotationInfo, action, px, py, ax, ay, aw, ah);
+        break;
+      }
+    }
+    return newAnnotation;
+  }
+
+  updateNewPositionOfAnnotation(ax, ay, aw, ah, px, py) {
+    if (!this.activeAnnotation || (!this.state.isResizing && !this.state.isDragging)) {
+      return;
+    }
+    const ANNOTATION_CONFIG = Meteor.settings.public.whiteboard.annotations;
+    const HORIZONTAL_LEFT = ANNOTATION_CONFIG.resize.horizontal_left;
+    const HORIZONTAL_RIGHT = ANNOTATION_CONFIG.resize.horizontal_right;
+    const VERTICAL_TOP = ANNOTATION_CONFIG.resize.vertical_top;
+    const VERTICAL_BOTTOM = ANNOTATION_CONFIG.resize.vertical_bottom;
+    const DRAG = ANNOTATION_CONFIG.drag;
+
+    let newAnnotation;
+    if (this.state.isResizing && this.state.canHSplitOnLeft) {
+      newAnnotation = this.updateShapePositionByTypeAndAction(HORIZONTAL_LEFT, ax, ay, aw, ah, px, py);
+    } else if (this.state.isResizing && this.state.canHSplitOnRight) {
+      newAnnotation = this.updateShapePositionByTypeAndAction(HORIZONTAL_RIGHT, ax, ay, aw, ah, px, py);
+    } else if (this.state.isResizing && this.state.canVSplitOnTop) {
+      newAnnotation = this.updateShapePositionByTypeAndAction(VERTICAL_TOP, ax, ay, aw, ah, px, py);
+    } else if (this.state.isResizing && this.state.canVSplitOnBottom) {
+      newAnnotation = this.updateShapePositionByTypeAndAction(VERTICAL_BOTTOM, ax, ay, aw, ah, px, py);
+    } else if (this.state.isDragging) {
+      newAnnotation = this.updateShapePositionByTypeAndAction(DRAG, ax, ay, aw, ah, px, py);
+    }
+
+    // update active annotation
+    this.activeAnnotation.annotationInfo = newAnnotation;
+    const { updateAnnotation } = this.props.actions;
+    updateAnnotation(this.activeAnnotation);
+
+    if (this.state.isDragging) {
+      this.initialX = px;
+      this.initialY = py;
+    }
   }
 
   updateShapePosition(ax, ay, aw, ah, px, py) {

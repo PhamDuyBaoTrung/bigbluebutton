@@ -128,6 +128,7 @@ export default class WhiteboardOverlay extends Component {
       updateAnnotation,
       resetTextShapeSession,
       setTextShapeActiveId,
+      setActivatedShapeId,
       contextMenuHandler,
       addAnnotationToDiscardedList,
       undoAnnotation,
@@ -145,6 +146,7 @@ export default class WhiteboardOverlay extends Component {
       updateAnnotation,
       resetTextShapeSession,
       setTextShapeActiveId,
+      setActivatedShapeId,
       contextMenuHandler,
       addAnnotationToDiscardedList,
       undoAnnotation,
@@ -236,4 +238,6 @@ WhiteboardOverlay.propTypes = {
   resetTextShapeSession: PropTypes.func.isRequired,
   // Defines a function that sets a session value for the current active text shape
   setTextShapeActiveId: PropTypes.func.isRequired,
+  // Defines a function that sets a session value for the selected shape
+  setActivatedShapeId: PropTypes.func.isRequired,
 };

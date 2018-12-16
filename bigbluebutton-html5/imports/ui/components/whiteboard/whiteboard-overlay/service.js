@@ -46,6 +46,14 @@ const setTextShapeActiveId = (id) => {
   }
 };
 
+const setActivatedShapeId = (id) => {
+  const drawSettings = Storage.getItem(DRAW_SETTINGS);
+  if (drawSettings) {
+    drawSettings.activatedShapeId = id;
+    Storage.setItem(DRAW_SETTINGS, drawSettings);
+  }
+};
+
 const getCurrentUserId = () => Auth.userID;
 
 const contextMenuHandler = event => event.preventDefault();
@@ -80,4 +88,5 @@ export default {
   getCurrentUserId,
   contextMenuHandler,
   getCurrentAnnotationsInfo,
+  setActivatedShapeId,
 };

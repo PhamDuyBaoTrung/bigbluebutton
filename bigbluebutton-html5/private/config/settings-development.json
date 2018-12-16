@@ -220,7 +220,14 @@
           "start": "DRAW_START",
           "update": "DRAW_UPDATE",
           "end": "DRAW_END"
-        }
+        },
+        "resize": {
+          "horizontal_left": "HORIZONTAL_LEFT",
+          "horizontal_right": "HORIZONTAL_RIGHT",
+          "vertical_top": "VERTICAL_TOP",
+          "vertical_bottom": "VERTICAL_BOTTOM"
+        },
+        "drag": "DRAG"
       },
       "toolbar": {
         "colors": [

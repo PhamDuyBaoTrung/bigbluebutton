@@ -24,6 +24,7 @@ export default withTracker((params) => {
     updateAnnotation: WhiteboardOverlayService.updateAnnotation,
     addAnnotationToDiscardedList: WhiteboardOverlayService.addAnnotationToDiscardedList,
     setTextShapeActiveId: WhiteboardOverlayService.setTextShapeActiveId,
+    setActivatedShapeId: WhiteboardOverlayService.setActivatedShapeId,
     resetTextShapeSession: WhiteboardOverlayService.resetTextShapeSession,
     drawSettings: WhiteboardOverlayService.getWhiteboardToolbarValues(),
     userId: WhiteboardOverlayService.getCurrentUserId(),
