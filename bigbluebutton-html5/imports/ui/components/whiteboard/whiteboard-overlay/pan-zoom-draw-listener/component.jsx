@@ -133,24 +133,25 @@ export default class PanZoomDrawListener extends React.Component {
    */
   checkCursorInsideShape(annotation, px, py) {
     const { type } = annotation;
+    const { slideWidth, slideHeight } = this.props;
     switch (type) {
       case 'text': {
-        return TextDrawComponent.checkPointInsidePencil(annotation, px, py);
+        return TextDrawComponent.checkPointInsidePencil(annotation, px, py, slideWidth, slideHeight);
       }
       case 'line': {
-        return LineDrawComponent.checkPointInsideLine(annotation, px, py);
+        return LineDrawComponent.checkPointInsideLine(annotation, px, py, slideWidth, slideHeight);
       }
       case 'ellipse': {
-        return EllipseDrawComponent.checkPointInsideEllipse(annotation, px, py);
+        return EllipseDrawComponent.checkPointInsideEllipse(annotation, px, py, slideWidth, slideHeight);
       }
       case 'triangle': {
-        return TriangleDrawComponent.checkPointInsideTriangle(annotation, px, py);
+        return TriangleDrawComponent.checkPointInsideTriangle(annotation, px, py, slideWidth, slideHeight);
       }
       case 'rectangle': {
-        return RectangleDrawComponent.checkPointInsideRectangle(annotation, px, py);
+        return RectangleDrawComponent.checkPointInsideRectangle(annotation, px, py, slideWidth, slideHeight);
       }
       case 'pencil': {
-        return PencilDrawComponent.checkPointInsidePencil(annotation, px, py);
+        return PencilDrawComponent.checkPointInsidePencil(annotation, px, py, slideWidth, slideHeight);
       }
     }
   }
