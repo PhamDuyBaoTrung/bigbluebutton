@@ -79,8 +79,7 @@ export default class TextDrawComponent extends Component {
       case HORIZONTAL_LEFT:
         newStartX = px;
         newStartY = ay;
-        const deltaX = px - ax;
-        newWidth = width - deltaX;
+        newWidth = width - (px - ax);
         newHeight = height;
         break;
       case HORIZONTAL_RIGHT:
@@ -90,16 +89,14 @@ export default class TextDrawComponent extends Component {
           x: ax + width,
           y: ay + (height / 2),
         };
-        const deltaX = px - midRight.x;
-        newWidth = width + deltaX;
+        newWidth = width + (px - midRight.x);
         newHeight = height;
         break;
       case VERTICAL_TOP:
         newStartX = ax;
         newStartY = py;
-        const deltaY = py - ay;
         newWidth = width;
-        newHeight = height - deltaY;
+        newHeight = height - (py - ay);
         break;
       case VERTICAL_BOTTOM:
         newStartX = ax;
@@ -108,9 +105,8 @@ export default class TextDrawComponent extends Component {
           x: ax + (width / 2),
           y: ay + height,
         };
-        const deltaY = py - midBottom.y;
         newWidth = width;
-        newHeight = height + deltaY;
+        newHeight = height + (py - midBottom.y);
         break;
       case DRAG:
         newStartX = px + ax - initialX;
