@@ -103,7 +103,7 @@ export default class PanZoomDrawListener extends React.Component {
       return null;
     }
     const activeAnnotation = annotations.find(annotation => (
-      this.checkCursorInsideShape(annotation, x, y)));
+      this.checkCursorInsideShape(annotation.annotationInfo, x, y)));
     return activeAnnotation;
   }
 
