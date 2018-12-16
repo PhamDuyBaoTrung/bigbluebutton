@@ -5,7 +5,7 @@ import AnnotationHelpers from '../helpers';
 export default class RectangleDrawComponent extends Component {
 
   static checkPointInsideRectangle(annotation, x, y, slideWidth, slideHeight) {
-    const {px, py, width, height} = this.getCoordinates(annotation, slideWidth, slideHeight);
+    const {px, py, width, height} = RectangleDrawComponent.getCoordinates(annotation, slideWidth, slideHeight);
     return x >= px && x <= (px + width) && y >= py && y <= (py + height);
   }
 
@@ -65,7 +65,7 @@ export default class RectangleDrawComponent extends Component {
     return this.props.version !== nextProps.version;
   }
 
-  getCoordinates(annotation, slideWidth, slideHeight) {
+  static getCoordinates(annotation, slideWidth, slideHeight) {
     const { points } = annotation;
     // x1 and y1 are the coordinates of the top left corner of the annotation
     // x2 and y2 are the coordinates of the bottom right corner of the annotation
@@ -101,7 +101,7 @@ export default class RectangleDrawComponent extends Component {
 
   render() {
     const { annotation, slideWidth, slideHeight } = this.props;
-    const results = this.getCoordinates(annotation, slideWidth, slideHeight);
+    const results = RectangleDrawComponent.getCoordinates(annotation, slideWidth, slideHeight);
 
     return (
       <rect

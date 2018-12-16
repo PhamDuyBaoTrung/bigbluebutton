@@ -48,7 +48,7 @@ export default class TextDrawComponent extends Component {
   }
 
   static checkPointInsidePencil(annotation, x, y, slideWidth, slideHeight) {
-    const textCoordinates = this.getCoordinates(annotation, slideWidth, slideHeight);
+    const textCoordinates = TextDrawComponent.getCoordinates(annotation, slideWidth, slideHeight);
     return x >= textCoordinates.x && x <= (textCoordinates.x + textCoordinates.width)
       && y >= textCoordinates.y && y <= (textCoordinates.y + textCoordinates.height);
   }
@@ -188,7 +188,7 @@ export default class TextDrawComponent extends Component {
     this.props.setTextShapeValue(event.target.value);
   }
 
-  getCoordinates(annotation, slideWidth, slideHeight) {
+  static getCoordinates(annotation, slideWidth, slideHeight) {
     const {
       x,
       y,
@@ -293,7 +293,7 @@ export default class TextDrawComponent extends Component {
 
   render() {
     const { annotation, slideWidth, slideHeight } = this.props;
-    const results = this.getCoordinates(annotation, slideWidth, slideHeight);
+    const results = TextDrawComponent.getCoordinates(annotation, slideWidth, slideHeight);
 
     if (this.props.isActive && this.props.annotation.status !== DRAW_END) {
       return this.renderPresenterTextShape(results);

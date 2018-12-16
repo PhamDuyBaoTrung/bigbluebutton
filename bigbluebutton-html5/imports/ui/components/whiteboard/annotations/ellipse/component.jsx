@@ -63,7 +63,7 @@ export default class EllipseDrawComponent extends Component {
   }
 
   static checkPointInsideEllipse(annotation, x, y, slideWidth, slideHeight) {
-    const { cx, cy, rx, ry, } = this.getCoordinates(annotation, slideWidth, slideHeight);
+    const { cx, cy, rx, ry, } = EllipseDrawComponent.getCoordinates(annotation, slideWidth, slideHeight);
     const deltaX = Math.abs(x - cx);
     const deltaY = Math.abs(y = cy);
     const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
@@ -75,7 +75,7 @@ export default class EllipseDrawComponent extends Component {
     return this.props.version !== nextProps.version;
   }
 
-  getCoordinates(annotation, slideWidth, slideHeight) {
+  static getCoordinates(annotation, slideWidth, slideHeight) {
     const { points } = annotation;
 
     // x1 and y1 - coordinates of the ellipse's top left corner
@@ -106,7 +106,7 @@ export default class EllipseDrawComponent extends Component {
   render() {
 
     const { annotation, slideWidth, slideHeight } = this.props;
-    const results = this.getCoordinates(annotation, slideWidth, slideHeight);
+    const results = EllipseDrawComponent.getCoordinates(annotation, slideWidth, slideHeight);
     const { cx, cy, rx, ry } = results;
 
     return (

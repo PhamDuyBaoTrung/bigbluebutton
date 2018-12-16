@@ -21,11 +21,11 @@ export default class PencilDrawComponent extends Component {
   }
 
   static checkPointInsidePencil(annotation, x, y, slideWidth, slideHeight) {
-    this.getCoordinates(annotation, slideWidth, slideHeight);
+    const { points } = annotation;
     let i = 0;
-    while (i < this.points.length) {
-      const px = this.points[i];
-      const py = this.points[i + 1];
+    while (i < points.length) {
+      const px = (points[i] / 100) * slideWidth;
+      const py = (points[i + 1] / 100) * slideHeight;
       const isContained = x >= (px - 10) && x <= (px + 10) && y >= (py - 10) && y <= (py + 10);
       if (isContained) {
         return true;

@@ -8,7 +8,7 @@ export default class LineDrawComponent extends Component {
     return this.props.version !== nextProps.version;
   }
 
-  getCoordinates(annotation, slideWidth, slideHeight) {
+  static getCoordinates(annotation, slideWidth, slideHeight) {
     const { points } = annotation;
 
     const x1 = (points[0] / 100) * slideWidth;
@@ -25,7 +25,7 @@ export default class LineDrawComponent extends Component {
   }
 
   static checkPointInsideLine(annotation, x, y, slideWidth, slideHeight) {
-    const { x1, y1, x2, y2 } = this.getCoordinates(annotation, slideWidth, slideHeight);
+    const { x1, y1, x2, y2 } = LineDrawComponent.getCoordinates(annotation, slideWidth, slideHeight);
     if (x1 === x2) {
       return x >= (x1 - 10) && x <= (x2 + 10) && y >= y1 && y <= y2;
     } else {
@@ -96,7 +96,7 @@ export default class LineDrawComponent extends Component {
 
   render() {
     const { annotation, slideWidth, slideHeight } = this.props;
-    const results = this.getCoordinates(annotation, slideWidth, slideHeight);
+    const results = LineDrawComponent.getCoordinates(annotation, slideWidth, slideHeight);
     const { x1, y1, x2, y2 } = results;
 
     return (
