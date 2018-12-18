@@ -212,6 +212,7 @@ export default class PanZoomDrawListener extends React.Component {
       this.updateNewPositionOfAnnotation(ac.x, ac.y, ac.width, ac.height,
         transformedSvgPoint.x, transformedSvgPoint.y);
     } else {
+      /**
       // find the selectable shape
       const activeAnnotation = this.findActiveAnnotation(annotations, transformedSvgPoint.x, transformedSvgPoint.y);
       // stop processing if moving to empty shapes space
@@ -228,6 +229,8 @@ export default class PanZoomDrawListener extends React.Component {
         });
         return;
       }
+       */
+      return;
       // change cursor behavior
       this.setState({
         moveInsideSelectedShape: this.activeAnnotation && activeAnnotation._id === this.activeAnnotation._id,
