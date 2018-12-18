@@ -66,9 +66,9 @@ export default class EllipseDrawComponent extends Component {
     const { cx, cy, rx, ry, } = EllipseDrawComponent.getCoordinates(annotation, slideWidth, slideHeight);
     const deltaX = Math.abs(x - cx);
     const deltaY = Math.abs(y - cy);
-    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-    return ((distance >= rx) && (distance <= ry)) ||
-      ((distance <= rx) && (distance >= ry));
+    const distanceX = (deltaX * deltaX) / (rx * rx);
+    const distanceY = (deltaY * deltaY) / (ry * ry);
+    return (distanceX + distanceY) <= 1;
   }
 
   shouldComponentUpdate(nextProps) {
