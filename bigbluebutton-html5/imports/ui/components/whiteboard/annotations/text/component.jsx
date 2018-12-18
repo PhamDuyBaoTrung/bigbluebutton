@@ -63,7 +63,7 @@ export default class TextDrawComponent extends Component {
     }
   }
 
-  static transformPointsByAction(annotation, action, px, py, ax, ay, width, height, initialX, initialY) {
+  static transformPointsByAction(annotation, action, px, py, ax, ay, width, height, initialX, initialY, slideWidth, slideHeight) {
     const ANNOTATION_CONFIG = Meteor.settings.public.whiteboard.annotations;
     const HORIZONTAL_LEFT = ANNOTATION_CONFIG.resize.horizontal_left;
     const HORIZONTAL_RIGHT = ANNOTATION_CONFIG.resize.horizontal_right;
@@ -116,10 +116,10 @@ export default class TextDrawComponent extends Component {
     }
 
     // update active annotation
-    const newTransX = (newStartX / this.props.slideWidth) * 100;
-    const newTransY = (newStartY / this.props.slideHeight) * 100;
-    const newTransWidth = (newWidth / this.props.slideWidth) * 100;
-    const newTransHeight = (newHeight / this.props.slideHeight) * 100;
+    const newTransX = (newStartX / slideWidth) * 100;
+    const newTransY = (newStartY / slideHeight) * 100;
+    const newTransWidth = (newWidth / slideWidth) * 100;
+    const newTransHeight = (newHeight / slideHeight) * 100;
     annotation.x = newTransX;
     annotation.y = newTransY;
     annotation.textBoxWidth = newTransWidth;
