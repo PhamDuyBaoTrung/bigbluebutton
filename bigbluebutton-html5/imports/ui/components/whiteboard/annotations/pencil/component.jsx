@@ -324,45 +324,17 @@ export default class PencilDrawComponent extends Component {
   }
 
   render() {
-    const { annotation, slideWidth, slideHeight } = this.props;
-    const pencilPoints = [];
-    let i = 0;
-    while( i < this.points.length) {
-      const x = (this.points[i] / 100) * slideWidth;
-      const y = (this.points[i + 1] / 100) * slideHeight;
-      pencilPoints.push([x, y]);
-      i = i + 2;
-    }
+    const { annotation, slideWidth } = this.props;
     return (
-      <g>
-        {
-          pencilPoints.length > 0 ? (
-            pencilPoints.map(p => (
-              <rect
-                fill="white"
-                fillOpacity="0.8"
-                x={p[0] - 10}
-                y={p[1] - 10}
-                key={`${p[0]}_corner_${p[1]}`}
-                width={20}
-                height={20}
-                strokeWidth={20}
-                stroke={'red'}
-                strokeOpacity="0.8"
-              />
-            ))
-          ) : null
-        }
-        <path
-          fill="none"
-          stroke={AnnotationHelpers.getFormattedColor(annotation.color)}
-          d={this.getCurrentPath()}
-          strokeWidth={AnnotationHelpers.getStrokeWidth(annotation.thickness, slideWidth)}
-          strokeLinejoin="round"
-          strokeLinecap="round"
-          style={{ WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)' }}
-        />
-      </g>
+      <path
+        fill="none"
+        stroke={AnnotationHelpers.getFormattedColor(annotation.color)}
+        d={this.getCurrentPath()}
+        strokeWidth={AnnotationHelpers.getStrokeWidth(annotation.thickness, slideWidth)}
+        strokeLinejoin="round"
+        strokeLinecap="round"
+        style={{ WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)' }}
+      />
     );
   }
 }
