@@ -123,8 +123,8 @@ export default class TriangleDrawComponent extends Component {
   }
 
   render() {
-    const path = this.getCoordinates();
-    const { annotation, slideWidth } = this.props;
+    const { annotation, slideWidth, slideHeight } = this.props;
+    const path = this.getCoordinates(annotation, slideWidth, slideHeight);
     return (
       <path
         style={{ WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)' }}
