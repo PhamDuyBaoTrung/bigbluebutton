@@ -5,7 +5,7 @@ import AnnotationHelpers from '../helpers';
 export default class TriangleDrawComponent extends Component {
 
   static checkPointInsideTriangle(annotation, x, y, slideWidth, slideHeight) {
-    const { x1, y1, x2, y2, x3, y3 } = this.getTriangleCoordinates(annotation, slideWidth, slideHeight);
+    const { x1, y1, x2, y2, x3, y3 } = TriangleDrawComponent.getTriangleCoordinates(annotation, slideWidth, slideHeight);
     const A = this.calculateArea(x1, y1, x2, y2, x3, y3);
     const A1 = this.calculateArea(x, y, x2, y2, x3, y3);
     const A2 = this.calculateArea(x1, y1, x, y, x3, y3);
@@ -13,7 +13,7 @@ export default class TriangleDrawComponent extends Component {
     return A === (A1 + A2 + A3);
   }
 
-  getTriangleCoordinates(annotation, slideWidth, slideHeight) {
+  static getTriangleCoordinates(annotation, slideWidth, slideHeight) {
     const { points } = annotation;
     // points[0] and points[1] are x and y coordinates of the top left corner of the annotation
     // points[2] and points[3] are x and y coordinates of the bottom right corner of the annotation
