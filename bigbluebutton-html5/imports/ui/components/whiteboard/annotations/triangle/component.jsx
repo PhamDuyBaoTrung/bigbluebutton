@@ -6,10 +6,10 @@ export default class TriangleDrawComponent extends Component {
 
   static checkPointInsideTriangle(annotation, x, y, slideWidth, slideHeight) {
     const { x1, y1, x2, y2, x3, y3 } = TriangleDrawComponent.getTriangleCoordinates(annotation, slideWidth, slideHeight);
-    const A = this.calculateArea(x1, y1, x2, y2, x3, y3);
-    const A1 = this.calculateArea(x, y, x2, y2, x3, y3);
-    const A2 = this.calculateArea(x1, y1, x, y, x3, y3);
-    const A3 = this.calculateArea(x, y, x2, y2, x, y);
+    const A = TriangleDrawComponent.calculateArea(x1, y1, x2, y2, x3, y3);
+    const A1 = TriangleDrawComponent.calculateArea(x, y, x2, y2, x3, y3);
+    const A2 = TriangleDrawComponent.calculateArea(x1, y1, x, y, x3, y3);
+    const A3 = TriangleDrawComponent.calculateArea(x, y, x2, y2, x, y);
     return A === (A1 + A2 + A3);
   }
 
@@ -34,7 +34,7 @@ export default class TriangleDrawComponent extends Component {
     }
   }
 
-  calculateArea(x1, y1, x2, y2, x3, y3) {
+  static calculateArea(x1, y1, x2, y2, x3, y3) {
     return Math.abs((x1*(y2-y3) + x2*(y3-y1)+ x3*(y1-y2))/2.0);
   }
 
