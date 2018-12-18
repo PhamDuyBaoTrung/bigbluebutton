@@ -108,15 +108,7 @@ export default class PanZoomDrawListener extends React.Component {
   }
 
   isActiveAnnotation(annotation, x, y) {
-    const { slideWidth, slideHeight } = this.props;
-    const annotationCoordinate =
-      this.getCoordinates(annotation.annotationInfo, slideWidth, slideHeight);
-    const startPointX = annotationCoordinate.x;
-    const startPointY = annotationCoordinate.y;
-    const endPointX = startPointX + annotationCoordinate.width;
-    const endPointY = startPointY + annotationCoordinate.height;
-    return x >= startPointX && x <= endPointX
-      && y >= startPointY && y <= endPointY;
+    return this.checkCursorInsideShape(annotation.annotationInfo, x, y);
   }
 
   /**
