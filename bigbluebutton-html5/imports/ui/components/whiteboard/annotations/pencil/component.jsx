@@ -26,9 +26,9 @@ export default class PencilDrawComponent extends Component {
     while (i < points.length) {
       const px = (points[i] / 100) * slideWidth;
       const py = (points[i + 1] / 100) * slideHeight;
-      console.log(`pointer: [${x}, ${y}], px: ${px}, py: ${py}`);
       const isContained = x >= (px - 10) && x <= (px + 10) && y >= (py - 10) && y <= (py + 10);
       if (isContained) {
+        console.log('can active');
         return true;
       }
       i = i + 2;
@@ -209,11 +209,6 @@ export default class PencilDrawComponent extends Component {
 
   static getFinalCoordinates(annotation, slideWidth, slideHeight) {
     const { points, commands } = annotation;
-    console.log('FINAL pencil points: ');
-    points.forEach(p => {
-      console.log(`${p},`);
-    });
-
     let path = '';
     let i;
     let j;
