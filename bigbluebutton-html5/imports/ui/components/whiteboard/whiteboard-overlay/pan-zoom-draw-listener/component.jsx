@@ -473,9 +473,9 @@ export default class PanZoomDrawListener extends React.Component {
       this.props.drawSettings.textShapeValue,
     );
     if (this.activeAnnotation.annotationInfo.type === 'text') {
-      setTextShapeActiveId('');
+      setTextShapeActiveId(null);
     }
-    setActivatedShapeId(this.activeAnnotation.id);
+    setActivatedShapeId(null);
   }
 
   handleDrawText(startPoint, width, height, status, id, text) {
