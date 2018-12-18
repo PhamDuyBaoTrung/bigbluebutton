@@ -65,7 +65,7 @@ export default class BoundaryDrawComponent extends Component {
 
   render() {
     const { annotation, slideWidth, slideHeight } = this.props;
-    const rawBoundaryData = BoundaryDrawComponent.getShapeBoundaryData(annotation);
+    const rawBoundaryData = BoundaryDrawComponent.getShapeBoundaryData(annotation.annotationInfo);
     const results = this.getCoordinates(rawBoundaryData);
     const cornerPoints = AnnotationHelpers.getCornerPoints(rawBoundaryData.startX, rawBoundaryData.startY,
       rawBoundaryData.width, rawBoundaryData.height, slideWidth, slideHeight);
