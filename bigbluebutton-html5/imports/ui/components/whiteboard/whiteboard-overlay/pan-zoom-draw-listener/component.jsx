@@ -204,11 +204,10 @@ export default class PanZoomDrawListener extends React.Component {
       this.updateNewPositionOfAnnotation(ac.x, ac.y, ac.width, ac.height,
         transformedSvgPoint.x, transformedSvgPoint.y);
     } else {
-      /**
       // find the selectable shape
       const activeAnnotation = this.findActiveAnnotation(annotations, transformedSvgPoint.x, transformedSvgPoint.y);
       // stop processing if moving to empty shapes space
-      if (!activeAnnotation) {
+      if (!activeAnnotation && this.stateHaveChanged()) {
         this.setState({
           moveInsideSelectedShape: false,
           moveInsideOtherShape: false,
@@ -221,8 +220,6 @@ export default class PanZoomDrawListener extends React.Component {
         });
         return;
       }
-       */
-      return;
       // change cursor behavior
       this.setState({
         moveInsideSelectedShape: this.activeAnnotation && activeAnnotation._id === this.activeAnnotation._id,
@@ -419,6 +416,12 @@ export default class PanZoomDrawListener extends React.Component {
       this.initialX = px;
       this.initialY = py;
     }
+  }
+
+  stateHaveChanged() {
+    return this.state.moveInsideSelectedShape || this.state.moveInsideOtherShape
+    || this.state.canHSplitOnRight || this.state.canHSplitOnLeft || this.state.canVSplitOnTop
+    || this.state.canVSplitOnBottom || this.state.isResizing || this.state.isDragging;
   }
 
   // main mouse up handler
