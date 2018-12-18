@@ -32,10 +32,13 @@ function handleAddedAnnotation({
   }
 
   const fakeAnnotation = Annotations.findOne({ id: `${annotation.id}-fake` });
-  const fakePoints = fakeAnnotation ? fakeAnnotation.annotationInfo.points : null;
+  if (!fakeAnnotation) {
+    return;
+  }
+  const fakePoints = fakeAnnotation.annotationInfo.points;
   const { points: lastPoints } = annotation.annotationInfo;
 
-  if (annotation.annotationType !== 'pencil' && fakeAnnotation) {
+  if (annotation.annotationType !== 'pencil') {
     Annotations.update(fakeAnnotation._id, {
       $set: {
         position: annotation.position,
