@@ -59,12 +59,13 @@ export default class TriangleDrawComponent extends Component {
     }
   }
 
-  static transformPointsByAction(annotation, action, px, py, ax, ay, width, height, slideWidth, slideHeight) {
+  static transformPointsByAction(annotation, action, px, py, ax, ay, width, height, initialX, initialY, slideWidth, slideHeight) {
     const ANNOTATION_CONFIG = Meteor.settings.public.whiteboard.annotations;
     const HORIZONTAL_LEFT = ANNOTATION_CONFIG.resize.horizontal_left;
     const HORIZONTAL_RIGHT = ANNOTATION_CONFIG.resize.horizontal_right;
     const VERTICAL_TOP = ANNOTATION_CONFIG.resize.vertical_top;
     const VERTICAL_BOTTOM = ANNOTATION_CONFIG.resize.vertical_bottom;
+    const DRAG = ANNOTATION_CONFIG.drag;
     let newStartX = ax;
     let newStartY = ay;
     let newWidth = width;
@@ -83,6 +84,12 @@ export default class TriangleDrawComponent extends Component {
         break;
       case VERTICAL_BOTTOM:
         newHeight = py - ay;
+        break;
+      case DRAG:
+        newStartX = px + ax - initialX;
+        newStartY = py + ay - initialY;
+        newWidth = width;
+        newHeight = height;
         break;
     }
     // update active annotation

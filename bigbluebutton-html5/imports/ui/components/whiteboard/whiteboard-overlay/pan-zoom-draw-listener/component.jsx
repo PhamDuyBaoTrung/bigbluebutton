@@ -282,27 +282,27 @@ export default class PanZoomDrawListener extends React.Component {
     let newAnnotation;
     switch (type) {
       case 'text': {
-        newAnnotation = TextDrawComponent.transformPointsByAction(annotationInfo, action, px, py, ax, ay, aw, ah, slideWidth, slideHeight);
+        newAnnotation = TextDrawComponent.transformPointsByAction(annotationInfo, action, px, py, ax, ay, aw, ah, this.initialX, this.initialY, slideWidth, slideHeight);
         break;
       }
       case 'line': {
-        newAnnotation = LineDrawComponent.transformPointsByAction(annotationInfo, action, px, py, ax, ay, aw, ah, slideWidth, slideHeight);
+        newAnnotation = LineDrawComponent.transformPointsByAction(annotationInfo, action, px, py, ax, ay, aw, ah, this.initialX, this.initialY, slideWidth, slideHeight);
         break;
       }
       case 'ellipse': {
-        newAnnotation = EllipseDrawComponent.transformPointsByAction(annotationInfo, action, px, py, ax, ay, aw, ah, slideWidth, slideHeight);
+        newAnnotation = EllipseDrawComponent.transformPointsByAction(annotationInfo, action, px, py, ax, ay, aw, ah, this.initialX, this.initialY, slideWidth, slideHeight);
         break;
       }
       case 'triangle': {
-        newAnnotation = TriangleDrawComponent.transformPointsByAction(annotationInfo, action, px, py, ax, ay, aw, ah, slideWidth, slideHeight);
+        newAnnotation = TriangleDrawComponent.transformPointsByAction(annotationInfo, action, px, py, ax, ay, aw, ah, this.initialX, this.initialY, slideWidth, slideHeight);
         break;
       }
       case 'rectangle': {
-        newAnnotation = RectangleDrawComponent.transformPointsByAction(annotationInfo, action, px, py, ax, ay, aw, ah, slideWidth, slideHeight);
+        newAnnotation = RectangleDrawComponent.transformPointsByAction(annotationInfo, action, px, py, ax, ay, aw, ah, this.initialX, this.initialY, slideWidth, slideHeight);
         break;
       }
       case 'pencil': {
-        newAnnotation = PencilDrawComponent.transformPointsByAction(annotationInfo, action, px, py, ax, ay, aw, ah, slideWidth, slideHeight);
+        newAnnotation = PencilDrawComponent.transformPointsByAction(annotationInfo, action, px, py, ax, ay, aw, ah, this.initialX, this.initialY, slideWidth, slideHeight);
         break;
       }
     }
