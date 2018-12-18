@@ -65,7 +65,7 @@ export default class EllipseDrawComponent extends Component {
   static checkPointInsideEllipse(annotation, x, y, slideWidth, slideHeight) {
     const { cx, cy, rx, ry, } = EllipseDrawComponent.getCoordinates(annotation, slideWidth, slideHeight);
     const deltaX = Math.abs(x - cx);
-    const deltaY = Math.abs(y = cy);
+    const deltaY = Math.abs(y - cy);
     const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
     return ((distance >= rx) && (distance <= ry)) ||
       ((distance <= rx) && (distance >= ry));
