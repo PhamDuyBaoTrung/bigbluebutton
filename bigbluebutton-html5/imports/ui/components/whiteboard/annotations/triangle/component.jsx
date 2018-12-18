@@ -9,7 +9,7 @@ export default class TriangleDrawComponent extends Component {
     const A = TriangleDrawComponent.calculateArea(x1, y1, x2, y2, x3, y3);
     const A1 = TriangleDrawComponent.calculateArea(x, y, x2, y2, x3, y3);
     const A2 = TriangleDrawComponent.calculateArea(x1, y1, x, y, x3, y3);
-    const A3 = TriangleDrawComponent.calculateArea(x, y, x2, y2, x, y);
+    const A3 = TriangleDrawComponent.calculateArea(x1, y1, x2, y2, x, y);
     return A === (A1 + A2 + A3);
   }
 
