@@ -4,9 +4,9 @@ import AnnotationHelpers from '../helpers';
 
 export default class RectangleDrawComponent extends Component {
 
-  static checkPointInsideRectangle(annotation, x, y, slideWidth, slideHeight) {
-    const {px, py, width, height} = RectangleDrawComponent.getCoordinates(annotation, slideWidth, slideHeight);
-    return x >= px && x <= (px + width) && y >= py && y <= (py + height);
+  static checkPointInsideRectangle(annotation, px, py, slideWidth, slideHeight) {
+    const {x, y, width, height} = RectangleDrawComponent.getCoordinates(annotation, slideWidth, slideHeight);
+    return px >= x && px <= (x + width) && py >= y && py <= (y + height);
   }
 
   static getTopLeftCornerCoordinates(annotation) {
