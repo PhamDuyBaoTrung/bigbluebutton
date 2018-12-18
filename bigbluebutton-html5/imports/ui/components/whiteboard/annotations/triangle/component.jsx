@@ -10,7 +10,9 @@ export default class TriangleDrawComponent extends Component {
     const A1 = TriangleDrawComponent.calculateArea(x, y, x2, y2, x3, y3);
     const A2 = TriangleDrawComponent.calculateArea(x1, y1, x, y, x3, y3);
     const A3 = TriangleDrawComponent.calculateArea(x1, y1, x2, y2, x, y);
-    return Math.abs(A1 + A2 + A3 - A) <= 1;
+    const delta = Math.abs(A1 + A2 + A3 - A);
+    console.log(`Delta: ${delta}`);
+    return delta <= 1;
   }
 
   static getTriangleCoordinates(annotation, slideWidth, slideHeight) {
