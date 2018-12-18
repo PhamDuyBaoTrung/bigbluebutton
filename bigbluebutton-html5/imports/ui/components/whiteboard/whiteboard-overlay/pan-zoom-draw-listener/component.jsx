@@ -207,17 +207,19 @@ export default class PanZoomDrawListener extends React.Component {
       // find the selectable shape
       const activeAnnotation = this.findActiveAnnotation(annotations, transformedSvgPoint.x, transformedSvgPoint.y);
       // stop processing if moving to empty shapes space
-      if (!activeAnnotation && this.stateHaveChanged()) {
-        this.setState({
-          moveInsideSelectedShape: false,
-          moveInsideOtherShape: false,
-          canHSplitOnRight: false,
-          canHSplitOnLeft: false,
-          canVSplitOnTop: false,
-          canVSplitOnBottom: false,
-          isResizing: false,
-          isDragging: false
-        });
+      if (!activeAnnotation) {
+        if (this.stateHaveChanged()) {
+          this.setState({
+            moveInsideSelectedShape: false,
+            moveInsideOtherShape: false,
+            canHSplitOnRight: false,
+            canHSplitOnLeft: false,
+            canVSplitOnTop: false,
+            canVSplitOnBottom: false,
+            isResizing: false,
+            isDragging: false
+          });
+        }
         return;
       }
       // change cursor behavior
