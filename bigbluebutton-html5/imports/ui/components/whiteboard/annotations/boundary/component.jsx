@@ -69,6 +69,7 @@ export default class BoundaryDrawComponent extends Component {
     const results = this.getCoordinates(rawBoundaryData);
     const cornerPoints = AnnotationHelpers.getCornerPoints(rawBoundaryData.startX, rawBoundaryData.startY,
       rawBoundaryData.width, rawBoundaryData.height, slideWidth, slideHeight);
+    console.log(`X: ${rawBoundaryData.startX}, Y: ${rawBoundaryData.startY}, width: ${rawBoundaryData.width}, height: ${rawBoundaryData.height}`);
 
     return (
       <g>
@@ -104,6 +105,8 @@ export default class BoundaryDrawComponent extends Component {
 }
 
 BoundaryDrawComponent.propTypes = {
+  // Defines a version of the shape, so that we know if we need to update the component or not
+  version: PropTypes.number.isRequired,
   // Defines an annotation object, which contains all the basic info we need to draw a rectangle
   annotation: PropTypes.shape({
     points: PropTypes.arrayOf(PropTypes.number).isRequired,

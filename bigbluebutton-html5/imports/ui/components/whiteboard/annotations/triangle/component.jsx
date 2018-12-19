@@ -11,7 +11,6 @@ export default class TriangleDrawComponent extends Component {
     const A2 = TriangleDrawComponent.calculateArea(x1, y1, x, y, x3, y3);
     const A3 = TriangleDrawComponent.calculateArea(x1, y1, x2, y2, x, y);
     const delta = Math.abs(A1 + A2 + A3 - A);
-    console.log(`Delta: ${delta} and is Active ${delta <= 1}`);
     return delta <= 1;
   }
 
@@ -134,6 +133,7 @@ export default class TriangleDrawComponent extends Component {
   render() {
     const { annotation, slideWidth, slideHeight } = this.props;
     const path = this.getCoordinates(annotation, slideWidth, slideHeight);
+    console.log(`Triangle path: ${path}`);
     return (
       <path
         style={{ WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)' }}

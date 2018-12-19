@@ -26,7 +26,6 @@ export default class PencilDrawComponent extends Component {
     while (i < points.length) {
       const px = (points[i] / 100) * slideWidth;
       const py = (points[i + 1] / 100) * slideHeight;
-      console.log(`pointer: [${x}, ${y}], px: ${px}, py: ${py}`);
       const isContained = x >= (px - 10) && x <= (px + 10) && y >= (py - 10) && y <= (py + 10);
       if (isContained) {
         return true;
@@ -65,7 +64,7 @@ export default class PencilDrawComponent extends Component {
       startY: minY,
       width: maxX - minX,
       height: maxY - minY,
-    }
+    };
   }
 
   static transformPointsByAction(annotation, action, px, py, ax, ay, width, height, initialX, initialY, slideWidth, slideHeight) {

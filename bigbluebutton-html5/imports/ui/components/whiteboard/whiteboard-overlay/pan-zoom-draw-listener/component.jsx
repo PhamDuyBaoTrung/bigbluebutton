@@ -193,7 +193,7 @@ export default class PanZoomDrawListener extends React.Component {
 
   commonMouseMoveHandler(clientX, clientY, annotations) {
     // transform client coordination to svg coordination
-    const {slideWidth, slideHeight } = this.props;
+    const { slideWidth, slideHeight } = this.props;
     const { getTransformedSvgPoint } = this.props.actions;
     const transformedSvgPoint = getTransformedSvgPoint(clientX, clientY);
     // no need to change cursor behavior when dragging or resizing
@@ -261,12 +261,14 @@ export default class PanZoomDrawListener extends React.Component {
       x: sx + (width / 2),
       y: sy + height,
     };
+    console.log(`X: ${x}, Y: ${y}, midRightX: ${midRight.x}, midRightY: ${midRight.y}, width: ${width}, height: ${height}`);
     const canHSplitOnRight = this.checkPointInsideBox(x, y, midRight.x - this.cornerPointR, midRight.y - this.cornerPointR, midRight.x + this.cornerPointR, midRight.y + this.cornerPointR);
     const canHSplitOnLeft = this.checkPointInsideBox(x, y, midLeft.x - this.cornerPointR,
       midLeft.y - this.cornerPointR, midLeft.x + this.cornerPointR, midLeft.y + this.cornerPointR);
     const canVSplitOnTop = this.checkPointInsideBox(x, y, midTop.x - this.cornerPointR,
       midTop.y - this.cornerPointR, midTop.x + this.cornerPointR, midTop.y + this.cornerPointR);
     const canVSplitOnBottom = this.checkPointInsideBox(x, y, midBottom.x - this.cornerPointR, midBottom.y - this.cornerPointR, midBottom.x + this.cornerPointR, midBottom.y + this.cornerPointR);
+    console.log(`canHSplitOnRight: ${canHSplitOnRight}, canHSplitOnLeft: ${canHSplitOnLeft}, canVSplitOnTop: ${canVSplitOnTop}, canVSplitOnBottom: ${canVSplitOnBottom}`);
     this.setState({
       canHSplitOnRight,
       canHSplitOnLeft,
@@ -335,83 +337,6 @@ export default class PanZoomDrawListener extends React.Component {
 
     // update active annotation
     this.activeAnnotation.annotationInfo = newAnnotation;
-    const { updateAnnotation } = this.props.actions;
-    updateAnnotation(this.activeAnnotation);
-
-    if (this.state.isDragging) {
-      this.initialX = px;
-      this.initialY = py;
-    }
-  }
-
-  updateShapePosition(ax, ay, aw, ah, px, py) {
-    if (!this.activeAnnotation || (!this.state.isResizing && !this.state.isDragging)) {
-      return;
-    }
-    let newStartX = ax;
-    let newStartY = ay;
-    let newWidth = aw;
-    let newHeight = ah;
-    if (this.state.isResizing && this.state.canHSplitOnLeft) {
-      newStartX = px;
-      newStartY = ay;
-      const deltaX = px - ax;
-      newWidth = aw - deltaX;
-      newHeight = ah;
-    } else if (this.state.isResizing && this.state.canHSplitOnRight) {
-      newStartX = ax;
-      newStartY = ay;
-      const midRight = {
-        x: ax + aw,
-        y: ay + (ah / 2),
-      };
-      const deltaX = px - midRight.x;
-      console.log(`ax: ${ax}, aWidth: ${aw}, 
-      _activeWidth: ${this.activeAnnotation.annotationInfo.textBoxWidth},
-      _activeHeight: ${this.activeAnnotation.annotationInfo.textBoxHeight},
-      _activeX: ${this.activeAnnotation.annotationInfo.x},
-      _activeY: ${this.activeAnnotation.annotationInfo.y},
-      px: ${px}, midRightX: ${midRight.x},
-      deltaX=${deltaX}`);
-      newWidth = aw + deltaX;
-      newHeight = ah;
-    } else if (this.state.isResizing && this.state.canVSplitOnTop) {
-      newStartX = ax;
-      newStartY = py;
-      const deltaY = py - ay;
-      newWidth = aw;
-      newHeight = ah - deltaY;
-    } else if (this.state.isResizing && this.state.canVSplitOnBottom) {
-      newStartX = ax;
-      newStartY = ay;
-      const midBottom = {
-        x: ax + (aw / 2),
-        y: ay + ah,
-      };
-      const deltaY = py - midBottom.y;
-      newWidth = aw;
-      newHeight = ah + deltaY;
-    } else if (this.state.isDragging) {
-      newStartX = px + ax - this.initialX;
-      newStartY = py + ay - this.initialY;
-      newWidth = aw;
-      newHeight = ah;
-    }
-
-    console.log(`isResizing: ${this.state.isResizing}, newX: ${newStartX}, oldX: ${ax}, 
-    newY: ${newStartY}, oldY: ${ay}, px: ${px}, py: ${py}`);
-
-    // update active annotation
-    const newTransX = (newStartX / this.props.slideWidth) * 100;
-    const newTransY = (newStartY / this.props.slideHeight) * 100;
-    const newTransWidth = (newWidth / this.props.slideWidth) * 100;
-    const newTransHeight = (newHeight / this.props.slideHeight) * 100;
-    this.activeAnnotation.annotationInfo.x = newTransX;
-    this.activeAnnotation.annotationInfo.y = newTransY;
-    this.activeAnnotation.annotationInfo.textBoxWidth = newTransWidth;
-    this.activeAnnotation.annotationInfo.textBoxHeight = newTransHeight;
-    console.log(`newTransX: ${newTransX}, newTransY: ${newTransY}, newTransWidth: ${newTransWidth}, 
-    newTransHeight: ${newTransHeight}`);
     const { updateAnnotation } = this.props.actions;
     updateAnnotation(this.activeAnnotation);
 
