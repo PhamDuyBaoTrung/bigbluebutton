@@ -144,7 +144,7 @@ export default class PencilDrawComponent extends Component {
       if ((i % 2) !== 0) {
         return p;
       } else {
-        return p + (((px - ax - w)(p - ax)) / width);
+        return p + (((px - ax - width)(p - ax)) / width);
       }
     });
     return points;
