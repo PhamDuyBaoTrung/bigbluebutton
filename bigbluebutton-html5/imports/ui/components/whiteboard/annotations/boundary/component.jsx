@@ -79,8 +79,8 @@ export default class BoundaryDrawComponent extends Component {
           width={results.width}
           height={results.height}
           fill="none"
-          stroke={AnnotationHelpers.getFormattedColor(annotation.color)}
-          strokeWidth={AnnotationHelpers.getStrokeWidth(annotation.thickness, slideWidth)}
+          stroke={'red'}
+          strokeWidth={5}
           style={{ WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)' }}
         />
         {
