@@ -79,19 +79,19 @@ export default class PencilDrawComponent extends Component {
     let newPoints;
     switch (action) {
       case HORIZONTAL_LEFT:
-        newPoints = this.leftHorizontalResizingCompute(points, px, py, ax, ay, width, height);
+        newPoints = PencilDrawComponent.leftHorizontalResizingCompute(points, px, py, ax, ay, width, height);
         break;
       case HORIZONTAL_RIGHT:
-        newPoints = this.rightHorizontalResizingCompute(points, px, py, ax, ay, width, height);
+        newPoints = PencilDrawComponent.rightHorizontalResizingCompute(points, px, py, ax, ay, width, height);
         break;
       case VERTICAL_TOP:
-        newPoints = this.topVerticalResizingCompute(points, px, py, ax, ay, width, height);
+        newPoints = PencilDrawComponent.topVerticalResizingCompute(points, px, py, ax, ay, width, height);
         break;
       case VERTICAL_BOTTOM:
-        newPoints = this.bottomVerticalResizingCompute(points, px, py, ax, ay, width, height);
+        newPoints = PencilDrawComponent.bottomVerticalResizingCompute(points, px, py, ax, ay, width, height);
         break;
       case DRAG:
-        newPoints = this.draggingCompute(points, px, py, ax, ay, initialX, initialY);
+        newPoints = PencilDrawComponent.draggingCompute(points, px, py, ax, ay, initialX, initialY);
         break;
     }
     // transform to svg coordinators
@@ -118,7 +118,7 @@ export default class PencilDrawComponent extends Component {
    * @param height
    * @returns {*}
    */
-  leftHorizontalResizingCompute(points, px, py, ax, ay, width, height) {
+  static leftHorizontalResizingCompute(points, px, py, ax, ay, width, height) {
     points.forEach((p, i) => {
       if ((i % 2) !== 0) {
         return p;
@@ -140,7 +140,7 @@ export default class PencilDrawComponent extends Component {
    * @param height
    * @returns {*}
    */
-  rightHorizontalResizingCompute(points, px, py, ax, ay, width, height) {
+  static rightHorizontalResizingCompute(points, px, py, ax, ay, width, height) {
     points.forEach((p, i) => {
       if ((i % 2) !== 0) {
         return p;
@@ -162,7 +162,7 @@ export default class PencilDrawComponent extends Component {
    * @param height
    * @returns {*}
    */
-  topVerticalResizingCompute(points, px, py, ax, ay, width, height) {
+  static topVerticalResizingCompute(points, px, py, ax, ay, width, height) {
     points.forEach((p, i) => {
       if ((i % 2) !== 0) {
         return p + (((py - ay)(ay + height - p)) / height);
@@ -184,7 +184,7 @@ export default class PencilDrawComponent extends Component {
    * @param height
    * @returns {*}
    */
-  bottomVerticalResizingCompute(points, px, py, ax, ay, width, height) {
+  static bottomVerticalResizingCompute(points, px, py, ax, ay, width, height) {
     points.forEach((p, i) => {
       if ((i % 2) !== 0) {
         return p - (((ay + height - py)(p - ay)) / height);
@@ -195,7 +195,7 @@ export default class PencilDrawComponent extends Component {
     return points;
   }
 
-  draggingCompute(points, px, py, ax, ay, initialX, initialY) {
+  static draggingCompute(points, px, py, ax, ay, initialX, initialY) {
     points.forEach((p, i) => {
       // y coordinate
       if ((i % 2) !== 0) {
