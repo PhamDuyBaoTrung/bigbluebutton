@@ -51,6 +51,7 @@ export default class TriangleDrawComponent extends Component {
     const yBottomLeft = points[3];
     const xBottomRight = points[2];
     const yTop = points[1];
+    console.log(`xBottomLeft: ${xBottomLeft}, yBottomLeft: ${yBottomLeft}, xBottomRight: ${xBottomRight}, yTop: ${yTop}`);
     return {
       startX: xBottomLeft,
       startY: yTop,
