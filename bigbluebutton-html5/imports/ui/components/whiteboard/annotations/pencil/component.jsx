@@ -102,22 +102,30 @@ export default class PencilDrawComponent extends Component {
     const VERTICAL_BOTTOM = ANNOTATION_CONFIG.resize.vertical_bottom;
     const DRAG = ANNOTATION_CONFIG.drag;
     const { points } = annotation;
+    const transformedPoints = points.map((p, i) => {
+      // y coordinate
+      if (i % 2 !== 0) {
+        return (p / 100) * slideHeight;
+      } else {
+        return (p / 100) * slideWidth;
+      }
+    })
     let newPoints;
     switch (action) {
       case HORIZONTAL_LEFT:
-        newPoints = PencilDrawComponent.leftHorizontalResizingCompute(points, px, py, ax, ay, width, height);
+        newPoints = PencilDrawComponent.leftHorizontalResizingCompute(transformedPoints, px, py, ax, ay, width, height);
         break;
       case HORIZONTAL_RIGHT:
-        newPoints = PencilDrawComponent.rightHorizontalResizingCompute(points, px, py, ax, ay, width, height);
+        newPoints = PencilDrawComponent.rightHorizontalResizingCompute(transformedPoints, px, py, ax, ay, width, height);
         break;
       case VERTICAL_TOP:
-        newPoints = PencilDrawComponent.topVerticalResizingCompute(points, px, py, ax, ay, width, height);
+        newPoints = PencilDrawComponent.topVerticalResizingCompute(transformedPoints, px, py, ax, ay, width, height);
         break;
       case VERTICAL_BOTTOM:
-        newPoints = PencilDrawComponent.bottomVerticalResizingCompute(points, px, py, ax, ay, width, height);
+        newPoints = PencilDrawComponent.bottomVerticalResizingCompute(transformedPoints, px, py, ax, ay, width, height);
         break;
       case DRAG:
-        newPoints = PencilDrawComponent.draggingCompute(points, px, py, ax, ay, initialX, initialY);
+        newPoints = PencilDrawComponent.draggingCompute(transformedPoints, px, py, ax, ay, initialX, initialY);
         break;
     }
     // transform to svg coordinators
