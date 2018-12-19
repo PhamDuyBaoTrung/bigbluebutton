@@ -69,6 +69,7 @@ export default class BoundaryDrawComponent extends Component {
     const results = this.getCoordinates(rawBoundaryData);
     const cornerPoints = AnnotationHelpers.getCornerPoints(rawBoundaryData.startX, rawBoundaryData.startY,
       rawBoundaryData.width, rawBoundaryData.height, slideWidth, slideHeight);
+    console.log(`X: ${rawBoundaryData.startX}, Y: ${rawBoundaryData.startY}, width: ${rawBoundaryData.width}, height: ${rawBoundaryData.height}`);
 
     return (
       <g>
