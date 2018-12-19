@@ -251,7 +251,7 @@ export default class PencilDrawComponent extends Component {
     const { points, commands } = annotation;
     let xPointsAfter = '';
     // transform to svg coordinators
-    console.log(`point length: ${points.length()}, commmand length: ${commands.length}`);
+    console.log(`point length: ${points.length}, commmand length: ${commands.length}`);
     points.forEach((p, i) => {
       // y coordinate
       if (i % 2 === 0) {
