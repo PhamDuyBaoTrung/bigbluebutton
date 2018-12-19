@@ -261,14 +261,13 @@ export default class PanZoomDrawListener extends React.Component {
       x: sx + (width / 2),
       y: sy + height,
     };
-    console.log(`X: ${x}, Y: ${y}, midRightX: ${midRight.x}, midRightY: ${midRight.y}, width: ${width}, height: ${height}`);
+    console.log(`X: ${x}, Y: ${y}`);
     const canHSplitOnRight = this.checkPointInsideBox(x, y, midRight.x - this.cornerPointR, midRight.y - this.cornerPointR, midRight.x + this.cornerPointR, midRight.y + this.cornerPointR);
     const canHSplitOnLeft = this.checkPointInsideBox(x, y, midLeft.x - this.cornerPointR,
       midLeft.y - this.cornerPointR, midLeft.x + this.cornerPointR, midLeft.y + this.cornerPointR);
     const canVSplitOnTop = this.checkPointInsideBox(x, y, midTop.x - this.cornerPointR,
       midTop.y - this.cornerPointR, midTop.x + this.cornerPointR, midTop.y + this.cornerPointR);
     const canVSplitOnBottom = this.checkPointInsideBox(x, y, midBottom.x - this.cornerPointR, midBottom.y - this.cornerPointR, midBottom.x + this.cornerPointR, midBottom.y + this.cornerPointR);
-    console.log(`canHSplitOnRight: ${canHSplitOnRight}, canHSplitOnLeft: ${canHSplitOnLeft}, canVSplitOnTop: ${canVSplitOnTop}, canVSplitOnBottom: ${canVSplitOnBottom}`);
     this.setState({
       canHSplitOnRight,
       canHSplitOnLeft,

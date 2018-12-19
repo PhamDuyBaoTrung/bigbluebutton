@@ -85,18 +85,21 @@ export default class BoundaryDrawComponent extends Component {
         />
         {
           cornerPoints.map(p => (
-            <rect
-              fill="white"
-              fillOpacity="0.8"
-              x={p.x - 10}
-              y={p.y - 10}
-              key={`${p.x}_corner_${p.y}`}
-              width={20}
-              height={20}
-              strokeWidth={20}
-              stroke={'red'}
-              strokeOpacity="0.8"
-            />
+            <g>
+              <span>{`${p.x} - ${p.y}`}</span>
+              <rect
+                fill="white"
+                fillOpacity="0.8"
+                x={p.x - 10}
+                y={p.y - 10}
+                key={`${p.x}_corner_${p.y}`}
+                width={20}
+                height={20}
+                strokeWidth={20}
+                stroke={'red'}
+                strokeOpacity="0.8"
+              />
+            </g>
           ))
         }
       </g>
