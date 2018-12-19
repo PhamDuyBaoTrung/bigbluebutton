@@ -122,7 +122,7 @@ export default class PencilDrawComponent extends Component {
       if ((i % 2) !== 0) {
         return p;
       } else {
-        return p + (((px - ax)(ax + width - p)) / width);
+        return p + (((px - ax) * (ax + width - p)) / width);
       }
     });
     return points;
@@ -144,7 +144,7 @@ export default class PencilDrawComponent extends Component {
       if ((i % 2) !== 0) {
         return p;
       } else {
-        return p + (((px - ax - width)(p - ax)) / width);
+        return p + (((px - ax - width) * (p - ax)) / width);
       }
     });
     return points;
@@ -164,7 +164,7 @@ export default class PencilDrawComponent extends Component {
   static topVerticalResizingCompute(points, px, py, ax, ay, width, height) {
     points.forEach((p, i) => {
       if ((i % 2) !== 0) {
-        return p + (((py - ay)(ay + height - p)) / height);
+        return p + (((py - ay) * (ay + height - p)) / height);
       } else {
         return p;
       }
@@ -186,7 +186,7 @@ export default class PencilDrawComponent extends Component {
   static bottomVerticalResizingCompute(points, px, py, ax, ay, width, height) {
     points.forEach((p, i) => {
       if ((i % 2) !== 0) {
-        return p - (((ay + height - py)(p - ay)) / height);
+        return p - (((ay + height - py) * (p - ay)) / height);
       } else {
         return p;
       }
