@@ -20,7 +20,12 @@ const ReactiveAnnotation = (props) => {
       />
       {
         activeShapeId === annotation.id ?
-          <BoundaryDrawComponent annotation={annotation} slideWidth={slideWidth} slideHeight={slideHeight}/> : null
+          <BoundaryDrawComponent
+            version={props.annotation.version}
+            annotation={annotation}
+            slideWidth={slideWidth}
+            slideHeight={slideHeight}
+          /> : null
       }
     </g>
   );
