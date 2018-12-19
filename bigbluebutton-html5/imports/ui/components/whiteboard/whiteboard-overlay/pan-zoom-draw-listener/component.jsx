@@ -271,7 +271,6 @@ export default class PanZoomDrawListener extends React.Component {
       x: sx + (width / 2),
       y: sy + height,
     };
-    console.log(`X: ${x}, Y: ${y}`);
     const canHSplitOnRight = this.checkPointInsideBox(x, y, midRight.x - this.cornerPointR, midRight.y - this.cornerPointR, midRight.x + this.cornerPointR, midRight.y + this.cornerPointR);
     const canHSplitOnLeft = this.checkPointInsideBox(x, y, midLeft.x - this.cornerPointR,
       midLeft.y - this.cornerPointR, midLeft.x + this.cornerPointR, midLeft.y + this.cornerPointR);

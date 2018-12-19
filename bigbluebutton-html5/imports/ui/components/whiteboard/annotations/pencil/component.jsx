@@ -138,8 +138,9 @@ export default class PencilDrawComponent extends Component {
       if (i % 2 !== 0) {
         return (p / slideHeight) * 100;
       } else {
-        xPointsAfter += (p + ', ');
-        return (p / slideWidth) * 100;
+        const x = (p / slideWidth) * 100;
+        xPointsAfter += (x + ', ');
+        return x;
       }
     });
     annotation.points = newPoints;
