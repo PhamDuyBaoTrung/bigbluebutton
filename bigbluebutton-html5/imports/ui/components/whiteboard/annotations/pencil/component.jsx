@@ -20,6 +20,15 @@ export default class PencilDrawComponent extends Component {
     return { path, points };
   }
 
+  /**
+   * using to check a point is belonged to line
+   * @param annotation
+   * @param x
+   * @param y
+   * @param slideWidth
+   * @param slideHeight
+   * @returns {boolean}
+   */
   static checkPointInsidePencil(annotation, x, y, slideWidth, slideHeight) {
     const { points } = annotation;
     let i = 0;
@@ -33,6 +42,24 @@ export default class PencilDrawComponent extends Component {
       i = i + 2;
     }
     return false;
+  }
+
+  /**
+   * Using to check a point is inside the box contain the line
+   * @param annotation
+   * @param px
+   * @param py
+   * @param slideWidth
+   * @param slideHeight
+   * @returns {boolean}
+   */
+  static checkPointInsidePencilBox(annotation, px, py, slideWidth, slideHeight) {
+    const { startX, startY, width, height } = PencilDrawComponent.getTopLeftCornerCoordinates(annotation);
+    const x = (startX / 100) * slideWidth;
+    const y = (startY / 100) * slideHeight;
+    const _width = (width / 100) * slideWidth;
+    const _height = (height / 100) * slideHeight;
+    return px >= x && px <= (x + _width) && py >= y && py <= (y + _height);
   }
 
   static getTopLeftCornerCoordinates(annotation) {

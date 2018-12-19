@@ -98,12 +98,12 @@ export default class PanZoomDrawListener extends React.Component {
     }
   }
 
-  findActiveAnnotation(annotations, x, y) {
+  findActiveAnnotation(annotations, x, y, forResizing = false) {
     if (!Array.isArray(annotations) || annotations.length === 0) {
       return null;
     }
     const activeAnnotation = annotations.find(annotation => (
-      this.checkCursorInsideShape(annotation.annotationInfo, x, y)));
+      this.checkCursorInsideShape(annotation.annotationInfo, x, y, forResizing)));
     return activeAnnotation;
   }
 
@@ -123,7 +123,7 @@ export default class PanZoomDrawListener extends React.Component {
    * @param px
    * @param py
    */
-  checkCursorInsideShape(annotation, px, py) {
+  checkCursorInsideShape(annotation, px, py, forResizing = false) {
     const { type } = annotation;
     const { slideWidth, slideHeight } = this.props;
     switch (type) {
@@ -143,7 +143,11 @@ export default class PanZoomDrawListener extends React.Component {
         return RectangleDrawComponent.checkPointInsideRectangle(annotation, px, py, slideWidth, slideHeight);
       }
       case 'pencil': {
-        return PencilDrawComponent.checkPointInsidePencil(annotation, px, py, slideWidth, slideHeight);
+        if (forResizing) {
+          return PencilDrawComponent.checkPointInsidePencilBox(annotation, px, py, slideWidth, slideHeight);
+        } else {
+          return PencilDrawComponent.checkPointInsidePencil(annotation, px, py, slideWidth, slideHeight);
+        }
       }
     }
   }
@@ -205,7 +209,7 @@ export default class PanZoomDrawListener extends React.Component {
         transformedSvgPoint.x, transformedSvgPoint.y);
     } else {
       // find the selectable shape
-      const activeAnnotation = this.findActiveAnnotation(annotations, transformedSvgPoint.x, transformedSvgPoint.y);
+      const activeAnnotation = this.findActiveAnnotation(annotations, transformedSvgPoint.x, transformedSvgPoint.y, true);
       // stop processing if moving to empty shapes space
       if (!activeAnnotation) {
         if (this.stateHaveChanged()) {
