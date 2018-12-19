@@ -182,14 +182,13 @@ export default class PencilDrawComponent extends Component {
    * @returns {*}
    */
   static rightHorizontalResizingCompute(points, px, py, ax, ay, width, height) {
-    points.forEach((p, i) => {
+    return points.map((p, i) => {
       if ((i % 2) !== 0) {
         return p;
       } else {
         return p + (((px - ax - width) * (p - ax)) / width);
       }
     });
-    return points;
   }
 
   /**
