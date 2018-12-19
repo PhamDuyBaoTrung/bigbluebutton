@@ -324,16 +324,41 @@ export default class PencilDrawComponent extends Component {
 
   render() {
     const { annotation, slideWidth } = this.props;
+    const listPoint = [];
+    let i = 0;
+    while (i < this.points.length) {
+      listPoint.push([this.points[i], this.points[i + 1]]);
+      i += 2;
+    }
     return (
-      <path
-        fill="none"
-        stroke={AnnotationHelpers.getFormattedColor(annotation.color)}
-        d={this.getCurrentPath()}
-        strokeWidth={AnnotationHelpers.getStrokeWidth(annotation.thickness, slideWidth)}
-        strokeLinejoin="round"
-        strokeLinecap="round"
-        style={{ WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)' }}
-      />
+      <g>
+        {
+          listPoint.length > 0 ?
+            listPoint.map((p, j) => (
+              <rect
+                fill="white"
+                fillOpacity="0.8"
+                x={p[0] - 5}
+                y={p[1] - 5}
+                key={`${p[0]}_corner_${j}_${p[1]}`}
+                width={10}
+                height={10}
+                strokeWidth={10}
+                stroke={'red'}
+                strokeOpacity="0.8"
+              />
+            )) : null
+        }
+        <path
+          fill="none"
+          stroke={AnnotationHelpers.getFormattedColor(annotation.color)}
+          d={this.getCurrentPath()}
+          strokeWidth={AnnotationHelpers.getStrokeWidth(annotation.thickness, slideWidth)}
+          strokeLinejoin="round"
+          strokeLinecap="round"
+          style={{ WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)' }}
+        />
+      </g>
     );
   }
 }
