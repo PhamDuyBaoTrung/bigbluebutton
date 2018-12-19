@@ -317,7 +317,9 @@ export default class PencilDrawComponent extends Component {
 
   componentWillUpdate(nextProps) {
     const { annotation, slideWidth, slideHeight } = nextProps;
-    if (annotation.points.length !== this.props.annotation.points.length) {
+    const newPointsStr = annotation.points.join(',');
+    const lastPointsStr = this.props.annotation.points.join(',');
+    if (newPointsStr !== lastPointsStr) {
       this.path = this.getCoordinates(annotation, slideWidth, slideHeight);
     }
   }
