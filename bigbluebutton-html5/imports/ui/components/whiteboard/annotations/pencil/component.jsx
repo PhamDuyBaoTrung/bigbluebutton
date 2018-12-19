@@ -102,14 +102,17 @@ export default class PencilDrawComponent extends Component {
     const VERTICAL_BOTTOM = ANNOTATION_CONFIG.resize.vertical_bottom;
     const DRAG = ANNOTATION_CONFIG.drag;
     const { points } = annotation;
+    let xPoints = '';
     const transformedPoints = points.map((p, i) => {
       // y coordinate
       if (i % 2 !== 0) {
         return (p / 100) * slideHeight;
       } else {
+        xPoints += (p + ',');
         return (p / 100) * slideWidth;
       }
-    })
+    });
+    console.log(`x points before: ${xPoints}`);
     let newPoints;
     switch (action) {
       case HORIZONTAL_LEFT:
@@ -128,17 +131,19 @@ export default class PencilDrawComponent extends Component {
         newPoints = PencilDrawComponent.draggingCompute(transformedPoints, px, py, ax, ay, initialX, initialY);
         break;
     }
+    let xPointsAfter = '';
     // transform to svg coordinators
     newPoints = newPoints.map((p, i) => {
       // y coordinate
       if (i % 2 !== 0) {
         return (p / slideHeight) * 100;
       } else {
+        xPointsAfter += (p + ', ');
         return (p / slideWidth) * 100;
       }
     });
     annotation.points = newPoints;
-    console.log(`new points: ${newPoints.join(',')}`);
+    console.log(`xPointsAfter: ${xPointsAfter}`);
     return annotation;
   }
 
