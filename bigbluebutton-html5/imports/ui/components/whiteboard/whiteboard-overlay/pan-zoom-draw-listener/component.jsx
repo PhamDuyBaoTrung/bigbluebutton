@@ -69,8 +69,14 @@ export default class PanZoomDrawListener extends React.Component {
     // saving initial X and Y coordinates for further displaying of the textarea
     this.initialX = transformedSvgPoint.x;
     this.initialY = transformedSvgPoint.y;
+    let activeAnnotation;
 
-    const activeAnnotation = this.findActiveAnnotation(annotations, transformedSvgPoint.x, transformedSvgPoint.y);
+    if (this.activeAnnotation && this.activeAnnotation.annotationInfo.type === 'pencil') {
+      activeAnnotation = this.findActiveAnnotation(annotations, transformedSvgPoint.x, transformedSvgPoint.y, true);
+    } else {
+      activeAnnotation = this.findActiveAnnotation(annotations, transformedSvgPoint.x, transformedSvgPoint.y);
+    }
+
     if (!activeAnnotation) {
       return;
     }
