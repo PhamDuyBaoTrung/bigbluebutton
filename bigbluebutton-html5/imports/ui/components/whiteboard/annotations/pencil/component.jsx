@@ -249,6 +249,16 @@ export default class PencilDrawComponent extends Component {
 
   static getFinalCoordinates(annotation, slideWidth, slideHeight) {
     const { points, commands } = annotation;
+    let xPointsAfter = '';
+    // transform to svg coordinators
+    points.forEach((p, i) => {
+      // y coordinate
+      if (i % 2 === 0) {
+        const x = (p / 100) * slideWidth;
+        xPointsAfter += (x + ',')
+      }
+    });
+    console.log(`Final X: ${xPointsAfter}`);
 
     let path = '';
     let i;
@@ -334,6 +344,7 @@ export default class PencilDrawComponent extends Component {
     let data;
     // Final message, display smoothes coordinates
     if (annotation.status === 'DRAW_END') {
+      console.log(`Get final points: `);
       data = PencilDrawComponent.getFinalCoordinates(annotation, slideWidth, slideHeight);
     // Not a final message, but rendering it for the first time, creating a new path
     } else if (!this.path) {
