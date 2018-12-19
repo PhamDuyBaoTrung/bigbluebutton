@@ -112,7 +112,7 @@ export default class PencilDrawComponent extends Component {
         return (p / 100) * slideWidth;
       }
     });
-    console.log(`x points before: ${xPoints}`);
+    // console.log(`x points before: ${xPoints}`);
     let newPoints;
     switch (action) {
       case HORIZONTAL_LEFT:
@@ -144,7 +144,7 @@ export default class PencilDrawComponent extends Component {
       }
     });
     annotation.points = newPoints;
-    console.log(`xPointsAfter: ${xPointsAfter}`);
+    // console.log(`xPointsAfter: ${xPointsAfter}`);
     return annotation;
   }
 
@@ -321,6 +321,7 @@ export default class PencilDrawComponent extends Component {
     const lastPointsStr = this.props.annotation.points.join(',');
     if (newPointsStr !== lastPointsStr) {
       this.path = this.getCoordinates(annotation, slideWidth, slideHeight);
+      console.log(`path: ${this.path}`);
     }
   }
 
