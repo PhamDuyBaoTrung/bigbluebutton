@@ -130,6 +130,7 @@ export default class PencilDrawComponent extends Component {
       }
     });
     annotation.points = newPoints;
+    console.log(`new points: ${newPoints.join(',')}`);
     return annotation;
   }
 
