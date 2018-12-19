@@ -323,11 +323,13 @@ export default class PencilDrawComponent extends Component {
   }
 
   render() {
-    const { annotation, slideWidth } = this.props;
+    const { annotation, slideWidth, slideHeight } = this.props;
     const listPoint = [];
     let i = 0;
     while (i < this.points.length) {
-      listPoint.push([this.points[i], this.points[i + 1]]);
+      const x = (this.points[i] / 100) * slideWidth;
+      const y = (this.points[i + 1] / 100) * slideHeight;
+      listPoint.push([x, y]);
       i += 2;
     }
     return (
