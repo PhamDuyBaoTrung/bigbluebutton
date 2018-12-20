@@ -248,57 +248,17 @@ export default class PencilDrawComponent extends Component {
   }
 
   static getFinalCoordinates(annotation, slideWidth, slideHeight) {
-    const { points, commands } = annotation;
-    let xPointsAfter = '';
-    // transform to svg coordinators
-    console.log(`point length: ${points.length}, commmand length: ${commands.length}`);
-    points.forEach((p, i) => {
-      // y coordinate
-      if (i % 2 === 0) {
-        const x = (p / 100) * slideWidth;
-        xPointsAfter += (x + ',')
-      }
-    });
-    console.log(`Final X: ${xPointsAfter}`);
-
+    const { points } = annotation;
+    let i = 0;
     let path = '';
-    let i;
-    let j;
-    for (i = 0, j = 0; i < commands.length; i += 1) {
-      switch (commands[i]) {
-        // MOVE_TO - consumes 1 pair of values
-        case 1:
-          path = `${path} M${(points[j] / 100) * slideWidth} ${(points[j + 1] / 100) * slideHeight}`;
-          j += 2;
-          break;
-
-          // LINE_TO - consumes 1 pair of values
-        case 2:
-          path = `${path} L${(points[j] / 100) * slideWidth} ${(points[j + 1] / 100) * slideHeight}`;
-          j += 2;
-          break;
-
-          // QUADRATIC_CURVE_TO - consumes 2 pairs of values
-          // 1st pair is a control point, second is a coordinate
-        case 3:
-          path = `${path} Q${(points[j] / 100) * slideWidth}, ${
-            (points[j + 1] / 100) * slideHeight}, ${(points[j + 2] / 100) * slideWidth}, ${
-            (points[j + 3] / 100) * slideHeight}`;
-          j += 4;
-          break;
-
-          // CUBIC_CURVE_TO - consumes 3 pairs of values
-          // 1st and 2nd are control points, 3rd is an end coordinate
-        case 4:
-          path = `${path} C${(points[j] / 100) * slideWidth}, ${
-            (points[j + 1] / 100) * slideHeight}, ${(points[j + 2] / 100) * slideWidth}, ${
-            (points[j + 3] / 100) * slideHeight}, ${(points[j + 4] / 100) * slideWidth}, ${
-            (points[j + 5] / 100) * slideHeight}`;
-          j += 6;
-          break;
-
-        default:
-          break;
+    if (points && points.length >= 2) {
+      path = `M${(points[0] / 100) * slideWidth
+        }, ${(points[1] / 100) * slideHeight}`;
+      while (i < points.length) {
+        path = `${path} L${(points[i] / 100) * slideWidth
+          }, ${(points[i + 1] / 100) * slideHeight} M${(points[i] / 100) * slideWidth
+          }, ${(points[i + 1] / 100) * slideHeight}`;
+        i += 2;
       }
     }
 
@@ -338,7 +298,7 @@ export default class PencilDrawComponent extends Component {
 
   getCoordinates(annotation, slideWidth, slideHeight) {
     if ((!annotation || annotation.points.length === 0)
-        || (annotation.status === 'DRAW_END' && !annotation.commands)) {
+      || (annotation.status === 'DRAW_END' && !annotation.commands)) {
       return undefined;
     }
 
@@ -347,10 +307,10 @@ export default class PencilDrawComponent extends Component {
     if (annotation.status === 'DRAW_END') {
       console.log(`Get final points: `);
       data = PencilDrawComponent.getFinalCoordinates(annotation, slideWidth, slideHeight);
-    // Not a final message, but rendering it for the first time, creating a new path
+      // Not a final message, but rendering it for the first time, creating a new path
     } else if (!this.path) {
       data = PencilDrawComponent.getInitialCoordinates(annotation, slideWidth, slideHeight);
-    // If it's not the first 2 cases - means we just got an update, updating the coordinates
+      // If it's not the first 2 cases - means we just got an update, updating the coordinates
     } else {
       data = this.updateCoordinates(annotation, slideWidth, slideHeight);
     }
