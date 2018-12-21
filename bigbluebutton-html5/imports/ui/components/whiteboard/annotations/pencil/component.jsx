@@ -137,8 +137,11 @@ export default class PencilDrawComponent extends Component {
         return (p / slideWidth) * 100;
       }
     });
-    annotation.points = newPoints;
-    return annotation;
+    const updatedAnnotation = Object.assign({}, annotation, {
+      points: newPoints,
+      status: 'DRAW_END',
+    });
+    return updatedAnnotation;
   }
 
   /**
