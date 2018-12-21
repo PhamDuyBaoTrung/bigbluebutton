@@ -186,9 +186,6 @@ export function updateAnnotation(annotation) {
   // Prevent sending annotations while disconnected
   if (!Meteor.status().connected) return;
 
-  // skip optimistic for draw end since the smoothing is done in akka
-  if (annotation.status === DRAW_END) return;
-
   const { position, ...relevantAnotation } = annotation;
   const updateQuery = addAnnotationQuery(
     Auth.meetingID, annotation.wbId, Auth.userID,
