@@ -84,15 +84,8 @@ export default class PanZoomDrawListener extends React.Component {
     if (!this.activeAnnotation) {
       this.activeAnnotation = activeAnnotation;
       const { updateAnnotation, setTextShapeActiveId, setActivatedShapeId } = this.props.actions;
-
-      if (activeAnnotation.annotationInfo.type === 'pencil') {
-        activeAnnotation.status = DRAW_END;
-        activeAnnotation.annotationInfo.status = DRAW_END;
-      } else {
-        activeAnnotation.status = DRAW_UPDATE;
-        activeAnnotation.annotationInfo.status = DRAW_UPDATE;
-      }
-
+      activeAnnotation.status = DRAW_UPDATE;
+      activeAnnotation.annotationInfo.status = DRAW_UPDATE;
       updateAnnotation(activeAnnotation);
       if (activeAnnotation.annotationInfo.type === 'text') {
         setTextShapeActiveId(activeAnnotation.id);
