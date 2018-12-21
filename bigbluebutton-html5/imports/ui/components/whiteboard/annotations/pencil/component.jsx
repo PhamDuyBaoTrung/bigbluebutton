@@ -110,7 +110,6 @@ export default class PencilDrawComponent extends Component {
         return (p / 100) * slideWidth;
       }
     });
-    console.log(`number of points before: ${points.length}`);
     let newPoints;
     switch (action) {
       case HORIZONTAL_LEFT:
@@ -139,7 +138,6 @@ export default class PencilDrawComponent extends Component {
       }
     });
     annotation.points = newPoints;
-    console.log(`number of points after: ${newPoints.length}`);
     return annotation;
   }
 
@@ -297,16 +295,18 @@ export default class PencilDrawComponent extends Component {
       return undefined;
     }
 
+    console.log(`number of points: ${annotation.points.length}`);
+
     let data;
     // Final message, display smoothes coordinates
     if (annotation.status === 'DRAW_END') {
-      console.log(`Get final points: `);
       data = PencilDrawComponent.getFinalCoordinates(annotation, slideWidth, slideHeight);
       // Not a final message, but rendering it for the first time, creating a new path
     } else if (!this.path) {
       data = PencilDrawComponent.getInitialCoordinates(annotation, slideWidth, slideHeight);
       // If it's not the first 2 cases - means we just got an update, updating the coordinates
     } else {
+      console.log('update Coordinates');
       data = this.updateCoordinates(annotation, slideWidth, slideHeight);
     }
 
