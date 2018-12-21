@@ -139,7 +139,6 @@ export default class PencilDrawComponent extends Component {
     });
     const updatedAnnotation = Object.assign({}, annotation, {
       points: newPoints,
-      status: 'DRAW_END',
     });
     return updatedAnnotation;
   }
