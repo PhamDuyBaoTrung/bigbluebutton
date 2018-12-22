@@ -231,9 +231,9 @@ export default class PencilDrawComponent extends Component {
     return points.map((p, i) => {
       // y coordinate
       if ((i % 2) !== 0) {
-        return (py + ay) - initialY;
+        return p + (py - initialY);
       } else {
-        return (px + ax) - initialX;
+        return p + (px - initialX);
       }
     });
   }
