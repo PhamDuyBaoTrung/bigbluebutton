@@ -155,14 +155,13 @@ export default class PencilDrawComponent extends Component {
    * @returns {*}
    */
   static leftHorizontalResizingCompute(points, px, py, ax, ay, width, height) {
-    points.forEach((p, i) => {
+    return points.map((p, i) => {
       if ((i % 2) !== 0) {
         return p;
       } else {
         return p + (((px - ax) * (ax + width - p)) / width);
       }
     });
-    return points;
   }
 
   /**
@@ -198,14 +197,13 @@ export default class PencilDrawComponent extends Component {
    * @returns {*}
    */
   static topVerticalResizingCompute(points, px, py, ax, ay, width, height) {
-    points.forEach((p, i) => {
+    return points.map((p, i) => {
       if ((i % 2) !== 0) {
         return p + (((py - ay) * (ay + height - p)) / height);
       } else {
         return p;
       }
     });
-    return points;
   }
 
   /**
@@ -220,26 +218,24 @@ export default class PencilDrawComponent extends Component {
    * @returns {*}
    */
   static bottomVerticalResizingCompute(points, px, py, ax, ay, width, height) {
-    points.forEach((p, i) => {
+    return points.map((p, i) => {
       if ((i % 2) !== 0) {
         return p - (((ay + height - py) * (p - ay)) / height);
       } else {
         return p;
       }
     });
-    return points;
   }
 
   static draggingCompute(points, px, py, ax, ay, initialX, initialY) {
-    points.forEach((p, i) => {
+    return points.map((p, i) => {
       // y coordinate
       if ((i % 2) !== 0) {
-        return py + ay - initialY;
+        return (py + ay) - initialY;
       } else {
-        return px + ax - initialX;
+        return (px + ax) - initialX;
       }
     });
-    return points;
   }
 
   static getFinalCoordinates(annotation, slideWidth, slideHeight) {
