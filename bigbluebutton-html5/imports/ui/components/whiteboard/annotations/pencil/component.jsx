@@ -323,15 +323,19 @@ export default class PencilDrawComponent extends Component {
   updateCoordinates(annotation, slideWidth, slideHeight) {
     const { points } = annotation;
     let i = this.points.length;
-    let path = '';
 
+    if (points.length === this.points.length) {
+      i = 0;
+      this.path = '';
+    }
+
+    let path = '';
     while (i < points.length) {
       path = `${path} L${(points[i] / 100) * slideWidth
-      }, ${(points[i + 1] / 100) * slideHeight}`;
+        }, ${(points[i + 1] / 100) * slideHeight}`;
       i += 2;
     }
     path = this.path + path;
-
     return { path, points };
   }
 
