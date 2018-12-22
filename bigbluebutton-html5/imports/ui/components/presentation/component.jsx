@@ -192,6 +192,7 @@ export default class PresentationArea extends Component {
                   <path d="M 80 0 L 0 0 0 80" fill="none" stroke="#ddd" strokeWidth="1"></path>
                 </pattern>
               </defs>
+              <rect x="0" y="0" width="100%" height="100%" fill="url(#viewBox)"></rect>
               <g clipPath="url(#viewBox)">
                 <Slide
                   imageUri={imageUri}
