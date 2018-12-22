@@ -136,7 +136,47 @@ function handlePencilUpdate(meetingId, whiteboardId, userId, annotation) {
   return { selector: baseSelector, modifier: baseModifier };
 }
 
-export default function addAnnotation(meetingId, whiteboardId, userId, annotation) {
+function updatePencilDraw(meetingId, whiteboardId, userId, annotation) {
+  const DRAW_START = 'DRAW_START';
+  const DRAW_UPDATE = 'DRAW_UPDATE';
+  const DRAW_END = 'DRAW_END';
+
+  const {
+    id, status, annotationType, annotationInfo, wbId, position,
+  } = annotation;
+
+  const baseSelector = {
+    meetingId,
+    id,
+    userId,
+    whiteboardId,
+  };
+
+  switch (status) {
+    case DRAW_START:
+    case DRAW_UPDATE:
+    case DRAW_END:
+      // Updating the main pencil object with the final info
+      baseModifier = {
+        $set: {
+          whiteboardId,
+          meetingId,
+          id,
+          status,
+          annotationType,
+          annotationInfo,
+          wbId,
+          position,
+        },
+        $inc: { version: 1 },
+      };
+      break;
+  }
+
+  return { selector: baseSelector, modifier: baseModifier };
+}
+
+export default function addAnnotation(meetingId, whiteboardId, userId, annotation, isModify = false) {
   check(meetingId, String);
   check(whiteboardId, String);
   check(annotation, Object);
@@ -145,7 +185,11 @@ export default function addAnnotation(meetingId, whiteboardId, userId, annotatio
     case ANNOTATION_TYPE_TEXT:
       return handleTextUpdate(meetingId, whiteboardId, userId, annotation);
     case ANNOTATION_TYPE_PENCIL:
-      return handlePencilUpdate(meetingId, whiteboardId, userId, annotation);
+      if (isModify) {
+        return updatePencilDraw(meetingId, whiteboardId, userId, annotation);
+      } else {
+        return handlePencilUpdate(meetingId, whiteboardId, userId, annotation);
+      }
     default:
       return handleCommonAnnotation(meetingId, whiteboardId, userId, annotation);
   }

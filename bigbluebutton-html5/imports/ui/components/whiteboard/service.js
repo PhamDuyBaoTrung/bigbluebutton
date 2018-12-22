@@ -201,6 +201,7 @@ export function updateAnnotation(annotation) {
         color: increaseBrightness(annotation.annotationInfo.color, 40),
       },
     },
+    true
   );
 
   const cb = (err, numChanged) => {
