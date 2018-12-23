@@ -183,20 +183,7 @@ export default class PresentationArea extends Component {
               xmlns="http://www.w3.org/2000/svg"
               className={styles.svgStyles}
             >
-              <defs>
-                <pattern id="smallGrid" width="16" height="16" patternUnits="userSpaceOnUse">
-                  <path d="M 16 0 L 0 0 0 16" fill="none" stroke="#eee" strokeWidth="0.5"></path>
-                </pattern>
-                <pattern id="viewBox"
-                         width="80"
-                         height="80"
-                         patternUnits="userSpaceOnUse"
-                         patternTransform="translate(0 0)">
-                  <rect width="80" height="80" fill="url(#smallGrid)"></rect>
-                  <path d="M 80 0 L 0 0 0 80" fill="none" stroke="#ddd" strokeWidth="1"></path>
-                </pattern>
-              </defs>
-              <rect x="0" y="0" width="100%" height="100%" fill="url(#viewBox)"></rect>
+              
               <g clipPath="url(#viewBox)">
                 {
                   !isDefaultPresentation ?
