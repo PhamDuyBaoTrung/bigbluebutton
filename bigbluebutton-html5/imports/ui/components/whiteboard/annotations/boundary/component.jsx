@@ -50,16 +50,16 @@ export default class BoundaryDrawComponent extends Component {
   getCoordinates(boundaryInfo) {
     const { slideWidth, slideHeight } = this.props;
 
-    const _x = (boundaryInfo.startX / 100) * slideWidth;
-    const _y = (boundaryInfo.startY / 100) * slideHeight;
-    const _width = (boundaryInfo.width / 100) * slideWidth;
-    const _height = (boundaryInfo.height / 100) * slideHeight;
+    const x = (boundaryInfo.startX / 100) * slideWidth;
+    const y = (boundaryInfo.startY / 100) * slideHeight;
+    const width = (boundaryInfo.width / 100) * slideWidth;
+    const height = (boundaryInfo.height / 100) * slideHeight;
 
     return {
-      _x,
-      _y,
-      _width,
-      _height,
+      x,
+      y,
+      width,
+      height,
     };
   }
 
@@ -79,7 +79,7 @@ export default class BoundaryDrawComponent extends Component {
           height={results.height}
           fill="none"
           stroke="#1caba0"
-          strokeWidth={5}
+          strokeWidth={3}
           style={{ WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)' }}
         />
         {
@@ -88,12 +88,12 @@ export default class BoundaryDrawComponent extends Component {
               <rect
                 fill="white"
                 fillOpacity="0.8"
-                x={p.x - 5}
-                y={p.y - 5}
+                x={p.x - 3.5}
+                y={p.y - 3.5}
                 key={`${p.x}_corner_${p.y}`}
-                width={10}
-                height={10}
-                strokeWidth={10}
+                width={7}
+                height={7}
+                strokeWidth={7}
                 stroke="#1caba0"
                 strokeOpacity="0.8"
               />
