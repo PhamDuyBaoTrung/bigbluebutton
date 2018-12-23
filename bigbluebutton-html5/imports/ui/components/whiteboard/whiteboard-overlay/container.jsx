@@ -3,6 +3,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 import WhiteboardOverlayService from './service';
 import WhiteboardToolbarService from '../whiteboard-toolbar/service';
+import TextShapeService from '../annotations/text/service';
 import WhiteboardOverlay from './component';
 
 const WhiteboardOverlayContainer = (props) => {
@@ -27,6 +28,7 @@ export default withTracker((params) => {
     setActivatedShapeId: WhiteboardOverlayService.setActivatedShapeId,
     resetTextShapeSession: WhiteboardOverlayService.resetTextShapeSession,
     drawSettings: WhiteboardOverlayService.getWhiteboardToolbarValues(),
+    setTextShapeValue: TextShapeService.setTextShapeValue,
     userId: WhiteboardOverlayService.getCurrentUserId(),
     annotationsInfo,
   };
