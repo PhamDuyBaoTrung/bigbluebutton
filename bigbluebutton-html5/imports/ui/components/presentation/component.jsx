@@ -154,6 +154,7 @@ export default class PresentationArea extends Component {
         style={{
           width: adjustedSizes.width,
           height: adjustedSizes.height,
+          backgroundColor: 'white',
         }}
       >
         <TransitionGroup>
