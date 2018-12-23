@@ -224,8 +224,8 @@ h
     this.setState({
       textBoxX: transformedSvgPoint.x,
       textBoxY: transformedSvgPoint.y,
-      textBoxWidth: 50,
-      textBoxHeight: 50,
+      textBoxWidth: 500,
+      textBoxHeight: 500,
       isDrawing: true,
       isWritingText: true
     });
