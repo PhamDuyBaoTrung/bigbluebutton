@@ -157,7 +157,6 @@ export default class PresentationArea extends Component {
         style={{
           width: adjustedSizes.width,
           height: adjustedSizes.height,
-          backgroundColor: 'white',
         }}
       >
         <TransitionGroup>
@@ -183,16 +182,12 @@ export default class PresentationArea extends Component {
               xmlns="http://www.w3.org/2000/svg"
               className={styles.svgStyles}
             >
-              
               <g clipPath="url(#viewBox)">
-                {
-                  !isDefaultPresentation ?
-                    <Slide
-                      imageUri={imageUri}
-                      svgWidth={width}
-                      svgHeight={height}
-                    /> : null
-                }
+                <Slide
+                  imageUri={imageUri}
+                  svgWidth={width}
+                  svgHeight={height}
+                />
                 <AnnotationGroupContainer
                   width={width}
                   height={height}
