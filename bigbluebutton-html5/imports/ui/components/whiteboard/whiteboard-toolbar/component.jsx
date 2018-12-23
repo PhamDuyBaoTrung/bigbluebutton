@@ -430,6 +430,7 @@ class WhiteboardToolbar extends Component {
               to={this.state.colorSelected.value}
               begin="indefinite"
               dur={TRANSITION_DURATION}
+              repeatCount="0"
               fill="freeze"
             />
             <animate
@@ -440,6 +441,7 @@ class WhiteboardToolbar extends Component {
               to={this.state.thicknessSelected.value}
               begin="indefinite"
               dur={TRANSITION_DURATION}
+              repeatCount="0"
               fill="freeze"
             />
           </circle>
@@ -495,6 +497,7 @@ class WhiteboardToolbar extends Component {
               to={this.state.colorSelected.value}
               begin="indefinite"
               dur={TRANSITION_DURATION}
+              repeatCount="0"
               fill="freeze"
             />
           </rect>
