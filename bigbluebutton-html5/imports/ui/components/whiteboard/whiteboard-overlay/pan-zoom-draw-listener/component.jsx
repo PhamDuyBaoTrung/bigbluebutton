@@ -466,7 +466,7 @@ export default class PanZoomDrawListener extends React.Component {
 
   render() {
     const baseName = Meteor.settings.public.app.basename;
-    let cursor = 'pointer';
+    let cursor = 'default';
     if (this.state.canHSplitOnLeft || this.state.canHSplitOnRight) {
       cursor = `url('${baseName}/resources/images/whiteboard-cursor/resize_h.png') 0 8, default`;
     } else if (this.state.canVSplitOnBottom || this.state.canVSplitOnTop) {
@@ -474,7 +474,7 @@ export default class PanZoomDrawListener extends React.Component {
     } else if (this.state.moveInsideSelectedShape) {
       cursor = `url('${baseName}/resources/images/whiteboard-cursor/drag.png') 8 8, default`;
     } else if (this.state.moveInsideOtherShape) {
-      cursor = `url('${baseName}/resources/images/whiteboard-cursor/hand.png') 4 16, default`;
+      cursor = 'pointer';
     }
     const textDrawStyle = {
       width: '100%',
