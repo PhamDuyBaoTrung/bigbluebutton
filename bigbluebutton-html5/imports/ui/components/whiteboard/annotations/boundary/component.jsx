@@ -69,7 +69,6 @@ export default class BoundaryDrawComponent extends Component {
     const results = this.getCoordinates(rawBoundaryData);
     const cornerPoints = AnnotationHelpers.getCornerPoints(rawBoundaryData.startX, rawBoundaryData.startY,
       rawBoundaryData.width, rawBoundaryData.height, slideWidth, slideHeight);
-    console.log(`X: ${rawBoundaryData.startX}, Y: ${rawBoundaryData.startY}, width: ${rawBoundaryData.width}, height: ${rawBoundaryData.height}`);
 
     return (
       <g>
@@ -79,24 +78,23 @@ export default class BoundaryDrawComponent extends Component {
           width={results.width}
           height={results.height}
           fill="none"
-          stroke={'red'}
+          stroke="#1caba0"
           strokeWidth={5}
           style={{ WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)' }}
         />
         {
           cornerPoints.map(p => (
             <g>
-              <span>{`${p.x} - ${p.y}`}</span>
               <rect
                 fill="white"
                 fillOpacity="0.8"
-                x={p.x - 10}
-                y={p.y - 10}
+                x={p.x - 5}
+                y={p.y - 5}
                 key={`${p.x}_corner_${p.y}`}
-                width={20}
-                height={20}
-                strokeWidth={20}
-                stroke={'red'}
+                width={10}
+                height={10}
+                strokeWidth={10}
+                stroke="#1caba0"
                 strokeOpacity="0.8"
               />
             </g>

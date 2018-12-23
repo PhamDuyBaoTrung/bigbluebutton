@@ -283,7 +283,6 @@ export default class PencilDrawComponent extends Component {
     const lastPointsStr = this.props.annotation.points.join(',');
     if (newPointsStr !== lastPointsStr) {
       this.path = this.getCoordinates(annotation, slideWidth, slideHeight);
-      console.log(`path: ${this.path}`);
     }
   }
 
@@ -292,8 +291,6 @@ export default class PencilDrawComponent extends Component {
       || (annotation.status === 'DRAW_END' && !annotation.commands)) {
       return undefined;
     }
-
-    console.log(`number of points: ${annotation.points.length}`);
 
     let data;
     // Final message, display smoothes coordinates
@@ -304,7 +301,6 @@ export default class PencilDrawComponent extends Component {
       data = PencilDrawComponent.getInitialCoordinates(annotation, slideWidth, slideHeight);
       // If it's not the first 2 cases - means we just got an update, updating the coordinates
     } else {
-      console.log('update Coordinates');
       data = this.updateCoordinates(annotation, slideWidth, slideHeight);
     }
 
@@ -338,44 +334,17 @@ export default class PencilDrawComponent extends Component {
   }
 
   render() {
-    const { annotation, slideWidth, slideHeight } = this.props;
-    const listPoint = [];
-    let i = 0;
-    while (i < this.points.length) {
-      const x = (this.points[i] / 100) * slideWidth;
-      const y = (this.points[i + 1] / 100) * slideHeight;
-      listPoint.push([x, y]);
-      i += 2;
-    }
+    const { annotation, slideWidth } = this.props;
     return (
-      <g>
-        {
-          listPoint.length > 0 ?
-            listPoint.map((p, j) => (
-              <rect
-                fill="white"
-                fillOpacity="0.8"
-                x={p[0] - 5}
-                y={p[1] - 5}
-                key={`${p[0]}_corner_${j}_${p[1]}`}
-                width={10}
-                height={10}
-                strokeWidth={10}
-                stroke={'red'}
-                strokeOpacity="0.8"
-              />
-            )) : null
-        }
-        <path
-          fill="none"
-          stroke={AnnotationHelpers.getFormattedColor(annotation.color)}
-          d={this.getCurrentPath()}
-          strokeWidth={AnnotationHelpers.getStrokeWidth(annotation.thickness, slideWidth)}
-          strokeLinejoin="round"
-          strokeLinecap="round"
-          style={{ WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)' }}
-        />
-      </g>
+      <path
+        fill="none"
+        stroke={AnnotationHelpers.getFormattedColor(annotation.color)}
+        d={this.getCurrentPath()}
+        strokeWidth={AnnotationHelpers.getStrokeWidth(annotation.thickness, slideWidth)}
+        strokeLinejoin="round"
+        strokeLinecap="round"
+        style={{ WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)' }}
+      />
     );
   }
 }
