@@ -96,6 +96,8 @@ export default withTracker(() => {
     children: <DefaultContent />,
   };
 
+  console.log(`hidePresentation: ${hidePresentation}`);
+
   if (MediaService.shouldShowWhiteboard() && !hidePresentation) {
     data.currentPresentation = MediaService.getPresentationInfo();
     data.children = <PresentationAreaContainer />;
