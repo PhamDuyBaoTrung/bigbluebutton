@@ -76,13 +76,13 @@ class WhiteboardToolbar extends Component {
         icon: 'pen_tool',
         value: 'pencil',
       },
-      thicknessSelected: { value: 4 },
+      thicknessSelected: { value: 2 },
       colorSelected: { value: '#000000' },
       fontSizeSelected: { value: 20 },
 
       // keeping the previous color and the thickness icon's radius selected for svg animation
       prevColorSelected: { value: '#000000' },
-      prevThicknessSelected: { value: 4 },
+      prevThicknessSelected: { value: 2 },
 
       // lists of tools/thickness/colors are not direct children of main toolbar buttons
       // and we want the list to close when onBlur fires at the main toolbar button
