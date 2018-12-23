@@ -131,9 +131,12 @@ export default class PresentationArea extends Component {
         !this.props.currentSlide.calculatedData) {
       return null;
     }
+    const PRESENTATION_CONFIG = Meteor.settings.public.presentation;
     // to control the size of the svg wrapper manually
     // and adjust cursor's thickness, so that svg didn't scale it automatically
     const adjustedSizes = this.calculateSize();
+    const isDefaultPresentation = this.props.currentPresentation
+      && this.props.currentPresentation.name === PRESENTATION_CONFIG.defaultPresentationFile;
 
     // a reference to the slide object
     const slideObj = this.props.currentSlide;
@@ -195,11 +198,14 @@ export default class PresentationArea extends Component {
               </defs>
               <rect x="0" y="0" width="100%" height="100%" fill="url(#viewBox)"></rect>
               <g clipPath="url(#viewBox)">
-                <Slide
-                  imageUri={imageUri}
-                  svgWidth={width}
-                  svgHeight={height}
-                />
+                {
+                  !isDefaultPresentation ?
+                    <Slide
+                      imageUri={imageUri}
+                      svgWidth={width}
+                      svgHeight={height}
+                    /> : null
+                }
                 <AnnotationGroupContainer
                   width={width}
                   height={height}

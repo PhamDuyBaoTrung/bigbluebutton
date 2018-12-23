@@ -12,10 +12,13 @@ const getCurrentSlide = () => {
   const currentPresentation = getCurrentPresentation();
 
   if (!currentPresentation) {
-    return null;
+    return {
+      currentPresentation: null,
+      currentSlide: null,
+    };
   }
 
-  return Slides.findOne(
+  const currentSlide = Slides.findOne(
     {
       presentationId: currentPresentation.id,
       current: true,
@@ -30,6 +33,10 @@ const getCurrentSlide = () => {
       },
     },
   );
+  return {
+    currentPresentation,
+    currentSlide,
+  };
 };
 
 const isPresenter = () => {
@@ -41,6 +48,7 @@ const getMultiUserStatus = () => {
   const data = WhiteboardMultiUser.findOne({ meetingId: Auth.meetingID });
   return data ? data.multiUser : false;
 };
+
 
 export default {
   getCurrentPresentation,
