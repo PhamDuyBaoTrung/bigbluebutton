@@ -24,7 +24,15 @@ function handleAddedAnnotation({
   meetingId, whiteboardId, userId, annotation,
 }) {
   const isOwn = Auth.meetingID === meetingId && Auth.userID === userId;
-  const query = addAnnotationQuery(meetingId, whiteboardId, userId, annotation);
+  let query;
+  if (annotation.annotationType === 'pencil') {
+    const currAnnotation = Annotations.findOne({ id: annotation.id });
+    const isModifyAnnotation = currAnnotation
+      && currAnnotation.annotationInfo.points.length === annotation.annotationInfo.points.length;
+    query = addAnnotationQuery(meetingId, whiteboardId, userId, annotation, isModifyAnnotation);
+  } else {
+    query = addAnnotationQuery(meetingId, whiteboardId, userId, annotation);
+  }
 
   if (!isOwn) {
     Annotations.upsert(query.selector, query.modifier);
