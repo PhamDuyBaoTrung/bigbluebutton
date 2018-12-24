@@ -282,9 +282,7 @@ export default class PencilDrawComponent extends Component {
     const newPointsStr = annotation.points.join(',');
     const lastPointsStr = this.props.annotation.points.join(',');
     if (newPointsStr !== lastPointsStr) {
-      console.log(`number of points: ${annotation.points.length}`);
       this.path = this.getCoordinates(annotation, slideWidth, slideHeight);
-      console.log(`new Path: ${this.path}`);
     }
   }
 
@@ -296,7 +294,6 @@ export default class PencilDrawComponent extends Component {
     let data;
     // Final message, display smoothes coordinates
     if (annotation.status === 'DRAW_END') {
-      console.log('draw final pencil');
       data = PencilDrawComponent.getFinalCoordinates(annotation, slideWidth, slideHeight);
       // Not a final message, but rendering it for the first time, creating a new path
     } else if (!this.path) {
@@ -319,12 +316,9 @@ export default class PencilDrawComponent extends Component {
     let i = this.points.length;
 
     if (points.length === this.points.length) {
-      console.log("reupdate points");
       i = 0;
       this.path = `M${(points[0] / 100) * slideWidth
         }, ${(points[1] / 100) * slideHeight}`;
-    } else {
-      console.log("adding new points");
     }
 
     let path = '';
