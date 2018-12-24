@@ -83,11 +83,13 @@ export default class PanZoomDrawListener extends React.Component {
 
     if (!this.activeAnnotation) {
       this.activeAnnotation = activeAnnotation;
-      const { updateAnnotation, setTextShapeActiveId,
-        setTextShapeValue, setActivatedShapeId } = this.props.actions;
+      const {
+        setTextShapeActiveId,
+        setTextShapeValue,
+        setActivatedShapeId,
+      } = this.props.actions;
       activeAnnotation.status = DRAW_UPDATE;
-      activeAnnotation.annotationInfo.status = DRAW_UPDATE;
-      updateAnnotation(activeAnnotation);
+      this.sendUpdateAnnotation(activeAnnotation);
       if (activeAnnotation.annotationInfo.type === 'text') {
         setTextShapeActiveId(activeAnnotation.id);
         setTextShapeValue(activeAnnotation.annotationInfo.text);
@@ -96,7 +98,14 @@ export default class PanZoomDrawListener extends React.Component {
     } else {
       const { slideWidth, slideHeight } = this.props;
       const ac = this.getCoordinates(this.activeAnnotation.annotationInfo, slideWidth, slideHeight);
-      this.canActivateHSplit(transformedSvgPoint.x, transformedSvgPoint.y, ac.width, ac.height, ac.x, ac.y);
+      this.canActivateHSplit(
+        transformedSvgPoint.x,
+        transformedSvgPoint.y,
+        ac.width,
+        ac.height,
+        ac.x,
+        ac.y,
+      );
       if (this.state.canVSplitOnBottom || this.state.canVSplitOnTop
         || this.state.canHSplitOnRight || this.state.canHSplitOnLeft) {
         this.setState({ isResizing: true });
@@ -136,27 +145,71 @@ export default class PanZoomDrawListener extends React.Component {
     const { slideWidth, slideHeight } = this.props;
     switch (type) {
       case 'text': {
-        return TextDrawComponent.checkPointInsidePencil(annotation, px, py, slideWidth, slideHeight);
+        return TextDrawComponent.checkPointInsidePencil(
+          annotation,
+          px,
+          py,
+          slideWidth,
+          slideHeight,
+        );
       }
       case 'line': {
-        return LineDrawComponent.checkPointInsideLine(annotation, px, py, slideWidth, slideHeight);
+        return LineDrawComponent.checkPointInsideLine(
+          annotation,
+          px,
+          py,
+          slideWidth,
+          slideHeight,
+        );
       }
       case 'ellipse': {
-        return EllipseDrawComponent.checkPointInsideEllipse(annotation, px, py, slideWidth, slideHeight);
+        return EllipseDrawComponent.checkPointInsideEllipse(
+          annotation,
+          px,
+          py,
+          slideWidth,
+          slideHeight,
+        );
       }
       case 'triangle': {
-        return TriangleDrawComponent.checkPointInsideTriangle(annotation, px, py, slideWidth, slideHeight);
+        return TriangleDrawComponent.checkPointInsideTriangle(
+          annotation,
+          px,
+          py,
+          slideWidth,
+          slideHeight,
+        );
       }
       case 'rectangle': {
-        return RectangleDrawComponent.checkPointInsideRectangle(annotation, px, py, slideWidth, slideHeight);
+        return RectangleDrawComponent.checkPointInsideRectangle(
+          annotation,
+          px,
+          py,
+          slideWidth,
+          slideHeight,
+        );
       }
       case 'pencil': {
         if (forResizing) {
-          return PencilDrawComponent.checkPointInsidePencilBox(annotation, px, py, slideWidth, slideHeight);
+          return PencilDrawComponent.checkPointInsidePencilBox(
+            annotation,
+            px,
+            py,
+            slideWidth,
+            slideHeight,
+          );
         } else {
-          return PencilDrawComponent.checkPointInsidePencil(annotation, px, py, slideWidth, slideHeight);
+          return PencilDrawComponent.checkPointInsidePencil(
+            annotation,
+            px,
+            py,
+            slideWidth,
+            slideHeight,
+          );
         }
       }
+      default:
+        throw new Error(`Not supported annotation type: ${type}`);
     }
   }
 
@@ -213,11 +266,17 @@ export default class PanZoomDrawListener extends React.Component {
       // transformed active shape coordination
       const ac = this.getCoordinates(this.activeAnnotation.annotationInfo, slideWidth, slideHeight);
       // when user is dragging or resizing, only need to update shape position
-      this.updateNewPositionOfAnnotation(ac.x, ac.y, ac.width, ac.height,
-        transformedSvgPoint.x, transformedSvgPoint.y);
+      this.updateNewPositionOfAnnotation(
+        ac.x, ac.y, ac.width, ac.height,
+        transformedSvgPoint.x, transformedSvgPoint.y,
+      );
     } else {
       // find the selectable shape
-      const activeAnnotation = this.findActiveAnnotation(annotations, transformedSvgPoint.x, transformedSvgPoint.y, true);
+      const activeAnnotation = this.findActiveAnnotation(
+        annotations,
+        transformedSvgPoint.x, transformedSvgPoint.y,
+        true,
+      );
       // stop processing if moving to empty shapes space
       if (!activeAnnotation) {
         if (this.stateHaveChanged()) {
@@ -229,26 +288,32 @@ export default class PanZoomDrawListener extends React.Component {
             canVSplitOnTop: false,
             canVSplitOnBottom: false,
             isResizing: false,
-            isDragging: false
+            isDragging: false,
           });
         }
         return;
       }
       // change cursor behavior
       this.setState({
-        moveInsideSelectedShape: this.activeAnnotation && activeAnnotation._id === this.activeAnnotation._id,
-        moveInsideOtherShape: !this.activeAnnotation || activeAnnotation._id !== this.activeAnnotation._id,
+        moveInsideSelectedShape:
+        this.activeAnnotation && activeAnnotation._id === this.activeAnnotation._id,
+        moveInsideOtherShape:
+        !this.activeAnnotation || activeAnnotation._id !== this.activeAnnotation._id,
       });
       // transformed active coordinations
       const ac = this.getCoordinates(activeAnnotation.annotationInfo, slideWidth, slideHeight);
       // check cursor position for resizing
       if (this.state.moveInsideSelectedShape) {
-        this.canActivateHSplit(transformedSvgPoint.x, transformedSvgPoint.y,
-          ac.width, ac.height, ac.x, ac.y);
+        this.canActivateHSplit(
+          transformedSvgPoint.x, transformedSvgPoint.y,
+          ac.width, ac.height, ac.x, ac.y,
+        );
       }
       // update position of shape
-      this.updateNewPositionOfAnnotation(ac.x, ac.y, ac.width, ac.height,
-        transformedSvgPoint.x, transformedSvgPoint.y);
+      this.updateNewPositionOfAnnotation(
+        ac.x, ac.y, ac.width, ac.height,
+        transformedSvgPoint.x, transformedSvgPoint.y,
+      );
     }
   }
 
@@ -273,12 +338,26 @@ export default class PanZoomDrawListener extends React.Component {
       x: sx + (width / 2),
       y: sy + height,
     };
-    const canHSplitOnRight = this.checkPointInsideBox(x, y, midRight.x - this.cornerPointR, midRight.y - this.cornerPointR, midRight.x + this.cornerPointR, midRight.y + this.cornerPointR);
-    const canHSplitOnLeft = this.checkPointInsideBox(x, y, midLeft.x - this.cornerPointR,
-      midLeft.y - this.cornerPointR, midLeft.x + this.cornerPointR, midLeft.y + this.cornerPointR);
-    const canVSplitOnTop = this.checkPointInsideBox(x, y, midTop.x - this.cornerPointR,
-      midTop.y - this.cornerPointR, midTop.x + this.cornerPointR, midTop.y + this.cornerPointR);
-    const canVSplitOnBottom = this.checkPointInsideBox(x, y, midBottom.x - this.cornerPointR, midBottom.y - this.cornerPointR, midBottom.x + this.cornerPointR, midBottom.y + this.cornerPointR);
+    const canHSplitOnRight = this.checkPointInsideBox(
+      x, y,
+      midRight.x - this.cornerPointR, midRight.y - this.cornerPointR,
+      midRight.x + this.cornerPointR, midRight.y + this.cornerPointR,
+    );
+    const canHSplitOnLeft = this.checkPointInsideBox(
+      x, y,
+      midLeft.x - this.cornerPointR, midLeft.y - this.cornerPointR,
+      midLeft.x + this.cornerPointR, midLeft.y + this.cornerPointR,
+    );
+    const canVSplitOnTop = this.checkPointInsideBox(
+      x, y,
+      midTop.x - this.cornerPointR, midTop.y - this.cornerPointR,
+      midTop.x + this.cornerPointR, midTop.y + this.cornerPointR,
+    );
+    const canVSplitOnBottom = this.checkPointInsideBox(
+      x, y,
+      midBottom.x - this.cornerPointR, midBottom.y - this.cornerPointR,
+      midBottom.x + this.cornerPointR, midBottom.y + this.cornerPointR,
+    );
     this.setState({
       canHSplitOnRight,
       canHSplitOnLeft,
@@ -294,29 +373,62 @@ export default class PanZoomDrawListener extends React.Component {
     let newAnnotation;
     switch (type) {
       case 'text': {
-        newAnnotation = TextDrawComponent.transformPointsByAction(annotationInfo, action, px, py, ax, ay, aw, ah, this.initialX, this.initialY, slideWidth, slideHeight);
+        newAnnotation = TextDrawComponent.transformPointsByAction(
+          annotationInfo,
+          action,
+          px, py, ax, ay, aw, ah,
+          this.initialX, this.initialY,
+          slideWidth, slideHeight,
+        );
         break;
       }
       case 'line': {
-        newAnnotation = LineDrawComponent.transformPointsByAction(annotationInfo, action, px, py, ax, ay, aw, ah, this.initialX, this.initialY, slideWidth, slideHeight);
+        newAnnotation = LineDrawComponent.transformPointsByAction(
+          annotationInfo, action,
+          px, py, ax, ay, aw, ah,
+          this.initialX, this.initialY,
+          slideWidth, slideHeight,
+        );
         break;
       }
       case 'ellipse': {
-        newAnnotation = EllipseDrawComponent.transformPointsByAction(annotationInfo, action, px, py, ax, ay, aw, ah, this.initialX, this.initialY, slideWidth, slideHeight);
+        newAnnotation = EllipseDrawComponent.transformPointsByAction(
+          annotationInfo, action,
+          px, py, ax, ay, aw, ah,
+          this.initialX, this.initialY,
+          slideWidth, slideHeight,
+        );
         break;
       }
       case 'triangle': {
-        newAnnotation = TriangleDrawComponent.transformPointsByAction(annotationInfo, action, px, py, ax, ay, aw, ah, this.initialX, this.initialY, slideWidth, slideHeight);
+        newAnnotation = TriangleDrawComponent.transformPointsByAction(
+          annotationInfo, action,
+          px, py, ax, ay, aw, ah,
+          this.initialX, this.initialY,
+          slideWidth, slideHeight,
+        );
         break;
       }
       case 'rectangle': {
-        newAnnotation = RectangleDrawComponent.transformPointsByAction(annotationInfo, action, px, py, ax, ay, aw, ah, this.initialX, this.initialY, slideWidth, slideHeight);
+        newAnnotation = RectangleDrawComponent.transformPointsByAction(
+          annotationInfo, action,
+          px, py, ax, ay, aw, ah,
+          this.initialX, this.initialY,
+          slideWidth, slideHeight,
+        );
         break;
       }
       case 'pencil': {
-        newAnnotation = PencilDrawComponent.transformPointsByAction(annotationInfo, action, px, py, ax, ay, aw, ah, this.initialX, this.initialY, slideWidth, slideHeight);
+        newAnnotation = PencilDrawComponent.transformPointsByAction(
+          annotationInfo, action,
+          px, py, ax, ay, aw, ah,
+          this.initialX, this.initialY,
+          slideWidth, slideHeight,
+        );
         break;
       }
+      default:
+        throw new Error(`not supported annotation type: ${type}`);
     }
     return newAnnotation;
   }
@@ -334,21 +446,35 @@ export default class PanZoomDrawListener extends React.Component {
 
     let newAnnotation;
     if (this.state.isResizing && this.state.canHSplitOnLeft) {
-      newAnnotation = this.updateShapePositionByTypeAndAction(HORIZONTAL_LEFT, ax, ay, aw, ah, px, py);
+      newAnnotation = this.updateShapePositionByTypeAndAction(
+        HORIZONTAL_LEFT,
+        ax, ay, aw, ah, px, py,
+      );
     } else if (this.state.isResizing && this.state.canHSplitOnRight) {
-      newAnnotation = this.updateShapePositionByTypeAndAction(HORIZONTAL_RIGHT, ax, ay, aw, ah, px, py);
+      newAnnotation = this.updateShapePositionByTypeAndAction(
+        HORIZONTAL_RIGHT,
+        ax, ay, aw, ah, px, py,
+      );
     } else if (this.state.isResizing && this.state.canVSplitOnTop) {
-      newAnnotation = this.updateShapePositionByTypeAndAction(VERTICAL_TOP, ax, ay, aw, ah, px, py);
+      newAnnotation = this.updateShapePositionByTypeAndAction(
+        VERTICAL_TOP,
+        ax, ay, aw, ah, px, py,
+      );
     } else if (this.state.isResizing && this.state.canVSplitOnBottom) {
-      newAnnotation = this.updateShapePositionByTypeAndAction(VERTICAL_BOTTOM, ax, ay, aw, ah, px, py);
+      newAnnotation = this.updateShapePositionByTypeAndAction(
+        VERTICAL_BOTTOM,
+        ax, ay, aw, ah, px, py,
+      );
     } else if (this.state.isDragging) {
-      newAnnotation = this.updateShapePositionByTypeAndAction(DRAG, ax, ay, aw, ah, px, py);
+      newAnnotation = this.updateShapePositionByTypeAndAction(
+        DRAG,
+        ax, ay, aw, ah, px, py,
+      );
     }
 
     // update active annotation
     this.activeAnnotation.annotationInfo = newAnnotation;
-    const { updateAnnotation } = this.props.actions;
-    updateAnnotation(this.activeAnnotation);
+    this.sendUpdateAnnotation(this.activeAnnotation);
 
     if (this.state.isDragging) {
       this.initialX = px;
@@ -379,20 +505,11 @@ export default class PanZoomDrawListener extends React.Component {
     const isActive =
       this.isActiveAnnotation(this.activeAnnotation, transformedSvgPoint.x, transformedSvgPoint.y);
     if (!isActive) {
-      const { updateAnnotation } = this.props.actions;
-      this.activeAnnotation.annotationInfo.text = this.props.drawSettings.textShapeValue;
-      updateAnnotation(this.activeAnnotation);
+      this.sendUpdateAnnotation(this.activeAnnotation);
       this.sendLastUpdate();
       this.activeAnnotation = undefined;
     }
     this.resetState();
-  }
-
-  getActiveShapeId() {
-    if (!this.activeAnnotation) {
-      return null;
-    }
-    return this.activeAnnotation.id.split('-fake')[0];
   }
 
   sendLastUpdate() {
@@ -400,22 +517,53 @@ export default class PanZoomDrawListener extends React.Component {
       return;
     }
     const { setTextShapeActiveId, setActivatedShapeId } = this.props.actions;
-    this.handleDrawText(
-      { x: this.activeAnnotation.annotationInfo.x, y: this.activeAnnotation.annotationInfo.y },
-      this.activeAnnotation.annotationInfo.textBoxWidth,
-      this.activeAnnotation.annotationInfo.textBoxHeight,
-      DRAW_UPDATE,
-      this.getActiveShapeId(),
-      this.props.drawSettings.textShapeValue,
-    );
+    this.activeAnnotation.status = DRAW_END;
+    this.sendUpdateAnnotation(this.activeAnnotation);
     if (this.activeAnnotation.annotationInfo.type === 'text') {
       setTextShapeActiveId(null);
     }
     setActivatedShapeId(null);
   }
 
+  sendUpdateAnnotation(annotation) {
+    if (!annotation) {
+      return null;
+    }
+    const annotationId = annotation.id.split('-fake')[0];
+    switch (annotation.annotationInfo.type) {
+      case 'text':
+        return this.handleDrawText(
+          { x: annotation.annotationInfo.x, y: annotation.annotationInfo.y },
+          annotation.annotationInfo.textBoxWidth,
+          annotation.annotationInfo.textBoxHeight,
+          annotation.status,
+          annotationId,
+          this.props.drawSettings.textShapeValue,
+        );
+      case 'pencil':
+        return this.handleDrawPencil(
+          annotation.annotationInfo.points,
+          annotation.status,
+          annotationId,
+        );
+      case 'rectangle':
+      case 'triangle':
+      case 'ellipse':
+      case 'line':
+        return this.handleDrawCommonAnnotation(
+          { x: annotation.annotationInfo.points[0], y: annotation.annotationInfo.points[1] },
+          { x: annotation.annotationInfo.points[2], y: annotation.annotationInfo.points[3] },
+          annotation.status,
+          annotationId,
+          annotation.annotationInfo.type,
+        );
+      default:
+        throw new Error(`Not supported annotation type: ${annotation.annotationInfo.type}`);
+    }
+  }
+
   handleDrawText(startPoint, width, height, status, id, text) {
-    const { normalizeFont, sendAnnotation } = this.props.actions;
+    const { normalizeFont, sendAnnotation, updateAnnotation } = this.props.actions;
 
     const annotation = {
       id,
@@ -441,7 +589,78 @@ export default class PanZoomDrawListener extends React.Component {
       position: 0,
     };
 
-    sendAnnotation(annotation);
+    if (status === DRAW_UPDATE) {
+      updateAnnotation(annotation);
+    } else {
+      sendAnnotation(annotation);
+    }
+  }
+
+  handleDrawCommonAnnotation(startPoint, endPoint, status, id, shapeType) {
+    const { normalizeThickness, sendAnnotation, updateAnnotation } = this.props.actions;
+
+    const annotation = {
+      id,
+      status,
+      annotationType: shapeType,
+      annotationInfo: {
+        color: this.props.drawSettings.color,
+        thickness: normalizeThickness(this.props.drawSettings.thickness),
+        points: [
+          startPoint.x,
+          startPoint.y,
+          endPoint.x,
+          endPoint.y,
+        ],
+        id,
+        whiteboardId: this.props.whiteboardId,
+        status,
+        type: shapeType,
+      },
+      wbId: this.props.whiteboardId,
+      userId: this.props.userId,
+      position: 0,
+    };
+
+    if (status === DRAW_UPDATE) {
+      updateAnnotation(annotation);
+    } else {
+      sendAnnotation(annotation);
+    }
+  }
+
+  handleDrawPencil(points, status, id, dimensions) {
+    const { normalizeThickness, sendAnnotation, updateAnnotation } = this.props.actions;
+    const { whiteboardId, userId } = this.props;
+
+    const annotation = {
+      id,
+      status,
+      annotationType: 'pencil',
+      annotationInfo: {
+        color: this.props.drawSettings.color,
+        thickness: normalizeThickness(this.props.drawSettings.thickness),
+        points,
+        id,
+        whiteboardId,
+        status,
+        type: 'pencil',
+      },
+      wbId: whiteboardId,
+      userId,
+      position: 0,
+    };
+
+    // dimensions are added to the 'DRAW_END', last message
+    if (dimensions) {
+      annotation.annotationInfo.dimensions = dimensions;
+    }
+
+    if (status === DRAW_UPDATE) {
+      updateAnnotation(annotation);
+    } else {
+      sendAnnotation(annotation);
+    }
   }
 
   resetState() {
