@@ -282,8 +282,9 @@ export default class PencilDrawComponent extends Component {
     const newPointsStr = annotation.points.join(',');
     const lastPointsStr = this.props.annotation.points.join(',');
     if (newPointsStr !== lastPointsStr) {
-      console.log(`updated PATH`);
+      console.log(`number of points: ${annotation.points.length}`);
       this.path = this.getCoordinates(annotation, slideWidth, slideHeight);
+      console.log(`new Path: ${this.path}`);
     }
   }
 
