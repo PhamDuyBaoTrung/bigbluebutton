@@ -84,11 +84,15 @@ export default class PanZoomDrawListener extends React.Component {
     if (!this.activeAnnotation) {
       this.activeAnnotation = activeAnnotation;
       const {
+        updateAnnotation,
         setTextShapeActiveId,
         setTextShapeValue,
         setActivatedShapeId,
       } = this.props.actions;
       activeAnnotation.status = DRAW_UPDATE;
+      activeAnnotation.annotationInfo.status = DRAW_UPDATE;
+      updateAnnotation(activeAnnotation);
+      // synced to Redis
       this.sendUpdateAnnotation(activeAnnotation);
       if (activeAnnotation.annotationInfo.type === 'text') {
         setTextShapeActiveId(activeAnnotation.id);
@@ -474,6 +478,8 @@ export default class PanZoomDrawListener extends React.Component {
 
     // update active annotation
     this.activeAnnotation.annotationInfo = newAnnotation;
+    const { updateAnnotation } = this.props.actions;
+    updateAnnotation(this.activeAnnotation);
     this.sendUpdateAnnotation(this.activeAnnotation);
 
     if (this.state.isDragging) {
@@ -505,6 +511,9 @@ export default class PanZoomDrawListener extends React.Component {
     const isActive =
       this.isActiveAnnotation(this.activeAnnotation, transformedSvgPoint.x, transformedSvgPoint.y);
     if (!isActive) {
+      const { updateAnnotation } = this.props.actions;
+      this.activeAnnotation.annotationInfo.text = this.props.drawSettings.textShapeValue;
+      updateAnnotation(this.activeAnnotation);
       this.sendUpdateAnnotation(this.activeAnnotation);
       this.sendLastUpdate();
       this.activeAnnotation = undefined;
@@ -563,7 +572,7 @@ export default class PanZoomDrawListener extends React.Component {
   }
 
   handleDrawText(startPoint, width, height, status, id, text) {
-    const { normalizeFont, sendAnnotation, updateAnnotation } = this.props.actions;
+    const { normalizeFont, sendAnnotation } = this.props.actions;
 
     const annotation = {
       id,
@@ -588,16 +597,12 @@ export default class PanZoomDrawListener extends React.Component {
       userId: this.props.userId,
       position: 0,
     };
-
-    if (status === DRAW_UPDATE) {
-      updateAnnotation(annotation);
-    } else {
-      sendAnnotation(annotation);
-    }
+    // synced to Redis
+    sendAnnotation(annotation, true);
   }
 
   handleDrawCommonAnnotation(startPoint, endPoint, status, id, shapeType) {
-    const { normalizeThickness, sendAnnotation, updateAnnotation } = this.props.actions;
+    const { normalizeThickness, sendAnnotation } = this.props.actions;
 
     const annotation = {
       id,
@@ -621,16 +626,12 @@ export default class PanZoomDrawListener extends React.Component {
       userId: this.props.userId,
       position: 0,
     };
-
-    if (status === DRAW_UPDATE) {
-      updateAnnotation(annotation);
-    } else {
-      sendAnnotation(annotation);
-    }
+    // synced to Redis
+    sendAnnotation(annotation, true);
   }
 
   handleDrawPencil(points, status, id, dimensions) {
-    const { normalizeThickness, sendAnnotation, updateAnnotation } = this.props.actions;
+    const { normalizeThickness, sendAnnotation } = this.props.actions;
     const { whiteboardId, userId } = this.props;
 
     const annotation = {
@@ -656,11 +657,8 @@ export default class PanZoomDrawListener extends React.Component {
       annotation.annotationInfo.dimensions = dimensions;
     }
 
-    if (status === DRAW_UPDATE) {
-      updateAnnotation(annotation);
-    } else {
-      sendAnnotation(annotation);
-    }
+    // synced to Redis
+    sendAnnotation(annotation, true);
   }
 
   resetState() {

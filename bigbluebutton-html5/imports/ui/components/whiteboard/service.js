@@ -155,7 +155,7 @@ const proccessAnnotationsQueue = () => {
   setTimeout(proccessAnnotationsQueue, delayTime);
 };
 
-export function sendAnnotation(annotation) {
+export function sendAnnotation(annotation, onlySyncToRedis = false) {
   // Prevent sending annotations while disconnected
   if (!Meteor.status().connected) return;
 
@@ -163,7 +163,7 @@ export function sendAnnotation(annotation) {
   if (!annotationsSenderIsRunning) setTimeout(proccessAnnotationsQueue, annotationsBufferTimeMin);
 
   // skip optimistic for draw end since the smoothing is done in akka
-  if (annotation.status === DRAW_END) return;
+  if (annotation.status === DRAW_END || onlySyncToRedis) return;
 
   const { position, ...relevantAnotation } = annotation;
   const queryFake = addAnnotationQuery(
@@ -185,10 +185,6 @@ export function sendAnnotation(annotation) {
 export function updateAnnotation(annotation) {
   // Prevent sending annotations while disconnected
   if (!Meteor.status().connected) return;
-
-  annotationsQueue.push(annotation);
-  if (!annotationsSenderIsRunning) setTimeout(proccessAnnotationsQueue, annotationsBufferTimeMin);
-
   // skip optimistic for draw end since the smoothing is done in akka
   if (annotation.status === DRAW_END) return;
 
@@ -204,7 +200,7 @@ export function updateAnnotation(annotation) {
         color: increaseBrightness(annotation.annotationInfo.color, 40),
       },
     },
-    true
+    true,
   );
 
   const cb = (err, numChanged) => {
@@ -221,6 +217,7 @@ export function updateAnnotation(annotation) {
 
   Annotations.upsert(updateQuery.selector, updateQuery.modifier, cb);
 }
+
 
 WhiteboardMultiUser.find({ meetingId: Auth.meetingID }).observeChanges({
   changed: clearFakeAnnotations,
