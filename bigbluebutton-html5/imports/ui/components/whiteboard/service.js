@@ -205,7 +205,7 @@ export function updateAnnotation(annotation) {
       position,
       annotationInfo: {
         ...annotation.annotationInfo,
-        color: increaseBrightness(annotation.annotationInfo.color, 40),
+        color: annotation.annotationInfo.color,
       },
     },
     true,

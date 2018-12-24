@@ -289,8 +289,7 @@ export default class PencilDrawComponent extends Component {
   }
 
   getCoordinates(annotation, slideWidth, slideHeight) {
-    if ((!annotation || annotation.points.length === 0)
-      || (annotation.status === 'DRAW_END' && !annotation.commands)) {
+    if (!annotation || annotation.points.length === 0) {
       return undefined;
     }
 
