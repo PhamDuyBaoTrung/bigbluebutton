@@ -497,7 +497,6 @@ export default class PanZoomDrawListener extends React.Component {
   // main mouse up handler
   handleMouseUp(evt) {
     window.removeEventListener('mouseup', this.handleMouseUp);
-    this.isPressed = false;
     const { clientX, clientY } = evt;
     this.commonEndUpdateShape(clientX, clientY);
   }

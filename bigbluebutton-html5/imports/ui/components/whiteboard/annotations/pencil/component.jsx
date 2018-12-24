@@ -317,9 +317,12 @@ export default class PencilDrawComponent extends Component {
     let i = this.points.length;
 
     if (points.length === this.points.length) {
+      console.log("reupdate points");
       i = 0;
       this.path = `M${(points[0] / 100) * slideWidth
         }, ${(points[1] / 100) * slideHeight}`;
+    } else {
+      console.log("adding new points");
     }
 
     let path = '';
