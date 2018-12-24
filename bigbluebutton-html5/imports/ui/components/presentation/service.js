@@ -33,10 +33,13 @@ const getCurrentSlide = () => {
       },
     },
   );
+  /**
   return {
     currentPresentation,
     currentSlide,
   };
+   */
+  return currentSlide;
 };
 
 const isPresenter = () => {

@@ -135,8 +135,8 @@ export default class PresentationArea extends Component {
     // to control the size of the svg wrapper manually
     // and adjust cursor's thickness, so that svg didn't scale it automatically
     const adjustedSizes = this.calculateSize();
-    const isDefaultPresentation = this.props.currentPresentation
-      && this.props.currentPresentation.name === PRESENTATION_CONFIG.defaultPresentationFile;
+    // const isDefaultPresentation = this.props.currentPresentation
+    //  && this.props.currentPresentation.name === PRESENTATION_CONFIG.defaultPresentationFile;
 
     // a reference to the slide object
     const slideObj = this.props.currentSlide;
@@ -183,29 +183,13 @@ export default class PresentationArea extends Component {
               xmlns="http://www.w3.org/2000/svg"
               className={styles.svgStyles}
             >
-              <defs>
-                <pattern id="smallGrid" width="16" height="16" patternUnits="userSpaceOnUse">
-                  <path d="M 16 0 L 0 0 0 16" fill="none" stroke="#eee" strokeWidth="0.5"></path>
-                </pattern>
-                <pattern id="viewBox"
-                         width="80"
-                         height="80"
-                         patternUnits="userSpaceOnUse"
-                         patternTransform="translate(0 0)">
-                  <rect width="80" height="80" fill="url(#smallGrid)"></rect>
-                  <path d="M 80 0 L 0 0 0 80" fill="none" stroke="#ddd" strokeWidth="1"></path>
-                </pattern>
-              </defs>
               <rect x="0" y="0" width="100%" height="100%" fill="url(#viewBox)"></rect>
               <g clipPath="url(#viewBox)">
-                {
-                  !isDefaultPresentation ?
-                    <Slide
-                      imageUri={imageUri}
-                      svgWidth={width}
-                      svgHeight={height}
-                    /> : null
-                }
+                <Slide
+                  imageUri={imageUri}
+                  svgWidth={width}
+                  svgHeight={height}
+                />
                 <AnnotationGroupContainer
                   width={width}
                   height={height}
