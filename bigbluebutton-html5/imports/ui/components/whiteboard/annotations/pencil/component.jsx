@@ -12,7 +12,8 @@ export default class PencilDrawComponent extends Component {
       }, ${(points[1] / 100) * slideHeight}`;
       while (i < points.length) {
         path = `${path} L${(points[i] / 100) * slideWidth
-        }, ${(points[i + 1] / 100) * slideHeight}`;
+        }, ${(points[i + 1] / 100) * slideHeight} M${(points[i] / 100) * slideWidth
+          }, ${(points[i + 1] / 100) * slideHeight}`;
         i += 2;
       }
     }
