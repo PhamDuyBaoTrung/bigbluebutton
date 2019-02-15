@@ -72,7 +72,7 @@
     },
 
     "kurento": {
-      "wsUrl": "HOST",
+      "wsUrl": "wss://coursedy.cf/bbb-webrtc-sfu",
       "chromeDefaultExtensionKey": "akgoaoikmbmhcopjgakkcepdgdgkjfbc",
       "chromeDefaultExtensionLink": "https://chrome.google.com/webstore/detail/bigbluebutton-screenshare/akgoaoikmbmhcopjgakkcepdgdgkjfbc",
       "chromeExtensionKey": "KEY",
@@ -87,10 +87,10 @@
           "max": 480
         }
       },
-      "enableScreensharing": false,
-      "enableVideo": false,
-      "enableVideoStats": false,
-      "enableListenOnly": false
+      "enableScreensharing": true,
+      "enableVideo": true,
+      "enableVideoStats": true,
+      "enableListenOnly": true
     },
 
     "acl": {
