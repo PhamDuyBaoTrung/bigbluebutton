@@ -80,6 +80,8 @@ function callIntoConference(voiceBridge, callback, isListenOnly, stunTurn = null
 			} else {
 				voiceBridge = conferenceVoiceBridge;
 			}
+			callerIdName = callerIdName.replace(/"/g, "'");
+
 			console.log(callerIdName);
 			webrtc_call(callerIdName, voiceBridge, callback, isListenOnly);
 		});
@@ -534,12 +536,15 @@ function make_call(username, voiceBridge, server, callback, recall, isListenOnly
 	currentSession.mediaHandler.on('iceConnectionConnected', function() {
 		console.log('Received ICE status changed to connected');
 		if (callICEConnected === false) {
-			callICEConnected = true;
-			clearTimeout(iceConnectedTimeout);
-			if (callActive === true) {
-				callback({'status':'started'});
+			// Edge is only ready once the status is 'completed' so we need to skip this step
+			if (!bowser.msedge) {
+				callICEConnected = true;
+				clearTimeout(iceConnectedTimeout);
+				if (callActive === true) {
+					callback({'status':'started'});
+				}
+				clearTimeout(callTimeout);
 			}
-			clearTimeout(callTimeout);
 		}
 	});
 	
@@ -588,11 +593,7 @@ function releaseUserMedia() {
 }
 
 function isWebRTCAvailable() {
-	if (bowser.msedge) {
-		return false;
-	} else {
-		return SIP.WebRTC.isSupported();
-	}
+	return SIP.WebRTC.isSupported();
 }
 
 function getCallStatus() {
