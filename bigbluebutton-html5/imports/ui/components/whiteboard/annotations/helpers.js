@@ -20,7 +20,26 @@ const getFormattedColor = (color) => {
 
 const getStrokeWidth = (thickness, slideWidth) => (thickness * slideWidth) / 100;
 
+const getCornerPoints = (startX, startY, width, height, slideWidth, slideHeight) => {
+  const _startX = (startX / 100) * slideWidth;
+  const _startY = (startY / 100) * slideHeight;
+  const _width = (width / 100) * slideWidth;
+  const _height = (height / 100) * slideHeight;
+
+  return [
+    { x: _startX, y: _startY }, // top left corner
+    { x: _startX + (_width / 2), y: _startY }, // top mid corner
+    { x: _startX + _width, y: _startY }, // top right corner
+    { x: _startX + _width, y: _startY + (_height / 2) }, // top right mid corner
+    { x: _startX + _width, y: _startY + _height }, // bottom right corner
+    { x: _startX + (_width / 2), y: _startY + _height }, // bottom mid corner
+    { x: _startX, y: _startY + _height }, // bottom left corner,
+    { x: _startX, y: _startY + (_height / 2) }, // bottom left corner,
+  ];
+};
+
 export default {
   getFormattedColor,
   getStrokeWidth,
+  getCornerPoints,
 };
