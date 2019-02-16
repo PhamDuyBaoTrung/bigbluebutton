@@ -6,6 +6,7 @@ import TriangleDrawComponent from '../../annotations/triangle/component';
 import RectangleDrawComponent from '../../annotations/rectangle/component';
 import PencilDrawComponent from '../../annotations/pencil/component';
 import BoundaryDrawComponent from '../../annotations/boundary/component';
+import ImageDrawComponent from '../../annotations/image/component';
 // import PropTypes from 'prop-types';
 
 const ANNOTATION_CONFIG = Meteor.settings.public.whiteboard.annotations;
@@ -72,9 +73,18 @@ export default class PanZoomDrawListener extends React.Component {
     let activeAnnotation;
 
     if (this.activeAnnotation && this.activeAnnotation.annotationInfo.type === 'pencil') {
-      activeAnnotation = this.findActiveAnnotation(annotations, transformedSvgPoint.x, transformedSvgPoint.y, true);
+      activeAnnotation = this.findActiveAnnotation(
+        annotations,
+        transformedSvgPoint.x,
+        transformedSvgPoint.y,
+        true,
+      );
     } else {
-      activeAnnotation = this.findActiveAnnotation(annotations, transformedSvgPoint.x, transformedSvgPoint.y);
+      activeAnnotation = this.findActiveAnnotation(
+        annotations,
+        transformedSvgPoint.x,
+        transformedSvgPoint.y,
+      );
     }
 
     if (!activeAnnotation) {

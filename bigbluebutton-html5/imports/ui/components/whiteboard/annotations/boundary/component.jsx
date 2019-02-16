@@ -1,19 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import AnnotationHelpers from '../helpers';
-import TextDrawComponent from "../text/component";
-import LineDrawComponent from "../line/component";
-import EllipseDrawComponent from "../ellipse/component";
-import TriangleDrawComponent from "../triangle/component";
-import RectangleDrawComponent from "../rectangle/component";
-import PencilDrawComponent from "../pencil/component";
+import TextDrawComponent from '../text/component';
+import LineDrawComponent from '../line/component';
+import EllipseDrawComponent from '../ellipse/component';
+import TriangleDrawComponent from '../triangle/component';
+import RectangleDrawComponent from '../rectangle/component';
+import PencilDrawComponent from '../pencil/component';
 import ImageDrawComponent from '../image/component';
 
 export default class BoundaryDrawComponent extends Component {
-
-  shouldComponentUpdate(nextProps) {
-    return this.props.version !== nextProps.version;
-  }
 
   static getShapeBoundaryData(annotation) {
     const { type } = annotation;
@@ -55,6 +51,10 @@ export default class BoundaryDrawComponent extends Component {
     return boundaryInfo;
   }
 
+  shouldComponentUpdate(nextProps) {
+    return this.props.version !== nextProps.version;
+  }
+
   getCoordinates(boundaryInfo) {
     const { slideWidth, slideHeight } = this.props;
 
@@ -85,8 +85,8 @@ export default class BoundaryDrawComponent extends Component {
           y={results.y}
           width={results.width}
           height={results.height}
-          fill="none"
-          stroke="#1caba0"
+          fill='none'
+          stroke='#1caba0'
           strokeWidth={3}
           style={{ WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)' }}
         />
@@ -94,16 +94,16 @@ export default class BoundaryDrawComponent extends Component {
           cornerPoints.map(p => (
             <g>
               <rect
-                fill="white"
-                fillOpacity="0.8"
+                fill='white'
+                fillOpacity='0.8'
                 x={p.x - 3.5}
                 y={p.y - 3.5}
                 key={`${p.x}_corner_${p.y}`}
                 width={7}
                 height={7}
                 strokeWidth={7}
-                stroke="#1caba0"
-                strokeOpacity="0.8"
+                stroke='#1caba0'
+                strokeOpacity='0.8'
               />
             </g>
           ))
