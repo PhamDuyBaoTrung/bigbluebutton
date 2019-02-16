@@ -13,7 +13,7 @@ export default withTracker((params) => {
   const activeTextShapeId = TextShapeService.activeTextShapeId();
   let isActive = false;
 
-  if ((isPresenter || isMultiUser) && activeTextShapeId === params.annotation.id) {
+  if ((isPresenter || isMultiUser) && activeTextShapeId !== null && activeTextShapeId.indexOf(params.annotation.id) >= 0) {
     isActive = true;
   }
   const currentShape = params.annotation.id;
