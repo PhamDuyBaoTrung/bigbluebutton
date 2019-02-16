@@ -64,3 +64,11 @@
   right: 0;
   bottom: 0;
 }
+
+.boardListContainer {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: row;
+  background-color: #f4f7f8;
+}

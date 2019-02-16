@@ -309,6 +309,12 @@ export default class PresentationArea extends Component {
             ref={(ref) => { this.refWhiteboardArea = ref; }}
             className={styles.whiteboardSizeAvailable}
           />
+          {
+            this.state.showSlide ?
+              <div className={styles.boardListContainer}>
+                <PresentationListContainer />
+              </div> : null
+          }
           {this.state.showSlide ?
               this.renderPresentationArea()
             : null }
