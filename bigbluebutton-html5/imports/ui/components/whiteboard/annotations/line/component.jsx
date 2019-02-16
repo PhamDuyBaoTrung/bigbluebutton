@@ -103,7 +103,7 @@ export default class LineDrawComponent extends Component {
 
   render() {
     const { annotation, slideWidth, slideHeight } = this.props;
-    const results = this.getCoordinates(annotation, slideWidth, slideHeight);
+    const results = LineDrawComponent.getCoordinates(annotation, slideWidth, slideHeight);
     const { x1, y1, x2, y2 } = results;
 
     return (
