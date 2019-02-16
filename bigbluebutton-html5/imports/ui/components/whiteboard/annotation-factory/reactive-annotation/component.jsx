@@ -1,16 +1,32 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import BoundaryDrawComponent from '../../annotations/boundary/component';
 
 const ReactiveAnnotation = (props) => {
   const Component = props.drawObject;
+  const {
+    annotation, activeShapeId,
+    slideWidth, slideHeight,
+  } = props;
 
   return (
-    <Component
-      version={props.annotation.version}
-      annotation={props.annotation.annotationInfo}
-      slideWidth={props.slideWidth}
-      slideHeight={props.slideHeight}
-    />
+    <g>
+      <Component
+        version={props.annotation.version}
+        annotation={props.annotation.annotationInfo}
+        slideWidth={props.slideWidth}
+        slideHeight={props.slideHeight}
+      />
+      {
+        activeShapeId === annotation.id ?
+          <BoundaryDrawComponent
+            version={props.annotation.version}
+            annotation={annotation}
+            slideWidth={slideWidth}
+            slideHeight={slideHeight}
+          /> : null
+      }
+    </g>
   );
 };
 
