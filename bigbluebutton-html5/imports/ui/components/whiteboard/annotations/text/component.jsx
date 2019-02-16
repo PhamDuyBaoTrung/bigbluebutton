@@ -33,7 +33,7 @@ export default class TextDrawComponent extends Component {
   static getPresenterStyles(results) {
     const styles = {
       fontFamily: 'Arial',
-      border: '1px solid black',
+      border: '1px dashed black',
       width: '100%',
       height: '100%',
       resize: 'none',
@@ -282,6 +282,7 @@ export default class TextDrawComponent extends Component {
           <textarea
             id={this.props.annotation.id}
             maxLength="1024"
+            placeholder="Typing..."
             ref={(ref) => { this.textArea = ref; }}
             onChange={this.onChangeHandler}
             onBlur={this.handleOnBlur}

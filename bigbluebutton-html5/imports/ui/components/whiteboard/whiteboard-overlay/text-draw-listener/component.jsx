@@ -185,7 +185,6 @@ h
     if (!this.state.isDrawing && !this.state.isWritingText) {
       if (isLeftClick) {
         window.addEventListener('mouseup', this.handleMouseUp);
-        window.addEventListener('mousemove', this.handleMouseMove, true);
 
         const { clientX, clientY } = event;
         this.commonDrawStartHandler(clientX, clientY);
@@ -226,7 +225,10 @@ h
     this.setState({
       textBoxX: transformedSvgPoint.x,
       textBoxY: transformedSvgPoint.y,
+      textBoxWidth: 250,
+      textBoxHeight: 125,
       isDrawing: true,
+      isWritingText: true
     });
   }
 
