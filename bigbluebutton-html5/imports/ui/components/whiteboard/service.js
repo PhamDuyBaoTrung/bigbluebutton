@@ -161,7 +161,7 @@ const proccessAnnotationsQueue = () => {
   setTimeout(proccessAnnotationsQueue, delayTime);
 };
 
-export function sendAnnotation(annotation) {
+export function sendAnnotation(annotation, onlySyncToRedis = false) {
   // Prevent sending annotations while disconnected
   if (!Meteor.status().connected) return;
 
@@ -169,7 +169,7 @@ export function sendAnnotation(annotation) {
   if (!annotationsSenderIsRunning) setTimeout(proccessAnnotationsQueue, annotationsBufferTimeMin);
 
   // skip optimistic for draw end since the smoothing is done in akka
-  if (annotation.status === DRAW_END) return;
+  if (annotation.status === DRAW_END || onlySyncToRedis) return;
 
   console.log(`Create/Update Fake Annotation ${annotation.id} - status ${annotation.status}`);
 
