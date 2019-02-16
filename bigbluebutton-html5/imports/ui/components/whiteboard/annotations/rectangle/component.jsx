@@ -4,13 +4,76 @@ import AnnotationHelpers from '../helpers';
 
 export default class RectangleDrawComponent extends Component {
 
+  static checkPointInsideRectangle(annotation, px, py, slideWidth, slideHeight) {
+    const {x, y, width, height} = RectangleDrawComponent.getCoordinates(annotation, slideWidth, slideHeight);
+    return px >= x && px <= (x + width) && py >= y && py <= (y + height);
+  }
+
+  static getTopLeftCornerCoordinates(annotation) {
+    const { points } = annotation;
+    if (!Array.isArray(points) || points.length < 4) {
+      return null;
+    }
+    return {
+      startX: points[0],
+      startY: points[1],
+      width: points[2] - points[0],
+      height: points[3] - points[1],
+    }
+  }
+
+  static transformPointsByAction(annotation, action, px, py, ax, ay, width, height, initialX, initialY, slideWidth, slideHeight) {
+    const ANNOTATION_CONFIG = Meteor.settings.public.whiteboard.annotations;
+    const HORIZONTAL_LEFT = ANNOTATION_CONFIG.resize.horizontal_left;
+    const HORIZONTAL_RIGHT = ANNOTATION_CONFIG.resize.horizontal_right;
+    const VERTICAL_TOP = ANNOTATION_CONFIG.resize.vertical_top;
+    const VERTICAL_BOTTOM = ANNOTATION_CONFIG.resize.vertical_bottom;
+    const DRAG = ANNOTATION_CONFIG.drag;
+    let newStartX = ax;
+    let newStartY = ay;
+    let newWidth = width;
+    let newHeight = height;
+    switch (action) {
+      case HORIZONTAL_LEFT:
+        newStartX = px;
+        newWidth = width - (px - ax);
+        break;
+      case HORIZONTAL_RIGHT:
+        newWidth = px - ax;
+        break;
+      case VERTICAL_TOP:
+        newStartY = py;
+        newHeight = height - (py - ay);
+        break;
+      case VERTICAL_BOTTOM:
+        newHeight = py - ay;
+        break;
+      case DRAG:
+        newStartX = px + ax - initialX;
+        newStartY = py + ay - initialY;
+        newWidth = width;
+        newHeight = height;
+        break;
+    }
+
+    // update active annotation
+    const newTransX = (newStartX / slideWidth) * 100;
+    const newTransY = (newStartY / slideHeight) * 100;
+    const newTransWidth = (newWidth / slideWidth) * 100;
+    const newTransHeight = (newHeight / slideHeight) * 100;
+    annotation.points[0] = newTransX;
+    annotation.points[1] = newTransY;
+    annotation.points[2] = newTransX + newTransWidth;
+    annotation.points[3] = newTransY + newTransHeight;
+    return annotation;
+  }
+
   shouldComponentUpdate(nextProps) {
     return this.props.version !== nextProps.version;
   }
 
-  getCoordinates() {
-    const { points } = this.props.annotation;
-    const { slideWidth, slideHeight } = this.props;
+  getCoordinates(annotation, slideWidth, slideHeight) {
+    const { points } = annotation;
     // x1 and y1 are the coordinates of the top left corner of the annotation
     // x2 and y2 are the coordinates of the bottom right corner of the annotation
     let x1 = points[0];

@@ -3,6 +3,224 @@ import PropTypes from 'prop-types';
 import AnnotationHelpers from '../helpers';
 
 export default class PencilDrawComponent extends Component {
+  /**
+   * using to check a point is belonged to line
+   * @param annotation
+   * @param x
+   * @param y
+   * @param slideWidth
+   * @param slideHeight
+   * @returns {boolean}
+   */
+  static checkPointInsidePencil(annotation, x, y, slideWidth, slideHeight) {
+    const { points } = annotation;
+    let i = 0;
+    while (i < points.length) {
+      const px = (points[i] / 100) * slideWidth;
+      const py = (points[i + 1] / 100) * slideHeight;
+      const isContained = x >= (px - 10) && x <= (px + 10) && y >= (py - 10) && y <= (py + 10);
+      if (isContained) {
+        return true;
+      }
+      i = i + 2;
+    }
+    return false;
+  }
+
+  /**
+   * Using to check a point is inside the box contain the line
+   * @param annotation
+   * @param px
+   * @param py
+   * @param slideWidth
+   * @param slideHeight
+   * @returns {boolean}
+   */
+  static checkPointInsidePencilBox(annotation, px, py, slideWidth, slideHeight) {
+    const { startX, startY, width, height } = PencilDrawComponent.getTopLeftCornerCoordinates(annotation);
+    const x = (startX / 100) * slideWidth;
+    const y = (startY / 100) * slideHeight;
+    const _width = (width / 100) * slideWidth;
+    const _height = (height / 100) * slideHeight;
+    return px >= x && px <= (x + _width) && py >= y && py <= (y + _height);
+  }
+
+  static getTopLeftCornerCoordinates(annotation) {
+    const { points } = annotation;
+    if (!Array.isArray(points) || points.length < 2) {
+      return null;
+    }
+    let minX = points[0];
+    let maxX = points[0];
+    let minY = points[1];
+    let maxY = points[1];
+    let i = 2;
+    while (i < points.length) {
+      if (points[i] > maxX) {
+        maxX = points[i];
+      } else if (points[i] < minX) {
+        minX = points[i];
+      }
+
+      if (points[i + 1] > maxY) {
+        maxY = points[i + 1];
+      } else if (points[i + 1] < minY){
+        minY = points[i + 1];
+      }
+      i += 2;
+    }
+    return {
+      startX: minX,
+      startY: minY,
+      width: maxX - minX,
+      height: maxY - minY,
+    };
+  }
+
+  static transformPointsByAction(annotation, action, px, py, ax, ay, width, height, initialX, initialY, slideWidth, slideHeight) {
+    const ANNOTATION_CONFIG = Meteor.settings.public.whiteboard.annotations;
+    const HORIZONTAL_LEFT = ANNOTATION_CONFIG.resize.horizontal_left;
+    const HORIZONTAL_RIGHT = ANNOTATION_CONFIG.resize.horizontal_right;
+    const VERTICAL_TOP = ANNOTATION_CONFIG.resize.vertical_top;
+    const VERTICAL_BOTTOM = ANNOTATION_CONFIG.resize.vertical_bottom;
+    const DRAG = ANNOTATION_CONFIG.drag;
+    const { points } = annotation;
+    const transformedPoints = points.map((p, i) => {
+      // y coordinate
+      if (i % 2 !== 0) {
+        return (p / 100) * slideHeight;
+      } else {
+        return (p / 100) * slideWidth;
+      }
+    });
+    let newPoints;
+    switch (action) {
+      case HORIZONTAL_LEFT:
+        newPoints = PencilDrawComponent.leftHorizontalResizingCompute(transformedPoints, px, py, ax, ay, width, height);
+        break;
+      case HORIZONTAL_RIGHT:
+        newPoints = PencilDrawComponent.rightHorizontalResizingCompute(transformedPoints, px, py, ax, ay, width, height);
+        break;
+      case VERTICAL_TOP:
+        newPoints = PencilDrawComponent.topVerticalResizingCompute(transformedPoints, px, py, ax, ay, width, height);
+        break;
+      case VERTICAL_BOTTOM:
+        newPoints = PencilDrawComponent.bottomVerticalResizingCompute(transformedPoints, px, py, ax, ay, width, height);
+        break;
+      case DRAG:
+        newPoints = PencilDrawComponent.draggingCompute(transformedPoints, px, py, ax, ay, initialX, initialY);
+        break;
+    }
+    // transform to svg coordinators
+    newPoints = newPoints.map((p, i) => {
+      // y coordinate
+      if (i % 2 !== 0) {
+        return (p / slideHeight) * 100;
+      } else {
+        return (p / slideWidth) * 100;
+      }
+    });
+    const updatedAnnotation = Object.assign({}, annotation, {
+      points: newPoints,
+    });
+    return updatedAnnotation;
+  }
+
+  /**
+   * calcualtion the transformed point values when resizing pencil shape by left-horizontal
+   * @param points
+   * @param px
+   * @param py
+   * @param ax
+   * @param ay
+   * @param width
+   * @param height
+   * @returns {*}
+   */
+  static leftHorizontalResizingCompute(points, px, py, ax, ay, width, height) {
+    return points.map((p, i) => {
+      if ((i % 2) !== 0) {
+        return p;
+      } else {
+        return p + (((px - ax) * (ax + width - p)) / width);
+      }
+    });
+  }
+
+  /**
+   * calcualtion the transformed point values when resizing pencil shape by right-horizontal
+   * @param points
+   * @param px
+   * @param py
+   * @param ax
+   * @param ay
+   * @param width
+   * @param height
+   * @returns {*}
+   */
+  static rightHorizontalResizingCompute(points, px, py, ax, ay, width, height) {
+    return points.map((p, i) => {
+      if ((i % 2) !== 0) {
+        return p;
+      } else {
+        return p + (((px - ax - width) * (p - ax)) / width);
+      }
+    });
+  }
+
+  /**
+   * calcualtion the transformed point values when resizing pencil shape by top-vertical
+   * @param points
+   * @param px
+   * @param py
+   * @param ax
+   * @param ay
+   * @param width
+   * @param height
+   * @returns {*}
+   */
+  static topVerticalResizingCompute(points, px, py, ax, ay, width, height) {
+    return points.map((p, i) => {
+      if ((i % 2) !== 0) {
+        return p + (((py - ay) * (ay + height - p)) / height);
+      } else {
+        return p;
+      }
+    });
+  }
+
+  /**
+   * calcualtion the transformed point values when resizing pencil shape by bottom-vertical
+   * @param points
+   * @param px
+   * @param py
+   * @param ax
+   * @param ay
+   * @param width
+   * @param height
+   * @returns {*}
+   */
+  static bottomVerticalResizingCompute(points, px, py, ax, ay, width, height) {
+    return points.map((p, i) => {
+      if ((i % 2) !== 0) {
+        return p - (((ay + height - py) * (p - ay)) / height);
+      } else {
+        return p;
+      }
+    });
+  }
+
+  static draggingCompute(points, px, py, ax, ay, initialX, initialY) {
+    return points.map((p, i) => {
+      // y coordinate
+      if ((i % 2) !== 0) {
+        return p + (py - initialY);
+      } else {
+        return p + (px - initialX);
+      }
+    });
+  }
+
   static getInitialCoordinates(annotation, slideWidth, slideHeight) {
     const { points } = annotation;
     let i = 2;

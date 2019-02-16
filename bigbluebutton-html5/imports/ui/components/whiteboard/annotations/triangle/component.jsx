@@ -4,6 +4,105 @@ import AnnotationHelpers from '../helpers';
 
 export default class TriangleDrawComponent extends Component {
 
+  static checkPointInsideTriangle(annotation, x, y, slideWidth, slideHeight) {
+    const { x1, y1, x2, y2, x3, y3 } = TriangleDrawComponent.getTriangleCoordinates(annotation, slideWidth, slideHeight);
+    const A = TriangleDrawComponent.calculateArea(x1, y1, x2, y2, x3, y3);
+    const A1 = TriangleDrawComponent.calculateArea(x, y, x2, y2, x3, y3);
+    const A2 = TriangleDrawComponent.calculateArea(x1, y1, x, y, x3, y3);
+    const A3 = TriangleDrawComponent.calculateArea(x1, y1, x2, y2, x, y);
+    const delta = Math.abs(A1 + A2 + A3 - A);
+    return delta <= 1;
+  }
+
+  static getTriangleCoordinates(annotation, slideWidth, slideHeight) {
+    const { points } = annotation;
+    // points[0] and points[1] are x and y coordinates of the top left corner of the annotation
+    // points[2] and points[3] are x and y coordinates of the bottom right corner of the annotation
+    const xBottomLeft = points[0];
+    const yBottomLeft = points[3];
+    const xBottomRight = points[2];
+    const yBottomRight = points[3];
+    const xTop = ((xBottomRight - xBottomLeft) / 2) + xBottomLeft;
+    const yTop = points[1];
+
+    return {
+      x1: (xTop / 100) * slideWidth,
+      y1: (yTop / 100) * slideHeight,
+      x2: (xBottomLeft / 100) * slideWidth,
+      y2: (yBottomLeft / 100) * slideHeight,
+      x3: (xBottomRight / 100) * slideWidth,
+      y3: (yBottomRight / 100) * slideHeight
+    }
+  }
+
+  static calculateArea(x1, y1, x2, y2, x3, y3) {
+    return Math.abs((x1*(y2-y3) + x2*(y3-y1)+ x3*(y1-y2))/2.0);
+  }
+
+  static getTopLeftCornerCoordinates(annotation) {
+    const { points } = annotation;
+    if (!Array.isArray(points) || points.length < 4) {
+      return null;
+    }
+    // points[0] and points[1] are x and y coordinates of the top left corner of the annotation
+    // points[2] and points[3] are x and y coordinates of the bottom right corner of the annotation
+    const xBottomLeft = points[0];
+    const yBottomLeft = points[3];
+    const xBottomRight = points[2];
+    const yTop = points[1];
+    return {
+      startX: xBottomLeft,
+      startY: yTop,
+      width: xBottomRight - xBottomLeft,
+      height: yBottomLeft - yTop,
+    }
+  }
+
+  static transformPointsByAction(annotation, action, px, py, ax, ay, width, height, initialX, initialY, slideWidth, slideHeight) {
+    const ANNOTATION_CONFIG = Meteor.settings.public.whiteboard.annotations;
+    const HORIZONTAL_LEFT = ANNOTATION_CONFIG.resize.horizontal_left;
+    const HORIZONTAL_RIGHT = ANNOTATION_CONFIG.resize.horizontal_right;
+    const VERTICAL_TOP = ANNOTATION_CONFIG.resize.vertical_top;
+    const VERTICAL_BOTTOM = ANNOTATION_CONFIG.resize.vertical_bottom;
+    const DRAG = ANNOTATION_CONFIG.drag;
+    let newStartX = ax;
+    let newStartY = ay;
+    let newWidth = width;
+    let newHeight = height;
+    switch (action) {
+      case HORIZONTAL_LEFT:
+        newStartX = px;
+        newWidth = width - (px - ax);
+        break;
+      case HORIZONTAL_RIGHT:
+        newWidth = px - ax;
+        break;
+      case VERTICAL_TOP:
+        newStartY = py;
+        newHeight = height - (py - ay);
+        break;
+      case VERTICAL_BOTTOM:
+        newHeight = py - ay;
+        break;
+      case DRAG:
+        newStartX = px + ax - initialX;
+        newStartY = py + ay - initialY;
+        newWidth = width;
+        newHeight = height;
+        break;
+    }
+    // update active annotation
+    const newTransX = (newStartX / slideWidth) * 100;
+    const newTransY = (newStartY / slideHeight) * 100;
+    const newTransWidth = (newWidth / slideWidth) * 100;
+    const newTransHeight = (newHeight / slideHeight) * 100;
+    annotation.points[0] = newTransX;
+    annotation.points[1] = newTransY;
+    annotation.points[2] = newTransX + newTransWidth;
+    annotation.points[3] = newTransY + newTransHeight;
+    return annotation;
+  }
+
   shouldComponentUpdate(nextProps) {
     return this.props.version !== nextProps.version;
   }

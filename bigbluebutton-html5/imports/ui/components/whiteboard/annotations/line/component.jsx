@@ -4,13 +4,8 @@ import AnnotationHelpers from '../helpers';
 
 export default class LineDrawComponent extends Component {
 
-  shouldComponentUpdate(nextProps) {
-    return this.props.version !== nextProps.version;
-  }
-
-  getCoordinates() {
-    const { slideWidth, slideHeight } = this.props;
-    const { points } = this.props.annotation;
+  static getCoordinates(annotation, slideWidth, slideHeight) {
+    const { points } = annotation;
 
     const x1 = (points[0] / 100) * slideWidth;
     const y1 = (points[1] / 100) * slideHeight;
@@ -25,9 +20,90 @@ export default class LineDrawComponent extends Component {
     };
   }
 
+  static checkPointInsideLine(annotation, x, y, slideWidth, slideHeight) {
+    const { x1, y1, x2, y2 } = LineDrawComponent.getCoordinates(annotation, slideWidth, slideHeight);
+    if (x1 === x2) {
+      return x >= (x1 - 10) && x <= (x2 + 10) && y >= y1 && y <= y2;
+    } else {
+      return x >= x1 && x <= x2 && y >= (y1 - 10) && y <= (y2 + 10);
+    }
+  }
+
+  static getTopLeftCornerCoordinates(annotation) {
+    const { points } = annotation;
+    if (!Array.isArray(points) || points.length < 4) {
+      return null;
+    }
+    return {
+      startX: points[0],
+      startY: points[1],
+      width: points[2] - points[0],
+      height: points[3] - points[1],
+    }
+  }
+
+  static transformPointsByAction(annotation, action, px, py, ax, ay, width, height, initialX, initialY, slideWidth, slideHeight) {
+    const ANNOTATION_CONFIG = Meteor.settings.public.whiteboard.annotations;
+    const HORIZONTAL_LEFT = ANNOTATION_CONFIG.resize.horizontal_left;
+    const HORIZONTAL_RIGHT = ANNOTATION_CONFIG.resize.horizontal_right;
+    const VERTICAL_TOP = ANNOTATION_CONFIG.resize.vertical_top;
+    const VERTICAL_BOTTOM = ANNOTATION_CONFIG.resize.vertical_bottom;
+    const DRAG = ANNOTATION_CONFIG.drag;
+    let newStartX = ax;
+    let newStartY = ay;
+    let newWidth = width;
+    let newHeight = height;
+    switch (action) {
+      case HORIZONTAL_LEFT:
+        if (width > 0) {
+          newStartX = px;
+          newWidth = width - (px -ax);
+        }
+        break;
+      case HORIZONTAL_RIGHT:
+        if (width > 0) {
+          newWidth = px - ax;
+        }
+        break;
+      case VERTICAL_TOP:
+        if (height > 0) {
+          newStartY = py;
+          newHeight = height - (py -ay);
+        }
+        break;
+      case VERTICAL_BOTTOM:
+        if (height > 0) {
+          newHeight = py -ay;
+        }
+        break;
+      case DRAG:
+        newStartX = px + ax - initialX;
+        newStartY = py + ay - initialY;
+        newWidth = width;
+        newHeight = height;
+        break;
+    }
+
+    // update active annotation
+    const newTransX = (newStartX / slideWidth) * 100;
+    const newTransY = (newStartY / slideHeight) * 100;
+    const newTransWidth = (newWidth / slideWidth) * 100;
+    const newTransHeight = (newHeight / slideHeight) * 100;
+
+    annotation.points[0] = newTransX;
+    annotation.points[1] = newTransY;
+    annotation.points[2] = newTransX + newTransWidth;
+    annotation.points[3] = newTransY + newTransHeight;
+    return annotation;
+  }
+
+  shouldComponentUpdate(nextProps) {
+    return this.props.version !== nextProps.version;
+  }
+
   render() {
-    const results = this.getCoordinates();
-    const { annotation, slideWidth } = this.props;
+    const { annotation, slideWidth, slideHeight } = this.props;
+    const results = this.getCoordinates(annotation, slideWidth, slideHeight);
     const { x1, y1, x2, y2 } = results;
 
     return (

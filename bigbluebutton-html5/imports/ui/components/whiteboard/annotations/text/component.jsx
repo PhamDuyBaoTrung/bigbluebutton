@@ -47,6 +47,119 @@ export default class TextDrawComponent extends Component {
     return styles;
   }
 
+  static checkPointInsidePencil(annotation, x, y, slideWidth, slideHeight) {
+    const textCoordinates = TextDrawComponent.getCoordinates(annotation, slideWidth, slideHeight);
+    return x >= textCoordinates.x && x <= (textCoordinates.x + textCoordinates.width)
+      && y >= textCoordinates.y && y <= (textCoordinates.y + textCoordinates.height);
+  }
+
+  static getTopLeftCornerCoordinates(annotation) {
+    const { x, y, textBoxWidth, textBoxHeight } = annotation;
+    return {
+      startX: x,
+      startY: y,
+      width: textBoxWidth,
+      height: textBoxHeight,
+    }
+  }
+
+  static transformPointsByAction(annotation, action, px, py, ax, ay, width, height, initialX, initialY, slideWidth, slideHeight) {
+    const ANNOTATION_CONFIG = Meteor.settings.public.whiteboard.annotations;
+    const HORIZONTAL_LEFT = ANNOTATION_CONFIG.resize.horizontal_left;
+    const HORIZONTAL_RIGHT = ANNOTATION_CONFIG.resize.horizontal_right;
+    const VERTICAL_TOP = ANNOTATION_CONFIG.resize.vertical_top;
+    const VERTICAL_BOTTOM = ANNOTATION_CONFIG.resize.vertical_bottom;
+    const DRAG = ANNOTATION_CONFIG.drag;
+
+    let newStartX = ax;
+    let newStartY = ay;
+    let newWidth = width;
+    let newHeight = height;
+    switch (action) {
+      case HORIZONTAL_LEFT:
+        newStartX = px;
+        newStartY = ay;
+        newWidth = width - (px - ax);
+        newHeight = height;
+        break;
+      case HORIZONTAL_RIGHT:
+        newStartX = ax;
+        newStartY = ay;
+        const midRight = {
+          x: ax + width,
+          y: ay + (height / 2),
+        };
+        newWidth = width + (px - midRight.x);
+        newHeight = height;
+        break;
+      case VERTICAL_TOP:
+        newStartX = ax;
+        newStartY = py;
+        newWidth = width;
+        newHeight = height - (py - ay);
+        break;
+      case VERTICAL_BOTTOM:
+        newStartX = ax;
+        newStartY = ay;
+        const midBottom = {
+          x: ax + (width / 2),
+          y: ay + height,
+        };
+        newWidth = width;
+        newHeight = height + (py - midBottom.y);
+        break;
+      case DRAG:
+        newStartX = px + ax - initialX;
+        newStartY = py + ay - initialY;
+        newWidth = width;
+        newHeight = height;
+    }
+
+    // update active annotation
+    const newTransX = (newStartX / slideWidth) * 100;
+    const newTransY = (newStartY / slideHeight) * 100;
+    const newTransWidth = (newWidth / slideWidth) * 100;
+    const newTransHeight = (newHeight / slideHeight) * 100;
+    annotation.x = newTransX;
+    annotation.y = newTransY;
+    annotation.textBoxWidth = newTransWidth;
+    annotation.textBoxHeight = newTransHeight;
+    return annotation;
+  }
+
+  static getCoordinates(annotation, slideWidth, slideHeight) {
+    const {
+      x,
+      y,
+      textBoxWidth,
+      textBoxHeight,
+      fontColor,
+      fontSize,
+      calcedFontSize,
+      text,
+    } = annotation;
+
+    const _x = (x / 100) * slideWidth;
+    const _y = (y / 100) * slideHeight;
+    const _width = (textBoxWidth / 100) * slideWidth;
+    const _height = (textBoxHeight / 100) * slideHeight;
+    const _fontColor = AnnotationHelpers.getFormattedColor(fontColor);
+    const _fontSize = fontSize;
+    const _calcedFontSize = (calcedFontSize / 100) * slideHeight;
+    const _text = text;
+
+    return {
+      x: _x,
+      y: _y,
+      text: _text,
+      width: _width,
+      height: _height,
+      fontSize: _fontSize,
+      fontColor: _fontColor,
+      calcedFontSize: _calcedFontSize,
+    };
+  }
+
   constructor() {
     super();
 
@@ -110,41 +223,6 @@ export default class TextDrawComponent extends Component {
 
   onChangeHandler(event) {
     this.props.setTextShapeValue(event.target.value);
-  }
-
-  getCoordinates() {
-    const { annotation, slideWidth, slideHeight } = this.props;
-
-    const {
-      x,
-      y,
-      textBoxWidth,
-      textBoxHeight,
-      fontColor,
-      fontSize,
-      calcedFontSize,
-      text,
-    } = annotation;
-
-    const _x = (x / 100) * slideWidth;
-    const _y = (y / 100) * slideHeight;
-    const _width = (textBoxWidth / 100) * slideWidth;
-    const _height = (textBoxHeight / 100) * slideHeight;
-    const _fontColor = AnnotationHelpers.getFormattedColor(fontColor);
-    const _fontSize = fontSize;
-    const _calcedFontSize = (calcedFontSize / 100) * slideHeight;
-    const _text = text;
-
-    return {
-      x: _x,
-      y: _y,
-      text: _text,
-      width: _width,
-      height: _height,
-      fontSize: _fontSize,
-      fontColor: _fontColor,
-      calcedFontSize: _calcedFontSize,
-    };
   }
 
   handleOnBlur() {
@@ -218,7 +296,8 @@ export default class TextDrawComponent extends Component {
   }
 
   render() {
-    const results = this.getCoordinates();
+    const { annotation, slideWidth, slideHeight } = this.props;
+    const results = TextDrawComponent.getCoordinates(annotation, slideWidth, slideHeight);
 
     if (this.props.isActive && this.props.annotation.status !== DRAW_END) {
       return this.renderPresenterTextShape(results);

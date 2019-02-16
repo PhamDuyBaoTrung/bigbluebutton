@@ -4,13 +4,82 @@ import AnnotationHelpers from '../helpers';
 
 export default class EllipseDrawComponent extends Component {
 
-  shouldComponentUpdate(nextProps) {
-    return this.props.version !== nextProps.version;
+  static getTopLeftCornerCoordinates(annotation) {
+    const { points } = annotation;
+    if (!Array.isArray(points) || points.length < 4) {
+      return null;
+    }
+    // x1 and y1 - coordinates of the ellipse's top left corner
+    // x2 and y2 - coordinates of the ellipse's bottom right corner
+    const x1 = points[0];
+    const y1 = points[1];
+    const x2 = points[2];
+    const y2 = points[3];
+    return {
+      startX: x1,
+      startY: y1,
+      width: x2 - x1,
+      height: y2 - y1,
+    }
   }
 
-  getCoordinates() {
-    const { points } = this.props.annotation;
-    const { slideWidth, slideHeight } = this.props;
+  static transformPointsByAction(annotation, action, px, py, ax, ay, width, height, initialX, initialY, slideWidth, slideHeight) {
+    const ANNOTATION_CONFIG = Meteor.settings.public.whiteboard.annotations;
+    const HORIZONTAL_LEFT = ANNOTATION_CONFIG.resize.horizontal_left;
+    const HORIZONTAL_RIGHT = ANNOTATION_CONFIG.resize.horizontal_right;
+    const VERTICAL_TOP = ANNOTATION_CONFIG.resize.vertical_top;
+    const VERTICAL_BOTTOM = ANNOTATION_CONFIG.resize.vertical_bottom;
+    let newStartX = ax;
+    let newStartY = ay;
+    let newWidth = width;
+    let newHeight = height;
+    const DRAG = ANNOTATION_CONFIG.drag;
+    switch (action) {
+      case HORIZONTAL_LEFT:
+        newStartX = px;
+        newWidth = width - (px - ax);
+        break;
+      case HORIZONTAL_RIGHT:
+        newWidth = px - ax;
+        break;
+      case VERTICAL_TOP:
+        newStartY = py;
+        newHeight = height - (py - ay);
+        break;
+      case VERTICAL_BOTTOM:
+        newHeight = py - ay;
+        break;
+      case DRAG:
+        newStartX = px + ax - initialX;
+        newStartY = py + ay - initialY;
+        newWidth = width;
+        newHeight = height;
+        break;
+    }
+
+    // update active annotation
+    const newTransX = (newStartX / slideWidth) * 100;
+    const newTransY = (newStartY / slideHeight) * 100;
+    const newTransWidth = (newWidth / slideWidth) * 100;
+    const newTransHeight = (newHeight / slideHeight) * 100;
+    annotation.points[0] = newTransX;
+    annotation.points[1] = newTransY;
+    annotation.points[2] = newTransX + newTransWidth;
+    annotation.points[3] = newTransY + newTransHeight;
+    return annotation;
+  }
+
+  static checkPointInsideEllipse(annotation, x, y, slideWidth, slideHeight) {
+    const { cx, cy, rx, ry, } = EllipseDrawComponent.getCoordinates(annotation, slideWidth, slideHeight);
+    const deltaX = Math.abs(x - cx);
+    const deltaY = Math.abs(y - cy);
+    const distanceX = (deltaX * deltaX) / (rx * rx);
+    const distanceY = (deltaY * deltaY) / (ry * ry);
+    return (distanceX + distanceY) <= 1;
+  }
+
+  static getCoordinates(annotation, slideWidth, slideHeight) {
+    const { points } = annotation;
 
     // x1 and y1 - coordinates of the ellipse's top left corner
     // x2 and y2 - coordinates of the ellipse's bottom right corner
@@ -37,9 +106,13 @@ export default class EllipseDrawComponent extends Component {
     };
   }
 
+  shouldComponentUpdate(nextProps) {
+    return this.props.version !== nextProps.version;
+  }
+
   render() {
-    const results = this.getCoordinates();
-    const { annotation, slideWidth } = this.props;
+    const { annotation, slideWidth, slideHeight } = this.props;
+    const results = EllipseDrawComponent.getCoordinates(annotation, slideWidth, slideHeight);
     const { cx, cy, rx, ry } = results;
 
     return (
