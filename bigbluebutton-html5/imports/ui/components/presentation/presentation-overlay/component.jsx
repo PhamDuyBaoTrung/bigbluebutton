@@ -39,7 +39,6 @@ export default class PresentationOverlay extends Component {
 
   onDropFile(ev) {
     ev.preventDefault();
-    console.log('Upload file to pencil');
     const file = ev.dataTransfer.items[0].getAsFile();
 
     const { clientX, clientY } = ev;
@@ -62,7 +61,6 @@ export default class PresentationOverlay extends Component {
   }
 
   onDragOver(ev) {
-    console.log('onDragOver the area');
     ev.stopPropagation();
     ev.preventDefault();
   }
@@ -70,7 +68,6 @@ export default class PresentationOverlay extends Component {
   onUploadingImage(e) {
     const progress = Math.round((e.loaded * 100.0) / e.total);
     document.getElementById('progress').style.width = `${progress}%`;
-    console.log(`fileuploadprogress data.loaded: ${e.loaded}, data.total: ${e.total}`);
   }
 
   // transforms the coordinate from window coordinate system
