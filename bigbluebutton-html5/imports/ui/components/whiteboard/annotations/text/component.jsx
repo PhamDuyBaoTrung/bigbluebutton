@@ -287,9 +287,9 @@ export default class TextDrawComponent extends Component {
             onChange={this.onChangeHandler}
             onBlur={this.handleOnBlur}
             style={styles}
+            defaultValue={results.text}
             spellCheck="false"
           >
-            {results.text}
           </textarea>
         </foreignObject>
       </g>
