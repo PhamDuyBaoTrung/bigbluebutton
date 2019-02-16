@@ -24,7 +24,16 @@ function handleAddedAnnotation({
   meetingId, whiteboardId, userId, annotation,
 }) {
   const isOwn = Auth.meetingID === meetingId && Auth.userID === userId;
-  const query = addAnnotationQuery(meetingId, whiteboardId, userId, annotation);
+
+  let query;
+  if (annotation.annotationType === 'pencil') {
+    const currAnnotation = Annotations.findOne({ id: annotation.id });
+    const isModifyAnnotation = currAnnotation
+      && currAnnotation.annotationInfo.points.length === annotation.annotationInfo.points.length;
+    query = addAnnotationQuery(meetingId, whiteboardId, userId, annotation, isModifyAnnotation);
+  } else {
+    query = addAnnotationQuery(meetingId, whiteboardId, userId, annotation);
+  }
 
   if (!isOwn) {
     Annotations.upsert(query.selector, query.modifier);
@@ -179,6 +188,42 @@ export function sendAnnotation(annotation) {
   );
 
   Annotations.upsert(queryFake.selector, queryFake.modifier);
+}
+
+export function updateAnnotation(annotation) {
+  // Prevent sending annotations while disconnected
+  if (!Meteor.status().connected) return;
+  // skip optimistic for draw end since the smoothing is done in akka
+  if (annotation.status === DRAW_END) return;
+
+  const { position, ...relevantAnotation } = annotation;
+  const updateQuery = addAnnotationQuery(
+    Auth.meetingID, annotation.wbId, Auth.userID,
+    {
+      ...relevantAnotation,
+      id: annotation.id,
+      position,
+      annotationInfo: {
+        ...annotation.annotationInfo,
+        color: annotation.annotationInfo.color,
+      },
+    },
+    true,
+  );
+
+  const cb = (err, numChanged) => {
+    if (err) {
+      return console.error(`Error happend when upsert ${annotation.id}`);
+    }
+
+    const { insertedId } = numChanged;
+    if (insertedId) {
+      return console.info(`[ADDED] annotation id=${annotation.id}`);
+    }
+    return console.info(`[UPDATED] annotation id=${annotation.id}`);
+  };
+
+  Annotations.upsert(updateQuery.selector, updateQuery.modifier, cb);
 }
 
 WhiteboardMultiUser.find({ meetingId: Auth.meetingID }).observeChanges({
