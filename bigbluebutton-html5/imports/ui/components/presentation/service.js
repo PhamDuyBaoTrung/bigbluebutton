@@ -15,7 +15,7 @@ const getCurrentSlide = () => {
     return null;
   }
 
-  return Slides.findOne(
+  const currentSlide = Slides.findOne(
     {
       presentationId: currentPresentation.id,
       current: true,
@@ -30,6 +30,10 @@ const getCurrentSlide = () => {
       },
     },
   );
+  return {
+    currentPresentation,
+    currentSlide,
+  };
 };
 
 const isPresenter = () => {

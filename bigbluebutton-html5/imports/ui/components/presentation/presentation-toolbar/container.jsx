@@ -2,7 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
 import PresentationToolbarService from './service';
+import PresentationService from '../service';
 import PresentationToolbar from './component';
+import PresentationArea from '../component';
 
 const PresentationToolbarContainer = (props) => {
   const {
@@ -27,7 +29,7 @@ const PresentationToolbarContainer = (props) => {
 
 export default withTracker(({ presentationId, userIsPresenter, currentSlideNum }) => {
   const data = PresentationToolbarService.getSlideData(presentationId);
-
+  const currentPresentation = PresentationService.getCurrentPresentation();
   const {
     numberOfSlides,
   } = data;
@@ -35,6 +37,7 @@ export default withTracker(({ presentationId, userIsPresenter, currentSlideNum }
   return {
     userIsPresenter,
     numberOfSlides,
+    showSlideSelection: !PresentationArea.emptyWhiteboard(currentPresentation.name),
     actions: {
       nextSlideHandler: () =>
         PresentationToolbarService.nextSlide(currentSlideNum, numberOfSlides),

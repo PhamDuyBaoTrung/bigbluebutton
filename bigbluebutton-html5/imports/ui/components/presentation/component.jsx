@@ -12,6 +12,10 @@ import { styles } from './styles.scss';
 
 
 export default class PresentationArea extends Component {
+  static emptyWhiteboard(name) {
+    const PRESENTATION_CONFIG = Meteor.settings.public.presentation;
+    return name && (name === PRESENTATION_CONFIG.defaultPresentationFile || name === 'empty_slide');
+  }
   constructor() {
     super();
 
@@ -134,6 +138,8 @@ export default class PresentationArea extends Component {
     // to control the size of the svg wrapper manually
     // and adjust cursor's thickness, so that svg didn't scale it automatically
     const adjustedSizes = this.calculateSize();
+    const isDefaultPresentation = this.props.currentPresentation
+      && PresentationArea.emptyWhiteboard(this.props.currentPresentation.name);
 
     // a reference to the slide object
     const slideObj = this.props.currentSlide;
@@ -183,13 +189,28 @@ export default class PresentationArea extends Component {
                 <clipPath id="viewBox">
                   <rect x={x} y={y} width="100%" height="100%" fill="none" />
                 </clipPath>
+                <pattern id="smallGrid" width="16" height="16" patternUnits="userSpaceOnUse">
+                  <path d="M 16 0 L 0 0 0 16" fill="none" stroke="#eee" strokeWidth="0.5"></path>
+                </pattern>
+                <pattern id="grid-defs"
+                         width="80"
+                         height="80"
+                         patternUnits="userSpaceOnUse"
+                         patternTransform="translate(0 0)">
+                  <rect width="80" height="80" fill="url(#smallGrid)"></rect>
+                  <path d="M 80 0 L 0 0 0 80" fill="none" stroke="#ddd" strokeWidth="1"></path>
+                </pattern>
               </defs>
+              <rect x="0" y="0" width="100%" height="100%" fill="url(#grid-defs)"></rect>
               <g clipPath="url(#viewBox)">
-                <Slide
-                  imageUri={imageUri}
-                  svgWidth={width}
-                  svgHeight={height}
-                />
+                {
+                  !isDefaultPresentation ?
+                    <Slide
+                      imageUri={imageUri}
+                      svgWidth={width}
+                      svgHeight={height}
+                    /> : null
+                }
                 <AnnotationGroupContainer
                   width={width}
                   height={height}
