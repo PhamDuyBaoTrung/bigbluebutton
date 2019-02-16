@@ -41,6 +41,9 @@ function handleAddedAnnotation({
   }
 
   const fakeAnnotation = Annotations.findOne({ id: `${annotation.id}-fake` });
+  if (!fakeAnnotation) {
+    return;
+  }
   const fakePoints = fakeAnnotation.annotationInfo.points;
   const { points: lastPoints } = annotation.annotationInfo;
 
@@ -61,8 +64,6 @@ function handleAddedAnnotation({
       logger.error(err);
       return;
     }
-
-    console.log(`Removed faked annotation ${annotation.id}`);
 
     // Remove fake annotation for pencil on draw end
     if (annotation.status === DRAW_END) {
@@ -170,8 +171,6 @@ export function sendAnnotation(annotation, onlySyncToRedis = false) {
 
   // skip optimistic for draw end since the smoothing is done in akka
   if (annotation.status === DRAW_END || onlySyncToRedis) return;
-
-  console.log(`Create/Update Fake Annotation ${annotation.id} - status ${annotation.status}`);
 
   const { position, ...relevantAnotation } = annotation;
   const queryFake = addAnnotationQuery(
