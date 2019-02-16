@@ -36,6 +36,43 @@ export default class PresentationOverlay extends Component {
     this.getTransformedSvgPoint = this.getTransformedSvgPoint.bind(this);
     this.svgCoordinateToPercentages = this.svgCoordinateToPercentages.bind(this);
   }
+
+  onDropFile(ev) {
+    ev.preventDefault();
+    console.log('Upload file to pencil');
+    const file = ev.dataTransfer.items[0].getAsFile();
+
+    const { clientX, clientY } = ev;
+    const { sendAnnotation, slideWidth, slideHeight } = this.props;
+    const id = this.generateNewShapeId();
+    const imageAnnotation = this.createImageAnnotation(
+      id, null, 0, 0,
+      DRAW_START, clientX, clientY,
+    );
+    const that = this;
+    const img = new Image();
+    img.onload = function () {
+      imageAnnotation.annotationInfo.imageWidth = (this.width / slideWidth) * 100;
+      imageAnnotation.annotationInfo.imageHeight = (this.height / slideHeight) * 100;
+      imageAnnotation.annotationInfo.src = this.src;
+      sendAnnotation(imageAnnotation);
+      that.handleDroppedFile(file);
+    };
+    img.src = window.URL.createObjectURL(file);
+  }
+
+  onDragOver(ev) {
+    console.log('onDragOver the area');
+    ev.stopPropagation();
+    ev.preventDefault();
+  }
+
+  onUploadingImage(e) {
+    const progress = Math.round((e.loaded * 100.0) / e.total);
+    document.getElementById('progress').style.width = `${progress}%`;
+    console.log(`fileuploadprogress data.loaded: ${e.loaded}, data.total: ${e.total}`);
+  }
+
   // transforms the coordinate from window coordinate system
   // to the main svg coordinate system
   getTransformedSvgPoint(clientX, clientY) {
@@ -47,6 +84,64 @@ export default class PresentationOverlay extends Component {
     // transform a screen point to svg point
     const CTM = svgObject.getScreenCTM();
     return screenPoint.matrixTransform(CTM.inverse());
+  }
+
+  generateNewShapeId() {
+    this.imageCount = this.imageCount + 1;
+    return `${this.props.userId}-${this.imageCount}-${new Date().getTime()}`;
+  }
+
+  handleDroppedFile(file, annotation) {
+    const { uploadImage } = this.props;
+    // Reset the upload progress bar
+    document.getElementById('progress').style.width = 0;
+    uploadImage(
+      file,
+      this.uploadImageErrorHandler.bind(this),
+      this.afterUploadImage.bind(this, annotation),
+      this.onUploadingImage.bind(this),
+    );
+  }
+
+  uploadImageErrorHandler(error) {
+    console.warn(`An error occurd when try to upload image ${error}`);
+  }
+
+  afterUploadImage(annotation, result) {
+    const { sendAnnotation, slideWidth, slideHeight } = this.props;
+    const cloneAnnotation = Object.assign({}, annotation);
+    cloneAnnotation.annotationInfo.src = result.secure_url;
+    cloneAnnotation.annotationInfo.imageWidth = (result.width / slideWidth) * 100;
+    cloneAnnotation.annotationInfo.imageHeight = (result.height / slideHeight) * 100;
+    cloneAnnotation.status = DRAW_END;
+    cloneAnnotation.annotationInfo.status = DRAW_END;
+    sendAnnotation(cloneAnnotation);
+  }
+
+  createImageAnnotation(id, src, width, height, status, clientX, clientY) {
+    const { slideWidth, slideHeight } = this.props;
+    const transformedSvgPoint = this.getTransformedSvgPoint(clientX, clientY);
+    const x = (transformedSvgPoint.x / slideWidth) * 100;
+    const y = (transformedSvgPoint.y / slideHeight) * 100;
+    return {
+      id,
+      status,
+      annotationType: 'image',
+      annotationInfo: {
+        x, // left corner
+        y, // left corner
+        src,
+        imageWidth: (width / slideWidth) * 100, // width
+        imageHeight: (height / slideHeight) * 100, // height
+        id,
+        whiteboardId: this.props.whiteboardId,
+        status,
+        type: 'image',
+      },
+      wbId: this.props.whiteboardId,
+      userId: this.props.userId,
+      position: 0,
+    };
   }
 
   checkCursor() {
@@ -197,8 +292,11 @@ export default class PresentationOverlay extends Component {
           onMouseOut={this.mouseOutHandler}
           onMouseEnter={this.mouseEnterHandler}
           onMouseMove={this.mouseMoveHandler}
+          onDragOver={this.onDragOver}
+          onDrop={this.onDropFile}
           style={{ width: '100%', height: '100%', touchAction: 'none' }}
         >
+          <div className="progress" id="progress"></div>
           {this.props.children}
         </div>
       </foreignObject>
@@ -221,4 +319,9 @@ PresentationOverlay.propTypes = {
 
   // As a child we expect only a WhiteboardOverlay at this point
   children: PropTypes.element.isRequired,
+
+  whiteboardId: PropTypes.string.isRequired,
+
+  // Defines method to send Annotation
+  sendAnnotation: PropTypes.func.isRequired,
 };
