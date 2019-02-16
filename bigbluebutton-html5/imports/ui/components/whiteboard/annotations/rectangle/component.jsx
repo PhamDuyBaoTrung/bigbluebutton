@@ -68,11 +68,7 @@ export default class RectangleDrawComponent extends Component {
     return annotation;
   }
 
-  shouldComponentUpdate(nextProps) {
-    return this.props.version !== nextProps.version;
-  }
-
-  getCoordinates(annotation, slideWidth, slideHeight) {
+  static getCoordinates(annotation, slideWidth, slideHeight) {
     const { points } = annotation;
     // x1 and y1 are the coordinates of the top left corner of the annotation
     // x2 and y2 are the coordinates of the bottom right corner of the annotation
@@ -104,6 +100,10 @@ export default class RectangleDrawComponent extends Component {
       width,
       height,
     };
+  }
+
+  shouldComponentUpdate(nextProps) {
+    return this.props.version !== nextProps.version;
   }
 
   render() {
