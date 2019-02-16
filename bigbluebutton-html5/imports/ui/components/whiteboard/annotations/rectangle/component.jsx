@@ -107,8 +107,8 @@ export default class RectangleDrawComponent extends Component {
   }
 
   render() {
-    const results = this.getCoordinates();
-    const { annotation, slideWidth } = this.props;
+    const { annotation, slideWidth, slideHeight } = this.props;
+    const results = RectangleDrawComponent.getCoordinates(annotation, slideWidth, slideHeight);
 
     return (
       <rect
