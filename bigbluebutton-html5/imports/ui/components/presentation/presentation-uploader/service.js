@@ -149,7 +149,69 @@ const persistPresentationChanges = (oldState, newState, uploadEndpoint) => {
     .then(removePresentations.bind(null, presentationsToRemove));
 };
 
+const uploadAndConvertPresentation = (file, meetingID, endpoint, onUpload, onProgress, onConversion) => {
+  const data = new FormData();
+  data.append('presentation_name', file.name);
+  data.append('Filename', file.name);
+  data.append('fileUpload', file);
+  data.append('conference', meetingID);
+  data.append('room', meetingID);
+  // TODO: Theres no way to set a presentation as downloadable.
+  data.append('is_downloadable', false);
+
+  const opts = {
+    method: 'POST',
+    body: data,
+  };
+
+  return futch(endpoint, opts, onProgress)
+    .then((res) => {
+      if (onConversion) {
+        observePresentationConversion(meetingID, file.name, onConversion);
+      }
+    })
+    // Trap the error so we can have parallel upload
+    .catch((error) => {
+      if (onUpload) {
+        onUpload({ error: true, done: true, status: error.code });
+      }
+      return Promise.resolve();
+    });
+};
+
+const uploadImage = (file, onError, onSuccess, onProgress) => {
+  const CONFIG = Meteor.settings.public.cloudinary;
+  const unsignedUploadPreset = 'cn2fjfbl';
+
+  const url = `https://api.cloudinary.com/v1_1/${CONFIG.name}/upload`;
+  const xhr = new XMLHttpRequest();
+  const fd = new FormData();
+  xhr.open('POST', url, true);
+  xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+  // Update progress (can be used to show progress indicator)
+  xhr.upload.addEventListener('progress', e => onProgress(e));
+
+  xhr.onreadystatechange = (e) => {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      // File uploaded successfully
+      const response = JSON.parse(xhr.responseText);
+      // https://res.cloudinary.com/cloudName/image/upload/v1483481128/public_id.jpg
+      onSuccess(response);
+    } else {
+      onError(e);
+    }
+  };
+
+  fd.append('upload_preset', unsignedUploadPreset);
+  fd.append('tags', 'browser_upload'); // Optional - add tag for image admin in Cloudinary
+  fd.append('file', file);
+  xhr.send(fd);
+};
+
 export default {
   getPresentations,
   persistPresentationChanges,
+  uploadAndConvertPresentation,
+  uploadImage,
 };
