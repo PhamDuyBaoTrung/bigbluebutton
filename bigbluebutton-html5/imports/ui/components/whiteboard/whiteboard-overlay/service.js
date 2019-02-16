@@ -1,6 +1,6 @@
 import Storage from '/imports/ui/services/storage/session';
 import Auth from '/imports/ui/services/auth';
-import { sendAnnotation, addAnnotationToDiscardedList } from '/imports/ui/components/whiteboard/service';
+import { sendAnnotation, updateAnnotation, addAnnotationToDiscardedList } from '/imports/ui/components/whiteboard/service';
 import Annotations from '/imports/ui/components/whiteboard/service';
 
 const DRAW_SETTINGS = 'drawSettings';
@@ -81,6 +81,7 @@ const getCurrentAnnotationsInfo = (whiteboardId) => {
 export default {
   addAnnotationToDiscardedList,
   sendAnnotation,
+  updateAnnotation,
   getWhiteboardToolbarValues,
   setTextShapeActiveId,
   resetTextShapeSession,
