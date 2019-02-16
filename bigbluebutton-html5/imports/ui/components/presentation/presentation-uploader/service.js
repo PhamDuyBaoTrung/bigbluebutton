@@ -149,36 +149,6 @@ const persistPresentationChanges = (oldState, newState, uploadEndpoint) => {
     .then(removePresentations.bind(null, presentationsToRemove));
 };
 
-const uploadAndConvertPresentation = (file, meetingID, endpoint, onUpload, onProgress, onConversion) => {
-  const data = new FormData();
-  data.append('presentation_name', file.name);
-  data.append('Filename', file.name);
-  data.append('fileUpload', file);
-  data.append('conference', meetingID);
-  data.append('room', meetingID);
-  // TODO: Theres no way to set a presentation as downloadable.
-  data.append('is_downloadable', false);
-
-  const opts = {
-    method: 'POST',
-    body: data,
-  };
-
-  return futch(endpoint, opts, onProgress)
-    .then((res) => {
-      if (onConversion) {
-        observePresentationConversion(meetingID, file.name, onConversion);
-      }
-    })
-    // Trap the error so we can have parallel upload
-    .catch((error) => {
-      if (onUpload) {
-        onUpload({ error: true, done: true, status: error.code });
-      }
-      return Promise.resolve();
-    });
-};
-
 const uploadImage = (file, onError, onSuccess, onProgress) => {
   const CONFIG = Meteor.settings.public.cloudinary;
   const unsignedUploadPreset = 'cn2fjfbl';
