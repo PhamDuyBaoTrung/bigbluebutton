@@ -165,6 +165,12 @@ export default class PresentationArea extends Component {
         }}
       >
         <TransitionGroup>
+          {
+            this.state.showSlide ?
+              <div className={styles.boardListContainer}>
+                <PresentationListContainer />
+              </div> : null
+          }
           <CSSTransition
             key={slideObj.id}
             classNames={{
@@ -178,12 +184,6 @@ export default class PresentationArea extends Component {
             exit={false}
             timeout={{ enter: 400 }}
           >
-            {
-              this.state.showSlide ?
-                <div className={styles.boardListContainer}>
-                  <PresentationListContainer />
-                </div> : null
-            }
             <svg
               width={width}
               height={height}
