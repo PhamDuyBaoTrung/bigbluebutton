@@ -176,7 +176,7 @@ function updatePencilDraw(meetingId, whiteboardId, userId, annotation) {
   return { selector: baseSelector, modifier: baseModifier };
 }
 
-export default function addAnnotation(meetingId, whiteboardId, userId, annotation) {
+export default function addAnnotation(meetingId, whiteboardId, userId, annotation, isModify = false) {
   check(meetingId, String);
   check(whiteboardId, String);
   check(annotation, Object);
