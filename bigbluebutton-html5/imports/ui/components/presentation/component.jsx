@@ -167,7 +167,10 @@ export default class PresentationArea extends Component {
         <TransitionGroup>
           {
             this.state.showSlide ?
-              <div className={styles.boardListContainer}>
+              <div className={styles.boardListContainer} style={{
+                  width: adjustedSizes.width,
+                }}
+              >
                 <PresentationListContainer />
               </div> : null
           }
