@@ -27,8 +27,6 @@
   justify-content: center;
   height: 100%;
   width:100%;
-  overflow: hidden;
-  position: relative;
 }
 
 .whiteboardSizeAvailable {
@@ -71,4 +69,6 @@
   justify-content: flex-start;
   flex-direction: row;
   background-color: #f4f7f8;
+  position: absolute;
+  top: 0;
 }
