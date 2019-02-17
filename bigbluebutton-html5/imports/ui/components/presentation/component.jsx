@@ -160,7 +160,7 @@ export default class PresentationArea extends Component {
       <div
         style={{
           width: adjustedSizes.width,
-          height: adjustedSizes.height + 48,
+          height: adjustedSizes.height,
           backgroundColor: 'white',
         }}
       >
