@@ -228,3 +228,14 @@ $item-height: 1rem;
     margin-right: 10px;
   }
 }
+
+.addingNewBoard {
+  width: 120px;
+  height: 48px;
+  background-size: 30px 30px;
+  background-position: 85px;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  padding-left: 15px;
+}

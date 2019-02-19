@@ -175,9 +175,7 @@ export default class PresentationList extends Component {
     const { boardList, isFetchingBoard } = this.state;
     const baseName = Meteor.settings.public.app.basename;
     const addButtonPendingStyle = {
-      width: '22px',
-      height: '22px',
-      background: `url('${baseName}/resources/images/spinner-loading.gif') 22 22, default`,
+      backgroundImage: `url('${baseName}/resources/images/spinner-loading.gif')`,
     };
     return (
       <div className={styles.whiteboardListContainer}>
@@ -185,7 +183,9 @@ export default class PresentationList extends Component {
           boardList.map((item, i) => this.renderPresentationItem(item, i))
         }
         {
-          isFetchingBoard ? <div style={addButtonPendingStyle} /> : <ButtonBase
+          isFetchingBoard ? <div style={addButtonPendingStyle} className={styles.addingNewBoard} >
+            <span>Adding...</span>
+          </div> : <ButtonBase
             key="Add new presentation"
             tagName="div"
             onClick={this.createNewBoard}
