@@ -17,9 +17,6 @@ export default withTracker(() => {
     defaultFileName: PRESENTATION_CONFIG.defaultPresentationFile,
     onDeletePresentation: presentationId => Service.removePresentation(presentationId),
     onSelectPresentation: presentationId => Service.setPresentation(presentationId),
-    addPresentation: () => Service.addNewPresentation(
-      PRESENTATION_CONFIG.uploadEndpoint,
-      PRESENTATION_CONFIG.emptyWhiteboardFile,
-    ),
+    uploadAndConvertPresentation: () => PresentationUploaderService.uploadAndConvertPresentation(),
   };
 })(PresentationListContainer);

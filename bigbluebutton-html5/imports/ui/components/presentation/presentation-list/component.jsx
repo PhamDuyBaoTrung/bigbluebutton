@@ -2,15 +2,123 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Icon from '/imports/ui/components/icon/component';
 import cx from 'classnames';
+import update from 'immutability-helper';
+import Auth from '/imports/ui/services/auth';
+import _ from 'lodash';
 import { styles } from './styles.scss';
 import ButtonBase from '../../button/base/component';
 
+const PRESENTATION_CONFIG = Meteor.settings.public.presentation;
 export default class PresentationList extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      boardList: props.presentations,
+      isFetchingBoard: false,
+    };
+    this.createNewBoard = this.createNewBoard.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      boardList: nextProps.presentations,
+    });
+  }
 
   isDefault(presentation) {
     const { defaultFileName } = this.props;
     return presentation.filename === defaultFileName
       && !presentation.id.includes(defaultFileName);
+  }
+
+  updateBoardKey(id, key, value, operation = '$set') {
+    this.setState(({ boardList }) => {
+      const fileIndex = boardList.findIndex(f => f.id === id);
+
+      return fileIndex === -1 ? false : {
+        boardList: update(boardList, {
+          [fileIndex]: {
+            $apply: file =>
+              update(file, {
+                [key]: {
+                  [operation]: value,
+                },
+              }),
+          },
+        }),
+      };
+    });
+  }
+
+  deepMergeUpdateBoardKey(id, key, value) {
+    const applyValue = toUpdate => update(toUpdate, { $merge: value });
+    this.updateBoardKey(id, key, applyValue, '$apply');
+  }
+
+  addNewPresentation(board) {
+    const emptyFileName = PRESENTATION_CONFIG.emptyWhiteboardFile;
+    const uploadEndpoint = PRESENTATION_CONFIG.uploadEndpoint;
+    const { uploadAndConvertPresentation } = this.props;
+    let blob = null;
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', 'https://res.cloudinary.com/coursedy/image/upload/v1541840939/empty_slide.pdf');
+    xhr.responseType = 'blob';
+    xhr.onload = () => {
+      blob = xhr.response;
+      const file = new File([blob], emptyFileName, {
+        type: 'application/pdf',
+        lastModified: Date.now(),
+      });
+      this.deepMergeUpdateBoardKey(board.id, 'file', file);
+      uploadAndConvertPresentation(
+        board.file, Auth.meetingID,
+        uploadEndpoint, board.onUpload,
+        board.onProgress, board.onConversion,
+      );
+    };
+    xhr.send();
+  }
+
+  createNewBoard() {
+    const id = _.uniqueId(PRESENTATION_CONFIG.emptyWhiteboardFile);
+    const board = {
+      file: null,
+      id,
+      filename: PRESENTATION_CONFIG.emptyWhiteboardFile,
+      isCurrent: false,
+      conversion: { done: false, error: false },
+      upload: { done: false, error: false, progress: 0 },
+      onProgress: (event) => {
+        if (!event.lengthComputable) {
+          this.deepMergeUpdateBoardKey(id, 'upload', {
+            progress: 100,
+            done: true,
+          });
+
+          return;
+        }
+
+        this.deepMergeUpdateBoardKey(id, 'upload', {
+          progress: (event.loaded / event.total) * 100,
+          done: event.loaded === event.total,
+        });
+      },
+      onConversion: (conversion) => {
+        this.deepMergeUpdateBoardKey(id, 'conversion', conversion);
+      },
+      onUpload: (upload) => {
+        this.deepMergeUpdateBoardKey(id, 'upload', upload);
+      },
+      onDone: (newId) => {
+        this.updateBoardKey(id, 'id', newId);
+      },
+    };
+    const currentBoardList = this.state.presentationList;
+    this.setState({
+      boardList: currentBoardList.concat(board),
+      isFetchingBoard: true,
+    });
+    this.addNewPresentation(board);
   }
 
   renderPresentationItem(item, i) {
@@ -64,23 +172,31 @@ export default class PresentationList extends Component {
   }
 
   render() {
-    const { presentations, addPresentation } = this.props;
+    const { boardList, isFetchingBoard } = this.state;
+    const baseName = Meteor.settings.public.app.basename;
+    const addButtonPendingStyle = {
+      width: '22px',
+      height: '22px',
+      backgroundImage: `url('${baseName}/resources/images/spinner-loading.gif') 22 22, default`,
+    };
     return (
       <div className={styles.whiteboardListContainer}>
         {
-          presentations.map((item, i) => this.renderPresentationItem(item, i))
+          boardList.map((item, i) => this.renderPresentationItem(item, i))
         }
-        <ButtonBase
-          key="Add new presentation"
-          tagName="div"
-          onClick={addPresentation}
-          className={styles.boardItemNew}
-        >
-          <div className={styles.addNewPresentation}>
-            <span>Add</span>
-            <Icon iconName="add" />
-          </div>
-        </ButtonBase>
+        {
+          isFetchingBoard ? <div style={addButtonPendingStyle} /> : <ButtonBase
+            key="Add new presentation"
+            tagName="div"
+            onClick={this.createNewBoard}
+            className={styles.boardItemNew}
+          >
+            <div className={styles.addNewPresentation}>
+              <span>Add</span>
+              <Icon iconName="add" />
+            </div>
+          </ButtonBase>
+        }
       </div>
     );
   }
