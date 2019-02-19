@@ -177,7 +177,7 @@ export default class PresentationList extends Component {
     const addButtonPendingStyle = {
       width: '22px',
       height: '22px',
-      backgroundImage: `url('${baseName}/resources/images/spinner-loading.gif') 22 22, default`,
+      background: `url('${baseName}/resources/images/spinner-loading.gif') 22 22, default`,
     };
     return (
       <div className={styles.whiteboardListContainer}>
