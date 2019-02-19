@@ -14,7 +14,7 @@ export default class PresentationList extends Component {
     super(props);
     this.state = {
       boardList: props.presentations,
-      isFetchingBoard: false,
+      isCreatingBoard: false,
     };
     this.createNewBoard = this.createNewBoard.bind(this);
   }
@@ -94,7 +94,9 @@ export default class PresentationList extends Component {
             progress: 100,
             done: true,
           });
-
+          this.setState({
+            isCreatingBoard: false,
+          });
           return;
         }
 
@@ -116,7 +118,7 @@ export default class PresentationList extends Component {
     const { boardList } = this.state;
     this.setState({
       boardList: boardList.concat(board),
-      isFetchingBoard: true,
+      isCreatingBoard: true,
     });
     this.addNewPresentation(board);
   }
@@ -172,7 +174,7 @@ export default class PresentationList extends Component {
   }
 
   render() {
-    const { boardList, isFetchingBoard } = this.state;
+    const { boardList, isCreatingBoard } = this.state;
     const baseName = Meteor.settings.public.app.basename;
     const addButtonPendingStyle = {
       backgroundImage: `url('${baseName}/resources/images/spinner-loading.gif')`,
@@ -183,7 +185,7 @@ export default class PresentationList extends Component {
           boardList.map((item, i) => this.renderPresentationItem(item, i))
         }
         {
-          isFetchingBoard ? <div style={addButtonPendingStyle} className={styles.addingNewBoard} >
+          isCreatingBoard ? <div style={addButtonPendingStyle} className={styles.addingNewBoard} >
             <span>Adding...</span>
           </div> : <ButtonBase
             key="Add new presentation"
