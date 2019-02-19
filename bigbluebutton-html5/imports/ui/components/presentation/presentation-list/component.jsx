@@ -69,7 +69,7 @@ export default class PresentationList extends Component {
         type: 'application/pdf',
         lastModified: Date.now(),
       });
-      this.deepMergeUpdateBoardKey(board.id, 'file', file);
+      board.file = file;
       uploadAndConvertPresentation(
         board.file, Auth.meetingID,
         uploadEndpoint, board.onUpload,
