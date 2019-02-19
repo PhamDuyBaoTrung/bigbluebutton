@@ -94,9 +94,6 @@ export default class PresentationList extends Component {
             progress: 100,
             done: true,
           });
-          this.setState({
-            isCreatingBoard: false,
-          });
           return;
         }
 
@@ -107,6 +104,9 @@ export default class PresentationList extends Component {
       },
       onConversion: (conversion) => {
         this.deepMergeUpdateBoardKey(id, 'conversion', conversion);
+        this.setState({
+          isCreatingBoard: !conversion.done,
+        });
       },
       onUpload: (upload) => {
         this.deepMergeUpdateBoardKey(id, 'upload', upload);
