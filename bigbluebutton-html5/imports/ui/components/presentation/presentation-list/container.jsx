@@ -17,6 +17,10 @@ export default withTracker(() => {
     defaultFileName: PRESENTATION_CONFIG.defaultPresentationFile,
     onDeletePresentation: presentationId => Service.removePresentation(presentationId),
     onSelectPresentation: presentationId => Service.setPresentation(presentationId),
-    uploadAndConvertPresentation: () => PresentationUploaderService.uploadAndConvertPresentation(),
+    uploadAndConvertPresentation: (file, meetingID, endpoint, onUpload, onProgress, onConversion) =>
+      PresentationUploaderService.uploadAndConvertPresentation(
+        file, meetingID, endpoint,
+        onUpload, onProgress, onConversion,
+      ),
   };
 })(PresentationListContainer);
