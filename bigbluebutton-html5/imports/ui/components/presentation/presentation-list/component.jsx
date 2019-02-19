@@ -113,9 +113,9 @@ export default class PresentationList extends Component {
         this.updateBoardKey(id, 'id', newId);
       },
     };
-    const currentBoardList = this.state.presentationList;
+    const { boardList } = this.state;
     this.setState({
-      boardList: currentBoardList.concat(board),
+      boardList: boardList.concat(board),
       isFetchingBoard: true,
     });
     this.addNewPresentation(board);
