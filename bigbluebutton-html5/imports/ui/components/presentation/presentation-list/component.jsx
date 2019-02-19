@@ -17,6 +17,7 @@ export default class PresentationList extends Component {
       isCreatingBoard: false,
     };
     this.createNewBoard = this.createNewBoard.bind(this);
+    this.deleteBoard = this.onDeleteBoard.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -123,8 +124,27 @@ export default class PresentationList extends Component {
     this.addNewPresentation(board);
   }
 
-  renderPresentationItem(item, i) {
+  onDeleteBoard(boardId) {
     const { onSelectPresentation, onDeletePresentation } = this.props;
+    const { boardList } = this.state;
+    const boardToDelete = boardList.find(b => b.id === boardId);
+    if (!boardToDelete) {
+      return;
+    }
+    const shouldChangeActiveBoard = boardToDelete.isCurrent;
+    onDeletePresentation(boardId);
+    // if deleted board is activating, set the first default board is active board
+    if (shouldChangeActiveBoard) {
+      const firstDefaultBoard = boardList.find(board => this.isDefault(board));
+      if (!firstDefaultBoard) {
+        return;
+      }
+      onSelectPresentation(firstDefaultBoard.id);
+    }
+  }
+
+  renderPresentationItem(item, i) {
+    const { onSelectPresentation } = this.props;
 
     const isActualCurrent = item.isCurrent;
     const isUploading = !item.upload.done && item.upload.progress > 0;
@@ -163,7 +183,7 @@ export default class PresentationList extends Component {
             <ButtonBase
               className={cx(styles.itemAction, styles.itemActionRemove)}
               label="Remove presentation"
-              onClick={() => onDeletePresentation(item.id)}
+              onClick={() => this.deleteBoard(item.id)}
             >
               <Icon iconName="delete" />
             </ButtonBase>
