@@ -72,7 +72,7 @@
     },
 
     "kurento": {
-      "wsUrl": "wss://coursedy.cf/bbb-webrtc-sfu",
+      "wsUrl": "wss://cdbbb.tk/bbb-webrtc-sfu",
       "chromeDefaultExtensionKey": "akgoaoikmbmhcopjgakkcepdgdgkjfbc",
       "chromeDefaultExtensionLink": "https://chrome.google.com/webstore/detail/bigbluebutton-screenshare/akgoaoikmbmhcopjgakkcepdgdgkjfbc",
       "chromeExtensionKey": "KEY",
