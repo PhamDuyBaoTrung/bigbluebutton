@@ -165,7 +165,7 @@ export default class PresentationList extends Component {
       [styles.boardItemAnimated]: isProcessing,
     };
 
-    const hideRemove = this.isDefault(item);
+    const hideRemove = this.isDefault(item) && isActualCurrent;
 
     return (
       <ButtonBase
@@ -185,7 +185,7 @@ export default class PresentationList extends Component {
               label="Remove presentation"
               onClick={() => this.deleteBoard(item.id)}
             >
-              <Icon iconName="delete" />
+              <Icon iconName="close" />
             </ButtonBase>
           )}
         </div>

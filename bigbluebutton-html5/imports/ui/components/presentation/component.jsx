@@ -15,7 +15,7 @@ import { styles } from './styles.scss';
 export default class PresentationArea extends Component {
   static emptyWhiteboard(name) {
     const PRESENTATION_CONFIG = Meteor.settings.public.presentation;
-    return name && (name === PRESENTATION_CONFIG.defaultPresentationFile || name === 'empty_slide');
+    return name && (name === PRESENTATION_CONFIG.defaultPresentationFile || name === 'empty_slide.pdf');
   }
   constructor() {
     super();
@@ -280,7 +280,9 @@ export default class PresentationArea extends Component {
   }
 
   renderPresentationToolbar() {
-    if (!this.props.currentSlide) {
+    const isDefaultPresentation = this.props.currentPresentation
+          && PresentationArea.emptyWhiteboard(this.props.currentPresentation.name);
+    if (!this.props.currentSlide || isDefaultPresentation) {
       return null;
     }
 
