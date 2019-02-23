@@ -19,7 +19,7 @@ echo Installing Bigbluebutton server
 echo It will take a while
 # Run as sudo
 sudo -i
-wget -qO- https://ubuntu.bigbluebutton.org/bbb-install.sh | bash -s -- -v xenial-200 -s $APP_HOST -e pdbaotrung@gmail.com -t -g -c turn.blindsidenetworks.com:fkBnCMI6Uje/oogoi1EwiZpPq5s=
+su -c wget -qO- https://ubuntu.bigbluebutton.org/bbb-install.sh | bash -s -- -v xenial-200 -s $APP_HOST -e pdbaotrung@gmail.com -t -g -c turn.blindsidenetworks.com:fkBnCMI6Uje/oogoi1EwiZpPq5s=
 exit
 
 # Update kurento server url
