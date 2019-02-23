@@ -37,9 +37,9 @@ curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 # Install node 8
 sudo apt-get install -y nodejs && sudo apt-get update && sudo apt-get -y install jq
 # Install meteor
-curl https://install.meteor.com/ | sh
+sudo curl https://install.meteor.com/ | sh
 # Install forever
-npm install -g forever
+sudo npm install -g forever
 
 echo Building...
 # install dependencies
