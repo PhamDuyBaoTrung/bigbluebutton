@@ -10,9 +10,8 @@ APP_HOST=$1
 # You usually don't need to change anything below this line
 
 APP_NAME=html5client
-ROOT_URL=https://$APP_HOST
+ROOT_URL=https://$APP_HOST/$APP_NAME
 PORT=3000
-APP_DIR=/var/www/$APP_NAME
 MONGO_URL=mongodb://127.0.0.1:27017/$APP_NAME
 
 echo Installing Bigbluebutton server on host: ${APP_HOST}
