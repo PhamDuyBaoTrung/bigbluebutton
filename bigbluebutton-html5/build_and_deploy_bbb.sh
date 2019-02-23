@@ -59,7 +59,7 @@ export METEOR_SETTINGS_MODIFIER=.
 export METEOR_SETTINGS=` jq "${METEOR_SETTINGS_MODIFIER}" ~/app/bundle/programs/server/assets/app/config/settings-production.json `
 
 # start mongod service
-sudo service mongodb start
+sudo service mongod start
 
 # stop node server
 forever start main.js
