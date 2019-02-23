@@ -18,7 +18,10 @@ MONGO_URL=mongodb://127.0.0.1:27017/$APP_NAME
 echo Installing Bigbluebutton server
 echo It will take a while
 # Run as sudo
-su -c 'wget -qO- https://ubuntu.bigbluebutton.org/bbb-install.sh | bash -s -- -v xenial-200 -s $APP_HOST -e pdbaotrung@gmail.com -t -g -c turn.blindsidenetworks.com:fkBnCMI6Uje/oogoi1EwiZpPq5s='
+# wget -qO- https://ubuntu.bigbluebutton.org/bbb-install.sh | bash -s -- -v xenial-200 -s $APP_HOST -e pdbaotrung@gmail.com -t -g -c turn.blindsidenetworks.com:fkBnCMI6Uje/oogoi1EwiZpPq5s=
+exit
+
+echo Exiting root enviroment
 
 # Update kurento server url
 sed -i "s|\"wsUrl.*|\"wsUrl\": \"wss://$APP_HOST/bbb-webrtc-sfu\"|g" /private/config/settings-production.json
