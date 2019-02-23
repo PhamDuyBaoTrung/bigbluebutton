@@ -47,7 +47,7 @@ meteor npm install
 # building 
 meteor build --directory ~/app --architecture os.linux.x86_64
 cd ~/app/bundle
-pushd /programs/server
+pushd programs/server
 npm install
 popd
 
