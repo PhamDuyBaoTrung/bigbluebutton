@@ -59,7 +59,6 @@ export METEOR_SETTINGS_MODIFIER=.
 export METEOR_SETTINGS=` jq "${METEOR_SETTINGS_MODIFIER}" ~/app/bundle/programs/server/assets/app/config/settings-production.json `
 
 # stop node server
-forever stop main.js
-forever start bundle/main.js
+forever start main.js
 # Finish deploy
 echo Your app is deployed and serving on: $ROOT_URL
