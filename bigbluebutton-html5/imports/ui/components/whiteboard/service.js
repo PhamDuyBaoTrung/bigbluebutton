@@ -219,7 +219,7 @@ export function updateAnnotation(annotation) {
     if (insertedId) {
       return console.info(`[ADDED] annotation id=${annotation.id}`);
     }
-    return console.info(`[UPDATED] annotation id=${annotation.id}`);
+    return;
   };
 
   Annotations.upsert(updateQuery.selector, updateQuery.modifier, cb);

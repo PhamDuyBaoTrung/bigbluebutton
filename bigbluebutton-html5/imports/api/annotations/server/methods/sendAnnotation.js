@@ -48,10 +48,6 @@ export default function sendAnnotation(credentials, annotation) {
     throw new Meteor.Error('not-allowed', `User ${requesterUserId} is not allowed to send an annotation`);
   }
 
-  console.log(`SEND Annotation ${annotation.id} - 
-  text ${annotation.annotationInfo.text}, meetingId: ${meetingId}, 
-  requesterUserId: ${requesterUserId} to Redis`);
-
   const payload = {
     annotation,
   };

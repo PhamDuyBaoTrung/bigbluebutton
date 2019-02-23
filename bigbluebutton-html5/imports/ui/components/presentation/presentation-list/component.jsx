@@ -165,7 +165,7 @@ export default class PresentationList extends Component {
       [styles.boardItemAnimated]: isProcessing,
     };
 
-    const hideRemove = this.isDefault(item) && isActualCurrent;
+    const hideRemove = this.isDefault(item) || isActualCurrent;
 
     return (
       <ButtonBase
