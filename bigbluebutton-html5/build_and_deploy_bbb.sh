@@ -14,6 +14,7 @@ ROOT_URL=https://$APP_HOST/$APP_NAME
 PORT=3000
 MONGO_URL=mongodb://127.0.0.1:27017/$APP_NAME
 
+cd ~/app/bundle
 
 echo Deploying...
 echo MONGO_URL: ${MONGO_URL} - ROOT_URL: ${ROOT_URL}
