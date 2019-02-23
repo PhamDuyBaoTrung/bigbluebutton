@@ -21,8 +21,8 @@ echo It will take a while
 sudo su -c "wget -qO- https://ubuntu.bigbluebutton.org/bbb-install.sh | bash -s -- -v xenial-200 -s ${APP_HOST} -e pdbaotrung@gmail.com -t -g -c turn.blindsidenetworks.com:fkBnCMI6Uje/oogoi1EwiZpPq5s="
 echo Finished install Bigbluebutton server
 # Update kurento server url
-sudo sed -i "s|\"wsUrl.*|\"wsUrl\": \"wss://$APP_HOST/bbb-webrtc-sfu\"|g" private/config/settings-production.json
-sudo sed -i "s|\"wsUrl.*|\"wsUrl\": \"wss://$APP_HOST/bbb-webrtc-sfu\"|g" private/config/settings-development.json
+sudo sed -i "s|\"wsUrl.*|\"wsUrl\": \"wss://$APP_HOST/bbb-webrtc-sfu\",|g" private/config/settings-production.json
+sudo sed -i "s|\"wsUrl.*|\"wsUrl\": \"wss://$APP_HOST/bbb-webrtc-sfu\",|g" private/config/settings-development.json
 sudo sed -i "s/defaultWelcomeMessageFooter.*/defaultWelcomeMessageFooter=Copyright © 2018 Coursedy./g" /var/lib/tomcat7/webapps/bigbluebutton/WEB-INF/classes/bigbluebutton.properties
 sudo sed -i "s/defaultWelcomeMessage.*/defaultWelcomeMessage=<br>Welcome to \"%%CONFNAME%%\". For help on using Coursedy Classroom see these (short) tutorial videos.<br><br>To join the audio bridge click the phone button. Use a headset to avoid causing background noise for others.<br>/g" /var/lib/tomcat7/webapps/bigbluebutton/WEB-INF/classes/bigbluebutton.properties
 sudo su -c "wget -qO- https://res.cloudinary.com/coursedy/image/upload/v1550895438/favicon.png > /var/www/bigbluebutton-default/favicon.ico"
