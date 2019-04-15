@@ -261,6 +261,7 @@ export default class PresentationArea extends Component {
       <PresentationOverlayContainer
         slideWidth={width}
         slideHeight={height}
+        whiteboardId={slideObj.id}
         getSvgRef={this.getSvgRef}
       >
         <WhiteboardOverlayContainer
