@@ -56,6 +56,7 @@ export default class PresentationOverlay extends Component {
       id, null, 0, 0,
       DRAW_START, clientX, clientY,
     );
+    this.imageAnnotation = imageAnnotation;
     const that = this;
     const img = new Image();
     img.onload = function () {
@@ -63,7 +64,6 @@ export default class PresentationOverlay extends Component {
       imageAnnotation.annotationInfo.imageHeight = (this.height / slideHeight) * 100;
       imageAnnotation.annotationInfo.src = this.src;
       sendAnnotation(imageAnnotation);
-      this.imageAnnotation = imageAnnotation;
       that.handleDroppedFile(file);
     };
     img.src = window.URL.createObjectURL(file);
