@@ -122,7 +122,6 @@ export default class PresentationOverlay extends Component {
     cloneAnnotation.status = DRAW_END;
     cloneAnnotation.annotationInfo.status = DRAW_END;
     sendAnnotation(cloneAnnotation);
-    this.imageAnnotation = null;
   }
 
   createImageAnnotation(id, src, width, height, status, clientX, clientY) {
