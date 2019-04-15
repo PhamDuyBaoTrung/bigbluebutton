@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 const ANNOTATION_CONFIG = Meteor.settings.public.whiteboard.annotations;
 const CURSOR_INTERVAL = 16;
 const DRAW_START = ANNOTATION_CONFIG.status.start;
+const DRAW_END = ANNOTATION_CONFIG.status.end;
 
 export default class PresentationOverlay extends Component {
   constructor(props) {
@@ -19,6 +20,9 @@ export default class PresentationOverlay extends Component {
 
     // id of the setInterval()
     this.intervalId = 0;
+
+    // using store image annotation
+    this.imageAnnotation = null;
 
     // Mobile Firefox has a bug where e.preventDefault on touchstart doesn't prevent
     // onmousedown from triggering right after. Thus we have to track it manually.
@@ -59,6 +63,7 @@ export default class PresentationOverlay extends Component {
       imageAnnotation.annotationInfo.imageHeight = (this.height / slideHeight) * 100;
       imageAnnotation.annotationInfo.src = this.src;
       sendAnnotation(imageAnnotation);
+      this.imageAnnotation = imageAnnotation;
       that.handleDroppedFile(file);
     };
     img.src = window.URL.createObjectURL(file);
@@ -99,7 +104,7 @@ export default class PresentationOverlay extends Component {
     uploadImage(
       file,
       this.uploadImageErrorHandler.bind(this),
-      this.afterUploadImage.bind(this, annotation),
+      this.afterUploadImage.bind(this),
       this.onUploadingImage.bind(this),
     );
   }
@@ -108,15 +113,16 @@ export default class PresentationOverlay extends Component {
     console.warn(`An error occurd when try to upload image ${error}`);
   }
 
-  afterUploadImage(annotation, result) {
+  afterUploadImage(result) {
     const { sendAnnotation, slideWidth, slideHeight } = this.props;
-    const cloneAnnotation = Object.assign({}, annotation);
+    const cloneAnnotation = Object.assign({}, this.imageAnnotation);
     cloneAnnotation.annotationInfo.src = result.secure_url;
     cloneAnnotation.annotationInfo.imageWidth = (result.width / slideWidth) * 100;
     cloneAnnotation.annotationInfo.imageHeight = (result.height / slideHeight) * 100;
     cloneAnnotation.status = DRAW_END;
     cloneAnnotation.annotationInfo.status = DRAW_END;
     sendAnnotation(cloneAnnotation);
+    this.imageAnnotation = null;
   }
 
   createImageAnnotation(id, src, width, height, status, clientX, clientY) {

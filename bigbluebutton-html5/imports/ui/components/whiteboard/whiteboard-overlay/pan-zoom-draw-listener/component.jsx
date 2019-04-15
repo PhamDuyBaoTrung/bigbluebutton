@@ -222,7 +222,17 @@ export default class PanZoomDrawListener extends React.Component {
           );
         }
       }
-      default:
+        case 'image': {
+            return ImageDrawComponent.checkPointInsideRectangle(
+                annotation,
+                px,
+                py,
+                slideWidth,
+                slideHeight,
+            );
+        }
+
+        default:
         throw new Error(`Not supported annotation type: ${type}`);
     }
   }
