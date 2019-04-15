@@ -8,7 +8,7 @@
     "test-visual-regression-desktop": "export BROWSER_NAME=firefox; wdio ./tests/webdriverio/wdio.vreg.conf.js; export BROWSER_NAME=chrome; wdio ./tests/webdriverio/wdio.vreg.conf.js",
     "generate-refs-visual-regression-desktop": "rm -rf tests/webdriverio/screenshots; npm run test-visual-regression-desktop",
     "start:prod": "meteor reset && ROOT_URL=http://127.0.0.1/html5client NODE_ENV=production meteor --production --settings private/config/settings-production.json",
-    "start:dev": "ROOT_URL=https://coursedy.cf/html5client NODE_ENV=development meteor --settings private/config/settings-development.json",
+    "start:dev": "ROOT_URL=https://classroom.coursedy.com/html5client NODE_ENV=development meteor --settings private/config/settings-development.json",
     "test": "wdio ./tests/webdriverio/wdio.conf.js",
     "lint": "eslint . --ext .jsx,.js"
   },
