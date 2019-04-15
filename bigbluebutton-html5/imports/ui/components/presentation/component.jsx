@@ -132,7 +132,7 @@ export default class PresentationArea extends Component {
   // renders the whole presentation area
   renderPresentationArea() {
     // sometimes tomcat publishes the slide url, but the actual file is not accessible (why?)
-    if (!this.props.currentSlide ||
+    if (!this.props.currentPresentation || !this.props.currentSlide ||
         !this.props.currentSlide.calculatedData) {
       return null;
     }

@@ -9,7 +9,12 @@ const PresentationAreaContainer = props => (
 );
 
 export default withTracker(() => {
-  const { currentPresentation, currentSlide } = PresentationAreaService.getCurrentSlide();
+  let currentPresentation, currentSlide;
+  const currentWhiteBoard = PresentationAreaService.getCurrentSlide();
+  if (currentWhiteBoard) {
+    currentPresentation = currentWhiteBoard.currentPresentation;
+      currentSlide = currentWhiteBoard.currentSlide;
+  }
   return {
     currentSlide,
     currentPresentation,
