@@ -215,7 +215,7 @@ export default class PresentationList extends Component {
             className={styles.boardItemNew}
           >
             <div className={styles.addNewPresentation}>
-              <span>Add</span>
+              <span>New board</span>
               <Icon iconName="add" />
             </div>
           </ButtonBase>
