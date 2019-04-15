@@ -35,6 +35,8 @@ export default class PresentationOverlay extends Component {
     this.mouseOutHandler = this.mouseOutHandler.bind(this);
     this.getTransformedSvgPoint = this.getTransformedSvgPoint.bind(this);
     this.svgCoordinateToPercentages = this.svgCoordinateToPercentages.bind(this);
+    this.onDropFile = this.onDropFile.bind(this);
+    this.onDragOver = this.onDragOver.bind(this);
   }
 
   onDropFile(ev) {
