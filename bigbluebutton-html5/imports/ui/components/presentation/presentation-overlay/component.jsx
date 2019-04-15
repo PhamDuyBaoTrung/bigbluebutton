@@ -317,7 +317,7 @@ PresentationOverlay.propTypes = {
   // As a child we expect only a WhiteboardOverlay at this point
   children: PropTypes.element.isRequired,
 
-  whiteboardId: PropTypes.string.isRequired,
+  whiteboardId: PropTypes.string,
 
   // Defines method to send Annotation
   sendAnnotation: PropTypes.func.isRequired,

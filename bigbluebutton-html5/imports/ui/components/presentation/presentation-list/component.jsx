@@ -209,6 +209,7 @@ export default class PresentationList extends Component {
             <span>Adding...</span>
           </div> : <ButtonBase
             key="Add new presentation"
+            label="New board"
             tagName="div"
             onClick={this.createNewBoard}
             className={styles.boardItemNew}
@@ -233,8 +234,6 @@ PresentationList.propTypes = {
     conversion: PropTypes.object,
     upload: PropTypes.object,
   })).isRequired,
-  // create new presentation
-  addPresentation: PropTypes.func.isRequired,
   // activate a presentation
   onSelectPresentation: PropTypes.func.isRequired,
   // delete a presentation
