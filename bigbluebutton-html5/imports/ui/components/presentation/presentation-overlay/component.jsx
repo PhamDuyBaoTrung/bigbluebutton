@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+const ANNOTATION_CONFIG = Meteor.settings.public.whiteboard.annotations;
 const CURSOR_INTERVAL = 16;
+const DRAW_START = ANNOTATION_CONFIG.status.start;
 
 export default class PresentationOverlay extends Component {
   constructor(props) {
