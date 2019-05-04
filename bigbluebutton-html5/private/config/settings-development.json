@@ -72,7 +72,7 @@
     },
 
     "kurento": {
-      "wsUrl": "wss://coursedy.cf/bbb-webrtc-sfu",
+      "wsUrl": "wss://classroom.coursedy.com/bbb-webrtc-sfu",
       "chromeDefaultExtensionKey": "lgonofpbgnnpncladllkmijdlikpeocn",
       "chromeDefaultExtensionLink": "https://chrome.google.com/webstore/detail/coursedy-screenshare-exte/lgonofpbgnnpncladllkmijdlikpeocn",
       "chromeExtensionKey": "KEY",
