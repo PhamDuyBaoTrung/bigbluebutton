@@ -118,7 +118,7 @@ BoundaryDrawComponent.propTypes = {
   version: PropTypes.number.isRequired,
   // Defines an annotation object, which contains all the basic info we need to draw a rectangle
   annotation: PropTypes.shape({
-    points: PropTypes.arrayOf(PropTypes.number).isRequired,
+    points: PropTypes.arrayOf(PropTypes.number),
     color: PropTypes.number.isRequired,
     thickness: PropTypes.number.isRequired,
   }).isRequired,

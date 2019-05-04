@@ -7,6 +7,7 @@ import Auth from '/imports/ui/services/auth';
 import _ from 'lodash';
 import { styles } from './styles.scss';
 import ButtonBase from '../../button/base/component';
+import { notify } from '/imports/ui/services/notification';
 
 const PRESENTATION_CONFIG = Meteor.settings.public.presentation;
 export default class PresentationList extends Component {
@@ -81,6 +82,10 @@ export default class PresentationList extends Component {
   }
 
   createNewBoard() {
+    if (this.state.boardList.length > 5) {
+        this.notify('You have exceeded the maximum of white board slots allowed by our platform.');
+        return;
+    }
     const id = _.uniqueId(PRESENTATION_CONFIG.emptyWhiteboardFile);
     const board = {
       file: null,
@@ -143,8 +148,12 @@ export default class PresentationList extends Component {
     }
   }
 
+  notify(message, error = false) {
+    notify(message, error ? 'error' : 'info', 'close');
+  }
+
   renderPresentationItem(item, i) {
-    const { onSelectPresentation } = this.props;
+    const { onSelectPresentation, userIsPresenter } = this.props;
 
     const isActualCurrent = item.isCurrent;
     const isUploading = !item.upload.done && item.upload.progress > 0;
@@ -165,7 +174,7 @@ export default class PresentationList extends Component {
       [styles.boardItemAnimated]: isProcessing,
     };
 
-    const hideRemove = this.isDefault(item) || isActualCurrent;
+    const hideRemove = this.isDefault(item) || isActualCurrent || !userIsPresenter;
 
     return (
       <ButtonBase
@@ -199,6 +208,7 @@ export default class PresentationList extends Component {
     const addButtonPendingStyle = {
       backgroundImage: `url('${baseName}/resources/images/spinner-loading.gif')`,
     };
+    const { userIsPresenter } = this.props;
     return (
       <div className={styles.whiteboardListContainer}>
         {
@@ -207,18 +217,19 @@ export default class PresentationList extends Component {
         {
           isCreatingBoard ? <div style={addButtonPendingStyle} className={styles.addingNewBoard} >
             <span>Adding...</span>
-          </div> : <ButtonBase
-            key="Add new presentation"
-            label="New board"
-            tagName="div"
-            onClick={this.createNewBoard}
-            className={styles.boardItemNew}
-          >
-            <div className={styles.addNewPresentation}>
-              <span>New board</span>
-              <Icon iconName="add" />
-            </div>
-          </ButtonBase>
+          </div> : userIsPresenter
+            ? <ButtonBase
+                  key="Add new presentation"
+                  label="New board"
+                  tagName="div"
+                  onClick={this.createNewBoard}
+                  className={styles.boardItemNew}
+              >
+                <div className={styles.addNewPresentation}>
+                  <span>New board</span>
+                  <Icon iconName="add" />
+                </div>
+              </ButtonBase> : null
         }
       </div>
     );
@@ -239,4 +250,5 @@ PresentationList.propTypes = {
   // delete a presentation
   onDeletePresentation: PropTypes.func.isRequired,
   defaultFileName: PropTypes.string.isRequired,
+  userIsPresenter: PropTypes.bool.isRequired
 };

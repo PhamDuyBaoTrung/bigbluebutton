@@ -171,7 +171,7 @@ export default class PresentationArea extends Component {
                   width: adjustedSizes.width,
                 }}
               >
-                <PresentationListContainer />
+                <PresentationListContainer userIsPresenter={this.props.userIsPresenter} />
               </div> : null
           }
           <CSSTransition
