@@ -80,7 +80,7 @@ export default class BoundaryDrawComponent extends Component {
       rawBoundaryData.width, rawBoundaryData.height, slideWidth, slideHeight);
     let canResize = true;
     const activeTextShapeId = TextShapeService.activeTextShapeId();
-    if (annotation.type === 'text' && activeTextShapeId === annotation.annotationInfo.id) {
+    if (annotation.annotationInfo.type === 'text' && activeTextShapeId === annotation.annotationInfo.id) {
         canResize = TextShapeService.isResizing();
     }
 
