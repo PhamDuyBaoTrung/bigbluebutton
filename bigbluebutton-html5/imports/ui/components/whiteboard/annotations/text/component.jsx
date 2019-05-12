@@ -224,7 +224,7 @@ export default class TextDrawComponent extends Component {
   onChangeHandler(event) {
     const { annotation } = this.props;
     this.props.setTextShapeValue(event.target.value);
-    const textArea = document.querySelector(`#${annotation.annotationInfo.id}`);
+    const textArea = document.querySelector(`#${annotation.id}`);
     if (textArea) {
       this.textRef.style.height = textArea.scrollHeight + 'px';
     }
