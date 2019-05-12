@@ -199,6 +199,7 @@ export default class PencilDrawListener extends Component {
         [Math.round(physicalSlideWidth), Math.round(physicalSlideHeight)],
       );
       this.resetState();
+      this.props.actions.setTool('pointer');
     }
   }
 

@@ -17,6 +17,7 @@ const resetTextShapeActiveId = () => {
   const drawSettings = Storage.getItem(DRAW_SETTINGS);
   if (drawSettings) {
     drawSettings.textShape.textShapeActiveId = '';
+    drawSettings.textShape.status = '';
     Storage.setItem(DRAW_SETTINGS, drawSettings);
   }
 };
@@ -36,10 +37,23 @@ const activeTextShapeId = () => {
   return drawSettings ? drawSettings.textShape.textShapeActiveId : '';
 };
 
+const isEditContent = () => {
+    const drawSettings = Storage.getItem(DRAW_SETTINGS);
+    return drawSettings ? drawSettings.textShape.status === 'edit': false;
+};
+
+
+const isResizing = () => {
+    const drawSettings = Storage.getItem(DRAW_SETTINGS);
+    return drawSettings ? drawSettings.textShape.status === 'resize': false;
+};
+
 export default {
   setTextShapeValue,
   activeTextShapeId,
   isPresenter,
   resetTextShapeActiveId,
   getMultiUserStatus,
+  isEditContent,
+  isResizing
 };

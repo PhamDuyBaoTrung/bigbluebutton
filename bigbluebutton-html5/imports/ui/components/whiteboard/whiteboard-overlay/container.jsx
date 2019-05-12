@@ -25,11 +25,14 @@ export default withTracker((params) => {
     updateAnnotation: WhiteboardOverlayService.updateAnnotation,
     addAnnotationToDiscardedList: WhiteboardOverlayService.addAnnotationToDiscardedList,
     setTextShapeActiveId: WhiteboardOverlayService.setTextShapeActiveId,
+    setTextShapeStatus: WhiteboardOverlayService.setTextShapeStatus,
+    getTextShapeStatus: WhiteboardOverlayService.getTextShapeStatus,
     setActivatedShapeId: WhiteboardOverlayService.setActivatedShapeId,
     resetTextShapeSession: WhiteboardOverlayService.resetTextShapeSession,
     drawSettings: WhiteboardOverlayService.getWhiteboardToolbarValues(),
     setTextShapeValue: TextShapeService.setTextShapeValue,
     userId: WhiteboardOverlayService.getCurrentUserId(),
+    setTool: WhiteboardToolbarService.setTool,
     annotationsInfo,
   };
 })(WhiteboardOverlayContainer);

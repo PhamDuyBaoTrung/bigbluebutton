@@ -130,9 +130,12 @@ export default class WhiteboardOverlay extends Component {
       setTextShapeActiveId,
       setTextShapeValue,
       setActivatedShapeId,
+      setTextShapeStatus,
+      getTextShapeStatus,
       contextMenuHandler,
       addAnnotationToDiscardedList,
       undoAnnotation,
+      setTool
     } = this.props;
     const { tool } = drawSettings;
     const actions = {
@@ -149,9 +152,12 @@ export default class WhiteboardOverlay extends Component {
       setTextShapeActiveId,
       setTextShapeValue,
       setActivatedShapeId,
+      setTextShapeStatus,
+      getTextShapeStatus,
       contextMenuHandler,
       addAnnotationToDiscardedList,
       undoAnnotation,
+      setTool
     };
 
     if (tool === 'triangle' || tool === 'rectangle' || tool === 'ellipse' || tool === 'line') {
@@ -240,6 +246,10 @@ WhiteboardOverlay.propTypes = {
   resetTextShapeSession: PropTypes.func.isRequired,
   // Defines a function that sets a session value for the current active text shape
   setTextShapeActiveId: PropTypes.func.isRequired,
+  // Defines a function that sets a session value for the current active text shape
+  setTextShapeStatus: PropTypes.func.isRequired,
+  // Defines a function that sets a session value for the current active text shape
+  getTextShapeStatus: PropTypes.func.isRequired,
   // Defines a function that sets a session value for the selected shape
   setActivatedShapeId: PropTypes.func.isRequired,
 };

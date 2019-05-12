@@ -11,15 +11,15 @@ export default withTracker((params) => {
   const isPresenter = TextShapeService.isPresenter();
   const isMultiUser = TextShapeService.getMultiUserStatus();
   const activeTextShapeId = TextShapeService.activeTextShapeId();
+  const isEditable = TextShapeService.isEditContent();
+  const isResizing = TextShapeService.isResizing();
   let isActive = false;
 
   if ((isPresenter || isMultiUser) && activeTextShapeId !== null && activeTextShapeId.indexOf(params.annotation.id) >= 0) {
     isActive = true;
   }
-  const currentShape = params.annotation.id;
-  console.log(`active Shape: ${activeTextShapeId} - current shape ${currentShape} - isActive ${isActive}`);
   return {
-    isActive,
+    isActive, isEditable, isResizing,
     setTextShapeValue: TextShapeService.setTextShapeValue,
     resetTextShapeActiveId: TextShapeService.resetTextShapeActiveId,
   };

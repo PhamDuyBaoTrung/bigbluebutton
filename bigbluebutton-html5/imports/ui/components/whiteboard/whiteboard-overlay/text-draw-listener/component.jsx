@@ -90,8 +90,6 @@ export default class TextDrawListener extends Component {
       const { getCurrentShapeId } = this.props.actions;
       this.currentStatus = DRAW_UPDATE;
 
-      console.log('Change Text...');
-
       this.handleDrawText(
         { x: this.currentX, y: this.currentY },
         this.currentWidth,
@@ -250,6 +248,7 @@ h
     );
 
     this.resetState();
+    this.props.actions.setTool('pointer');
   }
 
   resetState() {
@@ -320,6 +319,8 @@ h
       generateNewShapeId,
       getCurrentShapeId,
       setTextShapeActiveId,
+      setTextShapeStatus,
+      getTextShapeStatus,
     } = this.props.actions;
 
     // coordinates and width/height of the textarea in percentages of the current slide
@@ -339,6 +340,15 @@ h
     );
 
     setTextShapeActiveId(getCurrentShapeId());
+    // update status
+    const status = getTextShapeStatus();
+    if (!status || status === '') {
+      setTextShapeStatus('resize');
+    } else if (status === 'resize') {
+      setTextShapeStatus('edit');
+    } else {
+      console.log('unknown text shape status');
+    }
 
     this.setState({
       isWritingText: true,
@@ -468,5 +478,7 @@ TextDrawListener.propTypes = {
     resetTextShapeSession: PropTypes.func.isRequired,
     // Defines a function that sets a session value for the current active text shape
     setTextShapeActiveId: PropTypes.func.isRequired,
+    getTextShapeStatus: PropTypes.func.isRequired,
+    setTextShapeStatus: PropTypes.func.isRequired,
   }).isRequired,
 };

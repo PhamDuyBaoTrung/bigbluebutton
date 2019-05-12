@@ -228,6 +228,7 @@ export default class ShapeDrawListener extends Component {
         );
       }
       this.resetState();
+      this.props.actions.setTool('pointer');
     }
   }
 

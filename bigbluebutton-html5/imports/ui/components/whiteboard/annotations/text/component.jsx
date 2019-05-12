@@ -168,10 +168,13 @@ export default class TextDrawComponent extends Component {
     this.onChangeHandler = this.onChangeHandler.bind(this);
 
     this.shouldEnableTextArea = false;
+
+    this.state = {
+      textHeight: null
+    };
   }
 
   componentDidMount() {
-    console.log('Did Mount');
     // iOS doesn't show the keyboard if the input field was focused by event NOT invoked by a user
     // by it still technically moves the focus there
     // that's why we have a separate case for iOS - we don't focus here automatically
@@ -185,8 +188,6 @@ export default class TextDrawComponent extends Component {
                             || navigator.userAgent.indexOf('Firefox/58') !== -1;
 
     if (iOS || (Android && unsupportedFirefox)) { return; }
-
-    console.log(`before focusing textarea STATUS${this.props.annotation.status} - isActive: ${this.props.isActive}`);
     if (this.props.isActive && this.props.annotation.status !== DRAW_END) {
       console.log('Set focus textarea');
       this.handleFocus();
@@ -208,7 +209,6 @@ export default class TextDrawComponent extends Component {
 
   componentDidUpdate() {
     if (this.shouldEnableTextArea) {
-      console.log('Set focus textarea again');
       this.handleFocus();
       this.shouldEnableTextArea = false;
     }
@@ -222,7 +222,12 @@ export default class TextDrawComponent extends Component {
   }
 
   onChangeHandler(event) {
+    const { annotation } = this.props;
     this.props.setTextShapeValue(event.target.value);
+    const textArea = document.querySelector(`#${annotation.annotationInfo.id}`);
+    if (textArea) {
+      this.textRef.style.height = textArea.scrollHeight + 'px';
+    }
   }
 
   handleOnBlur() {
@@ -273,6 +278,7 @@ export default class TextDrawComponent extends Component {
     return (
       <g>
         <foreignObject
+          ref={(ref) => { this.textRef = ref; }}
           x={results.x}
           y={results.y}
           width={results.width}
@@ -297,10 +303,10 @@ export default class TextDrawComponent extends Component {
   }
 
   render() {
-    const { annotation, slideWidth, slideHeight } = this.props;
+    const { annotation, slideWidth, slideHeight, isActive, isEditable } = this.props;
     const results = TextDrawComponent.getCoordinates(annotation, slideWidth, slideHeight);
 
-    if (this.props.isActive && this.props.annotation.status !== DRAW_END) {
+    if (isActive && isEditable && this.props.annotation.status !== DRAW_END) {
       return this.renderPresenterTextShape(results);
     }
     return this.renderViewerTextShape(results);
@@ -329,6 +335,7 @@ TextDrawComponent.propTypes = {
   slideHeight: PropTypes.number.isRequired,
   // Defines a flag which indicates that this shape is currently used by a presenter to draw text
   isActive: PropTypes.bool.isRequired,
+  isEditable: PropTypes.bool.isRequired,
   // Defines a function that sends updates from the active text shape  to the server
   setTextShapeValue: PropTypes.func.isRequired,
   // Defines a function that resets the textShape active Id in case if a user clicks Undo

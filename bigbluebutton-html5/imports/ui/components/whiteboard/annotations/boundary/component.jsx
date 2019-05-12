@@ -8,6 +8,7 @@ import TriangleDrawComponent from '../triangle/component';
 import RectangleDrawComponent from '../rectangle/component';
 import PencilDrawComponent from '../pencil/component';
 import ImageDrawComponent from '../image/component';
+import TextShapeService from '../text/service';
 
 export default class BoundaryDrawComponent extends Component {
 
@@ -77,6 +78,15 @@ export default class BoundaryDrawComponent extends Component {
     const results = this.getCoordinates(rawBoundaryData);
     const cornerPoints = AnnotationHelpers.getCornerPoints(rawBoundaryData.startX, rawBoundaryData.startY,
       rawBoundaryData.width, rawBoundaryData.height, slideWidth, slideHeight);
+    let canResize = true;
+    const activeTextShapeId = TextShapeService.activeTextShapeId();
+    if (annotation.type === 'text' && activeTextShapeId === annotation.annotationInfo.id) {
+        canResize === TextShapeService.isResizing();
+    }
+
+    if (!canResize) {
+      return null;
+    }
 
     return (
       <g>

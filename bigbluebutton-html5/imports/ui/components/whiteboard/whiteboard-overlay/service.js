@@ -46,6 +46,19 @@ const setTextShapeActiveId = (id) => {
   }
 };
 
+const getTextShapeStatus = () => {
+    const drawSettings = Storage.getItem(DRAW_SETTINGS);
+    return drawSettings ? drawSettings.textShape.status : null;
+};
+
+const setTextShapeStatus = (status) => {
+    const drawSettings = Storage.getItem(DRAW_SETTINGS);
+    if (drawSettings) {
+        drawSettings.textShape.status = status;
+        Storage.setItem(DRAW_SETTINGS, drawSettings);
+    }
+};
+
 const setActivatedShapeId = (id) => {
   const drawSettings = Storage.getItem(DRAW_SETTINGS);
   if (drawSettings) {
@@ -89,4 +102,6 @@ export default {
   contextMenuHandler,
   getCurrentAnnotationsInfo,
   setActivatedShapeId,
+  setTextShapeStatus,
+  getTextShapeStatus
 };
