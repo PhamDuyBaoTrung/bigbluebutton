@@ -115,7 +115,7 @@ export default class PanZoomDrawListener extends React.Component {
         } else if (textStatus === 'resize') {
           setTextShapeStatus('edit');
         } else {
-          console.error(`unknown text status ${textStatus}`);
+          setTextShapeStatus(null);
         }
       }
       setActivatedShapeId(activeAnnotation.id);
