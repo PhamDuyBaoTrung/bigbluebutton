@@ -42,7 +42,7 @@ const setTextShapeActiveId = (id) => {
   const drawSettings = Storage.getItem(DRAW_SETTINGS);
   if (drawSettings) {
     console.log(`update Text shape id = ${id}`);
-    if (!id) {
+    if (!id || id.indexOf('-fake') >= 0) {
       console.log('Bug here ...');
     }
     drawSettings.textShape.textShapeActiveId = id;
