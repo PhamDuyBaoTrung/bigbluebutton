@@ -121,6 +121,7 @@ export default class PanZoomDrawListener extends React.Component {
       setActivatedShapeId(activeAnnotation.id);
     } else {
       const { slideWidth, slideHeight } = this.props;
+      const { setTextShapeStatus, getTextShapeStatus } = this.props.actions;
       const ac = this.getCoordinates(this.activeAnnotation.annotationInfo, slideWidth, slideHeight);
       this.canActivateHSplit(
         transformedSvgPoint.x,
@@ -130,6 +131,12 @@ export default class PanZoomDrawListener extends React.Component {
         ac.x,
         ac.y,
       );
+      if (activeAnnotation.annotationInfo.type === 'text') {
+        const textStatus = getTextShapeStatus();
+        if (textStatus === 'resize') {
+          setTextShapeStatus('edit');
+        }
+      }
       if (this.state.canVSplitOnBottom || this.state.canVSplitOnTop
         || this.state.canHSplitOnRight || this.state.canHSplitOnLeft) {
         this.setState({ isResizing: true });
@@ -563,11 +570,12 @@ export default class PanZoomDrawListener extends React.Component {
     if (!this.activeAnnotation) {
       return;
     }
-    const { setTextShapeActiveId, setActivatedShapeId } = this.props.actions;
+    const { setTextShapeActiveId, setActivatedShapeId, setTextShapeStatus } = this.props.actions;
     this.activeAnnotation.status = DRAW_END;
     this.sendUpdateAnnotation(this.activeAnnotation);
     if (this.activeAnnotation.annotationInfo.type === 'text') {
       setTextShapeActiveId(null);
+      setTextShapeStatus(null);
     }
     setActivatedShapeId(null);
   }
