@@ -98,6 +98,8 @@ export default class PanZoomDrawListener extends React.Component {
         setTextShapeActiveId,
         setTextShapeValue,
         setActivatedShapeId,
+        setTextShapeStatus,
+        getTextShapeStatus,
       } = this.props.actions;
       activeAnnotation.status = DRAW_UPDATE;
       activeAnnotation.annotationInfo.status = DRAW_UPDATE;
@@ -107,6 +109,14 @@ export default class PanZoomDrawListener extends React.Component {
       if (activeAnnotation.annotationInfo.type === 'text') {
         setTextShapeActiveId(activeAnnotation.id);
         setTextShapeValue(activeAnnotation.annotationInfo.text);
+        const textStatus = getTextShapeStatus();
+        if (!textStatus || textStatus === '') {
+          setTextShapeStatus('resize');
+        } else if (textStatus === 'resize') {
+          setTextShapeStatus('edit');
+        } else {
+          console.error(`unknown text status ${textStatus}`);
+        }
       }
       setActivatedShapeId(activeAnnotation.id);
     } else {

@@ -341,14 +341,7 @@ h
 
     setTextShapeActiveId(getCurrentShapeId());
     // update status
-    const status = getTextShapeStatus();
-    if (!status || status === '') {
-      setTextShapeStatus('resize');
-    } else if (status === 'resize') {
-      setTextShapeStatus('edit');
-    } else {
-      console.log('unknown text shape status');
-    }
+    setTextShapeStatus('edit');
 
     this.setState({
       isWritingText: true,
