@@ -42,6 +42,9 @@ const setTextShapeActiveId = (id) => {
   const drawSettings = Storage.getItem(DRAW_SETTINGS);
   if (drawSettings) {
     console.log(`update Text shape id = ${id}`);
+    if (!id) {
+      console.log('Bug here ...');
+    }
     drawSettings.textShape.textShapeActiveId = id;
     Storage.setItem(DRAW_SETTINGS, drawSettings);
   }
