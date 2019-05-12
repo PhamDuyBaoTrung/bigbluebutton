@@ -38,14 +38,16 @@ const activeTextShapeId = () => {
 };
 
 const isEditContent = () => {
-    const drawSettings = Storage.getItem(DRAW_SETTINGS);
-    return drawSettings ? drawSettings.textShape.status === 'edit': false;
+  const drawSettings = Storage.getItem(DRAW_SETTINGS);
+  return drawSettings ? drawSettings.textShape.status === 'edit': false;
 };
 
 
 const isResizing = () => {
-    const drawSettings = Storage.getItem(DRAW_SETTINGS);
-    return drawSettings ? drawSettings.textShape.status === 'resize': false;
+  const drawSettings = Storage.getItem(DRAW_SETTINGS);
+  const canResize = drawSettings ? drawSettings.textShape.status === 'resize': false;
+  console.log(`can resize: ${canResize}`);
+  return canResize;
 };
 
 export default {
