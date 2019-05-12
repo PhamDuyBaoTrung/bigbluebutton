@@ -188,7 +188,7 @@ export default class TextDrawComponent extends Component {
                             || navigator.userAgent.indexOf('Firefox/58') !== -1;
 
     if (iOS || (Android && unsupportedFirefox)) { return; }
-    if (this.props.isActive && this.props.annotation.status !== DRAW_END) {
+    if (this.props.isActive && this.props.isEditable && this.props.annotation.status !== DRAW_END) {
       console.log('Set focus textarea');
       this.handleFocus();
     }
