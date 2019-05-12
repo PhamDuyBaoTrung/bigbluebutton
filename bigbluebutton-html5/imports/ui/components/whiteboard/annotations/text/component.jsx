@@ -314,8 +314,10 @@ export default class TextDrawComponent extends Component {
     const results = TextDrawComponent.getCoordinates(annotation, slideWidth, slideHeight);
 
     if (this.canEditable() && this.props.annotation.status !== DRAW_END) {
+      console.log('update text');
       return this.renderPresenterTextShape(results);
     }
+    console.log('view text');
     return this.renderViewerTextShape(results);
   }
 }

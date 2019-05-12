@@ -85,9 +85,10 @@ export default class BoundaryDrawComponent extends Component {
     }
 
     if (!canResize || canResize === false) {
+      console.log('hidden boundary');
       return null;
     }
-
+    console.log('show boundary');
     return (
       <g>
         <rect
