@@ -84,7 +84,7 @@ export default class BoundaryDrawComponent extends Component {
         canResize === TextShapeService.isResizing();
     }
 
-    if (!canResize) {
+    if (!canResize || canResize === false) {
       return null;
     }
 
