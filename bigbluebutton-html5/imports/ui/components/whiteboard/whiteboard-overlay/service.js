@@ -41,22 +41,24 @@ const resetTextShapeSession = () => {
 const setTextShapeActiveId = (id) => {
   const drawSettings = Storage.getItem(DRAW_SETTINGS);
   if (drawSettings) {
+    console.log(`update Text shape id = ${id}`);
     drawSettings.textShape.textShapeActiveId = id;
     Storage.setItem(DRAW_SETTINGS, drawSettings);
   }
 };
 
 const getTextShapeStatus = () => {
-    const drawSettings = Storage.getItem(DRAW_SETTINGS);
-    return drawSettings ? drawSettings.textShape.status : null;
+  const drawSettings = Storage.getItem(DRAW_SETTINGS);
+  return drawSettings ? drawSettings.textShape.status : null;
 };
 
 const setTextShapeStatus = (status) => {
-    const drawSettings = Storage.getItem(DRAW_SETTINGS);
-    if (drawSettings) {
-        drawSettings.textShape.status = status;
-        Storage.setItem(DRAW_SETTINGS, drawSettings);
-    }
+  const drawSettings = Storage.getItem(DRAW_SETTINGS);
+  if (drawSettings) {
+    console.log(`update Text shape status = ${status}`);
+    drawSettings.textShape.status = status;
+    Storage.setItem(DRAW_SETTINGS, drawSettings);
+  }
 };
 
 const setActivatedShapeId = (id) => {

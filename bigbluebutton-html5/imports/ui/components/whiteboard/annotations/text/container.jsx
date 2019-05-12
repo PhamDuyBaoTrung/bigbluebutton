@@ -14,7 +14,7 @@ export default withTracker((params) => {
   const isEditable = TextShapeService.isEditContent();
   const isResizing = TextShapeService.isResizing();
   let isActive = false;
-
+  console.log(`activeText ${activeTextShapeId} - current text: ${params.annotation.id}`);
   if ((isPresenter || isMultiUser) && activeTextShapeId !== null && activeTextShapeId.indexOf(params.annotation.id) >= 0) {
     isActive = true;
   }
