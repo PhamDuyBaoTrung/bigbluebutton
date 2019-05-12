@@ -188,7 +188,7 @@ export default class TextDrawComponent extends Component {
                             || navigator.userAgent.indexOf('Firefox/58') !== -1;
 
     if (iOS || (Android && unsupportedFirefox)) { return; }
-    if (this.props.isActive && this.props.isEditable && this.props.annotation.status !== DRAW_END) {
+    if (this.canEditable() && this.props.annotation.status !== DRAW_END) {
       console.log('Set focus textarea');
       this.handleFocus();
     }
@@ -238,8 +238,15 @@ export default class TextDrawComponent extends Component {
   }
 
   handleFocus() {
-    // Explicitly focus the text input using the raw DOM API
-    this.textArea.focus();
+    if (this.textArea) {
+      // Explicitly focus the text input using the raw DOM API
+      this.textArea.focus();
+    }
+  }
+
+  canEditable() {
+    const { isActive, isEditable } = this.props;
+    return isActive && isEditable;
   }
 
   renderViewerTextShape(results) {
@@ -303,10 +310,10 @@ export default class TextDrawComponent extends Component {
   }
 
   render() {
-    const { annotation, slideWidth, slideHeight, isActive, isEditable } = this.props;
+    const { annotation, slideWidth, slideHeight } = this.props;
     const results = TextDrawComponent.getCoordinates(annotation, slideWidth, slideHeight);
 
-    if (isActive && isEditable && this.props.annotation.status !== DRAW_END) {
+    if (this.canEditable() && this.props.annotation.status !== DRAW_END) {
       return this.renderPresenterTextShape(results);
     }
     return this.renderViewerTextShape(results);
