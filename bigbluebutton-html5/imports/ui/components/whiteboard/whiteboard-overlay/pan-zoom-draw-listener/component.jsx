@@ -107,7 +107,7 @@ export default class PanZoomDrawListener extends React.Component {
       // synced to Redis
       this.sendUpdateAnnotation(activeAnnotation);
       if (activeAnnotation.annotationInfo.type === 'text') {
-        setTextShapeActiveId(activeAnnotation.id);
+        setTextShapeActiveId(activeAnnotation.annotationInfo.id);
         setTextShapeValue(activeAnnotation.annotationInfo.text);
         const textStatus = getTextShapeStatus();
         if (!textStatus || textStatus === '') {
