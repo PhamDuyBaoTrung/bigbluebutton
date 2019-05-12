@@ -235,7 +235,7 @@ h
       return;
     }
 
-    const { getCurrentShapeId } = this.props.actions;
+    const { getCurrentShapeId, setTextShapeStatus } = this.props.actions;
     this.currentStatus = DRAW_END;
 
     this.handleDrawText(
@@ -248,6 +248,8 @@ h
     );
 
     this.resetState();
+    // reset text shape status
+    setTextShapeStatus(null);
     this.props.actions.setTool('pointer');
   }
 
